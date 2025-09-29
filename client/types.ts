@@ -6,6 +6,15 @@ export interface DemoResponse {
   message: string;
 }
 
+// i18n types
+export type SupportedLanguage = "en" | "es";
+
+export interface LanguageOption {
+  code: SupportedLanguage;
+  name: string;
+  flag: string;
+}
+
 export interface PaymentOptions {
   installmentsAvailable: boolean;
   presaleDepositAvailable: boolean;

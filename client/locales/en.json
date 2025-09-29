@@ -1,0 +1,235 @@
+{
+  "common": {
+    "search": "Search",
+    "findEvents": "Find Events",
+    "popular": "Popular",
+    "explore": "Explore",
+    "viewAll": "View All",
+    "soldOut": "Sold Out",
+    "date": "Date",
+    "location": "Location",
+    "rating": "Rating",
+    "price": "Price",
+    "addToCart": "Add to Cart",
+    "book": "Book",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "getTickets": "Get Tickets",
+    "signIn": "Sign In",
+    "getApp": "Get App",
+    "subscribe": "Subscribe",
+    "events": "Events",
+    "categories": "Categories",
+    "about": "About",
+    "contact": "Contact",
+    "back": "Back",
+    "continue": "Continue",
+    "next": "Next",
+    "previous": "Previous",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "save": "Save",
+    "select": "Select",
+    "quantity": "Quantity",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "discount": "Discount"
+  },
+  "navigation": {
+    "home": "Home",
+    "events": "Events",
+    "categories": "Categories",
+    "about": "About",
+    "contact": "Contact",
+    "cart": "Cart"
+  },
+  "hero": {
+    "discover": "Discover",
+    "unforgettable": "Unforgettable",
+    "experiences": "Experiences",
+    "subtitle": "Join {{count}} users discovering amazing events. From sold-out concerts to exclusive theater shows - secure your tickets in seconds with our countdown timer system.",
+    "searchPlaceholder": "Search artists, teams, shows...",
+    "cityPlaceholder": "City or venue",
+    "datePlaceholder": "Any date",
+    "hotTicketExpires": "🔥 Hot ticket expires in:",
+    "trendingNow": "Trending Now",
+    "whatsHot": "What's Hot Right Now",
+    "whatsHotSubtitle": "Don't miss out on the most popular events everyone's talking about",
+    "neverMiss": "Never Miss the Next Big Event",
+    "neverMissSubtitle": "Get early access to tickets, exclusive presales, and personalized event recommendations."
+  },
+  "categories": {
+    "title": "Explore Every Experience",
+    "subtitle": "From intimate acoustic sets to massive stadium spectacles - find your perfect event",
+    "music": "Music",
+    "sports": "Sports",
+    "theater": "Theater",
+    "comedy": "Comedy"
+  },
+  "featuredEvents": {
+    "title": "Featured Events",
+    "subtitle": "Handpicked experiences you shouldn't miss",
+    "viewAllEvents": "View All Events"
+  },
+  "badges": {
+    "transportationIncluded": "🚌 Transportation Included",
+    "presale": "Pre-sale",
+    "ticketAllocationPending": "Ticket Allocation Pending",
+    "refundableIfNoTicket": "Refundable if Not Allocated",
+    "reserveWithDeposit": "Reserve with Deposit",
+    "installmentsAvailable": "Installments Available",
+    "secondPaymentInstallments": "Second Payment in Installments",
+    "includesGifts": "Includes Gifts",
+    "underAgeAllowed": "Under-age Allowed",
+    "jerseyAddon": "Jersey Add-on"
+  },
+  "features": {
+    "title": "Why Choose InteliVoucher?",
+    "subtitle": "Experience the future of event ticketing",
+    "instantBooking": {
+      "title": "Instant Booking",
+      "description": "Secure your tickets in seconds with our lightning-fast booking system"
+    },
+    "mobileFirst": {
+      "title": "Mobile First",
+      "description": "Optimized mobile experience for booking on the go"
+    },
+    "securePayments": {
+      "title": "Secure Payments",
+      "description": "Bank-level security for all transactions"
+    },
+    "realTimeUpdates": {
+      "title": "Real-time Updates",
+      "description": "Live availability and pricing updates"
+    }
+  },
+  "testimonials": {
+    "title": "What Our Users Say",
+    "subtitle": "Join thousands of satisfied customers",
+    "sarahChen": {
+      "name": "Sarah Chen",
+      "role": "Music Enthusiast",
+      "quote": "Best ticketing app ever! Got front row seats to my favorite band's concert. The countdown timer feature saved me from missing out!"
+    },
+    "mikeRodriguez": {
+      "name": "Mike Rodriguez",
+      "role": "Sports Fan",
+      "quote": "Secured Lakers playoff tickets in seconds. The mobile app is super smooth and the seat selection is amazing."
+    },
+    "emilyJohnson": {
+      "name": "Emily Johnson",
+      "role": "Theater Lover",
+      "quote": "Found Broadway show tickets at great prices. The user experience is incredible and customer service is top-notch."
+    }
+  },
+  "footer": {
+    "company": "Company",
+    "about": "About Us",
+    "careers": "Careers",
+    "press": "Press",
+    "support": "Support",
+    "help": "Help Center",
+    "contact": "Contact Us",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© 2025 InteliVoucher. All rights reserved.",
+    "trustedByVenues": "Trusted by Top Venues",
+    "trustedByVenuesSubtitle": "Partner venues worldwide trust us with their most exclusive events"
+  },
+  "checkout": {
+    "steps": {
+      "selectTickets": {
+        "title": "Select Tickets",
+        "description": "Choose zone & quantity"
+      },
+      "customerInfo": {
+        "title": "Customer Info",
+        "description": "Enter your details"
+      },
+      "payment": {
+        "title": "Payment",
+        "description": "Secure checkout"
+      },
+      "confirmation": {
+        "title": "Confirmation",
+        "description": "Get your tickets"
+      }
+    },
+    "timeLeft": "Time Left",
+    "secureCheckout": "Secure Checkout",
+    "orderSummary": "Order Summary",
+    "selectZone": "Select Zone",
+    "selectQuantity": "Select Quantity",
+    "transportation": "Transportation",
+    "none": "None",
+    "van": "Van",
+    "flight": "Flight",
+    "originCity": "Origin City",
+    "passengerName": "Passenger Name",
+    "jerseyAddOn": "Jersey Add-on",
+    "addJersey": "Add Jersey",
+    "jerseySize": "Jersey Size",
+    "playerName": "Player Name",
+    "playerNumber": "Player Number",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "cardNumber": "Card Number",
+    "expiryDate": "Expiry Date",
+    "cvv": "CVV",
+    "nameOnCard": "Name on Card",
+    "processingPayment": "Processing Payment...",
+    "congratulations": "Congratulations!",
+    "ticketsPurchased": "Your tickets have been successfully purchased!",
+    "downloadTickets": "Download Tickets",
+    "emailSent": "Confirmation email sent",
+    "bookingReference": "Booking Reference",
+    "includesTransportation": "Includes Transportation",
+    "presale": "Pre-sale",
+    "installmentsAvailable": "Installments Available",
+    "refundableIfNoTicket": "Refundable if Not Allocated",
+    "backToHome": "Back",
+    "secureCheckoutTitle": "Intelivoucher Checkout",
+    "ticketsReserved": "Your tickets are reserved",
+    "completePurchase": "Complete your purchase before time runs out",
+    "timeRemaining": "Time remaining",
+    "hurryTimeWarning": "Hurry! Less than 5 minutes remaining",
+    "zoneSelection": "Zone Selection",
+    "noteZoneSelection": "Note: You are selecting a zone. Final seats may vary based on availability. If allocated seats are a downgrade, the price difference will be refunded.",
+    "selectOrigin": "Select origin",
+    "selectVanSeats": "Select van seats",
+    "passenger": "Passenger",
+    "chooseSeat": "Choose seat",
+    "seat": "Seat",
+    "flightSelectionNote": "Flight selection will be provided after ticket allocation. Upgrade cost applies at checkout.",
+    "officialJerseyAddon": "Official Jersey Add-on",
+    "jerseyDescription": "Choose for each passenger who wants a jersey. Personalization is optional.",
+    "addJerseyWithPrice": "Add jersey (+${{price}})",
+    "jerseyNameLabel": "Name (max 12)",
+    "jerseyNumberLabel": "Number (0-99)",
+    "jerseySizeLabel": "Size",
+    "selectSize": "Select size",
+    "ticketsMobileNotice": "📱 Tickets will be sent to your mobile device via the Intelivoucher app",
+    "securePayment": "Secure Payment",
+    "paymentSecurityNote": "Your payment information is encrypted and secure",
+    "paymentSuccessful": "Payment Successful!",
+    "ticketsSentToDevice": "Your tickets have been sent to your mobile device",
+    "downloadIntelivoucherApp": "Download the Intelivoucher App",
+    "accessTicketsAndUpdates": "Access your tickets and get event updates",
+    "iosAppStore": "iOS App Store",
+    "googlePlay": "Google Play",
+    "completePurchaseButton": "Complete Purchase",
+    "ticketsCount": "Tickets ({{count}}x)",
+    "flightUpgrade": "Flight Upgrade ({{count}}x)",
+    "personalizedJersey": "Personalized Jersey ({{count}}x)",
+    "serviceFee": "Service Fee",
+    "processingFee": "Processing Fee",
+    "secureCheckoutStripe": "🔒 100% secure checkout powered by Stripe",
+    "zone": "Zone",
+    "transport": "Transport",
+    "eighteenPlusOnly": "18+ Only"
+  }
+}

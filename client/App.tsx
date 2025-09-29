@@ -1,4 +1,5 @@
 import "./global.css";
+import "./i18n";
 
 import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
@@ -13,6 +14,7 @@ import Index from "./pages/Index";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import { store, persistor } from "./store";
+import { LanguageSync } from "./components/LanguageSync";
 
 // Lazy load admin and user pages
 const AdminTrips = lazy(() => import("./pages/admin/Trips"));
@@ -25,6 +27,7 @@ const App = () => (
     <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <LanguageSync />
           <Toaster />
           <Sonner />
           <BrowserRouter>

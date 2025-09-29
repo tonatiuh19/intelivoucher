@@ -15,7 +15,10 @@ export const selectFilters = (state: RootState) => state.trips.filters;
 export const selectFilteredTrips = createSelector(
   [selectTrips, selectSearchQuery, selectFilters],
   (trips, searchQuery, filters) => {
-    return trips.filter((trip) => {
+    // First, filter out any null or undefined trips
+    const validTrips = trips.filter((trip) => trip != null);
+
+    return validTrips.filter((trip) => {
       // Search query filter
       const matchesSearch =
         !searchQuery ||
@@ -32,9 +35,13 @@ export const selectFilteredTrips = createSelector(
         !filters.location || trip.location.includes(filters.location);
 
       // Price range filter
-      const price = parseFloat(trip.price);
+      const priceValue = trip.price
+        ? parseFloat(trip.price.replace(/[^0-9.-]+/g, ""))
+        : 0;
       const matchesPrice =
-        price >= filters.priceRange[0] && price <= filters.priceRange[1];
+        !isNaN(priceValue) &&
+        priceValue >= filters.priceRange[0] &&
+        priceValue <= filters.priceRange[1];
 
       // Date range filter
       const matchesDate =
@@ -57,7 +64,10 @@ export const selectFilteredTrips = createSelector(
 export const selectTripsByCategory = createSelector([selectTrips], (trips) => {
   const categories: Record<string, typeof trips> = {};
 
-  trips.forEach((trip) => {
+  // Filter out null trips first
+  const validTrips = trips.filter((trip) => trip != null);
+
+  validTrips.forEach((trip) => {
     if (!categories[trip.category]) {
       categories[trip.category] = [];
     }
@@ -68,32 +78,33 @@ export const selectTripsByCategory = createSelector([selectTrips], (trips) => {
 });
 
 export const selectTrendingTrips = createSelector([selectTrips], (trips) =>
-  trips.filter((trip) => trip.trending),
+  trips.filter((trip) => trip != null && trip.trending),
 );
 
 export const selectAvailableTrips = createSelector([selectTrips], (trips) =>
-  trips.filter((trip) => !trip.soldOut),
+  trips.filter((trip) => trip != null && !trip.soldOut),
 );
 
 export const selectPresaleTrips = createSelector([selectTrips], (trips) =>
-  trips.filter((trip) => trip.isPresale),
+  trips.filter((trip) => trip != null && trip.isPresale),
 );
 
 export const selectTripById = (tripId: string) =>
   createSelector([selectTrips], (trips) =>
-    trips.find((trip) => trip.id === tripId),
+    trips.find((trip) => trip != null && trip.id === tripId),
   );
 
 export const selectTripsWithTransportation = createSelector(
   [selectTrips],
-  (trips) => trips.filter((trip) => trip.includesTransportation),
+  (trips) =>
+    trips.filter((trip) => trip != null && trip.includesTransportation),
 );
 
 export const selectTripsAcceptingUnderAge = createSelector(
   [selectTrips],
-  (trips) => trips.filter((trip) => trip.acceptsUnderAge),
+  (trips) => trips.filter((trip) => trip != null && trip.acceptsUnderAge),
 );
 
 export const selectTripsWithJerseys = createSelector([selectTrips], (trips) =>
-  trips.filter((trip) => trip.jerseyAddonAvailable),
+  trips.filter((trip) => trip != null && trip.jerseyAddonAvailable),
 );

@@ -32,16 +32,34 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ZoneOption } from "@/data/mockData";
 
-const STEPS = [
-  { id: 1, title: "Select Tickets", description: "Choose zone & quantity" },
-  { id: 2, title: "Customer Info", description: "Enter your details" },
-  { id: 3, title: "Payment", description: "Secure checkout" },
-  { id: 4, title: "Confirmation", description: "Get your tickets" },
-];
-
 export default function Checkout() {
+  const { t } = useTranslation();
+
+  const STEPS = [
+    {
+      id: 1,
+      title: t("checkout.steps.selectTickets.title"),
+      description: t("checkout.steps.selectTickets.description"),
+    },
+    {
+      id: 2,
+      title: t("checkout.steps.customerInfo.title"),
+      description: t("checkout.steps.customerInfo.description"),
+    },
+    {
+      id: 3,
+      title: t("checkout.steps.payment.title"),
+      description: t("checkout.steps.payment.description"),
+    },
+    {
+      id: 4,
+      title: t("checkout.steps.confirmation.title"),
+      description: t("checkout.steps.confirmation.description"),
+    },
+  ];
   const [currentStep, setCurrentStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
   const [ticketQuantity, setTicketQuantity] = useState(2);
@@ -203,13 +221,13 @@ export default function Checkout() {
               onClick={() => window.history.back()}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              {t("checkout.backToHome")}
             </Button>
             <div className="w-8 h-8 bg-gradient-to-r from-brand-blue to-brand-cyan rounded-lg flex items-center justify-center">
               <Ticket className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">
-              Intelivoucher Checkout
+              {t("checkout.secureCheckoutTitle")}
             </h1>
           </div>
         </div>
@@ -224,10 +242,10 @@ export default function Checkout() {
                 <Timer className="w-6 h-6" />
                 <div>
                   <h3 className="text-lg font-semibold">
-                    Your tickets are reserved
+                    {t("checkout.ticketsReserved")}
                   </h3>
                   <p className="text-white/90">
-                    Complete your purchase before time runs out
+                    {t("checkout.completePurchase")}
                   </p>
                 </div>
               </div>
@@ -235,14 +253,16 @@ export default function Checkout() {
                 <div className="text-3xl font-mono font-bold">
                   {formatTime(timeLeft)}
                 </div>
-                <p className="text-white/90 text-sm">Time remaining</p>
+                <p className="text-white/90 text-sm">
+                  {t("checkout.timeRemaining")}
+                </p>
               </div>
             </div>
             {timeLeft < 300 && (
               <div className="mt-4 flex items-center space-x-2 text-white/90">
                 <AlertTriangle className="w-4 h-4" />
                 <span className="text-sm">
-                  Hurry! Less than 5 minutes remaining
+                  {t("checkout.hurryTimeWarning")}
                 </span>
               </div>
             )}
@@ -308,7 +328,7 @@ export default function Checkout() {
                     <div className="space-y-6">
                       <div>
                         <Label className="text-lg font-semibold">
-                          Select Quantity
+                          {t("checkout.selectQuantity")}
                         </Label>
                         <div className="flex items-center space-x-4 mt-2">
                           <Button
@@ -337,7 +357,7 @@ export default function Checkout() {
 
                       <div>
                         <Label className="text-lg font-semibold">
-                          Zone Selection
+                          {t("checkout.zoneSelection")}
                         </Label>
                         <RadioGroup
                           value={selectedZone}
@@ -378,7 +398,7 @@ export default function Checkout() {
                                     variant="secondary"
                                     className="text-xs"
                                   >
-                                    Sold Out
+                                    {t("common.soldOut")}
                                   </Badge>
                                 )}
                               </div>
@@ -386,16 +406,14 @@ export default function Checkout() {
                           ))}
                         </RadioGroup>
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                          Note: You are selecting a zone. Final seats may vary
-                          based on availability. If allocated seats are a
-                          downgrade, the price difference will be refunded.
+                          {t("checkout.noteZoneSelection")}
                         </p>
                       </div>
 
                       {includesTransportationOffer && (
                         <div className="space-y-4">
                           <Label className="text-lg font-semibold">
-                            Transportation
+                            {t("checkout.transportation")}
                           </Label>
                           <RadioGroup
                             value={transportationMode}
@@ -412,7 +430,7 @@ export default function Checkout() {
                                 htmlFor="mode-none"
                                 className="cursor-pointer"
                               >
-                                No transportation
+                                {t("checkout.none")}
                               </Label>
                             </div>
                             <div className="flex items-center space-x-2 rounded-lg border border-slate-200 dark:border-slate-700 p-3">
@@ -421,7 +439,7 @@ export default function Checkout() {
                                 htmlFor="mode-van"
                                 className="cursor-pointer"
                               >
-                                Van (included)
+                                {t("checkout.van")} (included)
                               </Label>
                             </div>
                             <div className="flex items-center space-x-2 rounded-lg border border-slate-200 dark:border-slate-700 p-3">
@@ -430,8 +448,8 @@ export default function Checkout() {
                                 htmlFor="mode-flight"
                                 className="cursor-pointer"
                               >
-                                Flight upgrade (+${transportationUpgradeFee} per
-                                person)
+                                {t("checkout.flight")} upgrade (+$
+                                {transportationUpgradeFee} per person)
                               </Label>
                             </div>
                           </RadioGroup>
@@ -440,14 +458,16 @@ export default function Checkout() {
                             transportationMode === "flight") && (
                             <div className="space-y-3">
                               <Label className="font-medium">
-                                Transportation origin
+                                {t("checkout.originCity")}
                               </Label>
                               <Select
                                 value={transportOrigin}
                                 onValueChange={setTransportOrigin}
                               >
                                 <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="Select origin" />
+                                  <SelectValue
+                                    placeholder={t("checkout.selectOrigin")}
+                                  />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {origins.map((o) => (
@@ -463,7 +483,7 @@ export default function Checkout() {
                           {transportationMode === "van" && (
                             <div className="space-y-3">
                               <Label className="font-medium">
-                                Select van seats
+                                {t("checkout.selectVanSeats")}
                               </Label>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {Array.from(
@@ -474,7 +494,7 @@ export default function Checkout() {
                                       className="flex items-center space-x-2"
                                     >
                                       <span className="text-sm w-24 text-slate-600 dark:text-slate-400">
-                                        Passenger {i + 1}
+                                        {t("checkout.passenger")} {i + 1}
                                       </span>
                                       <Select
                                         value={vanSeats[i]}
@@ -487,14 +507,18 @@ export default function Checkout() {
                                         }
                                       >
                                         <SelectTrigger className="w-full">
-                                          <SelectValue placeholder="Choose seat" />
+                                          <SelectValue
+                                            placeholder={t(
+                                              "checkout.chooseSeat",
+                                            )}
+                                          />
                                         </SelectTrigger>
                                         <SelectContent>
                                           {Array.from({ length: 12 }, (_, s) =>
                                             String(s + 1),
                                           ).map((s) => (
                                             <SelectItem value={s} key={s}>
-                                              Seat {s}
+                                              {t("checkout.seat")} {s}
                                             </SelectItem>
                                           ))}
                                         </SelectContent>
@@ -508,8 +532,7 @@ export default function Checkout() {
 
                           {transportationMode === "flight" && (
                             <div className="text-sm text-slate-600 dark:text-slate-400">
-                              Flight selection will be provided after ticket
-                              allocation. Upgrade cost applies at checkout.
+                              {t("checkout.flightSelectionNote")}
                             </div>
                           )}
                         </div>
@@ -518,11 +541,10 @@ export default function Checkout() {
                       {jerseyAvailable && (
                         <div className="space-y-3">
                           <Label className="text-lg font-semibold">
-                            Official Jersey Add-on
+                            {t("checkout.officialJerseyAddon")}
                           </Label>
                           <p className="text-sm text-slate-600 dark:text-slate-400">
-                            Choose for each passenger who wants a jersey.
-                            Personalization is optional.
+                            {t("checkout.jerseyDescription")}
                           </p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {Array.from({ length: ticketQuantity }, (_, i) => (
@@ -532,7 +554,7 @@ export default function Checkout() {
                               >
                                 <div className="flex items-center justify-between">
                                   <div className="text-sm font-medium">
-                                    Passenger {i + 1}
+                                    {t("checkout.passenger")} {i + 1}
                                   </div>
                                   <div className="flex items-center space-x-2">
                                     <Checkbox
@@ -550,7 +572,10 @@ export default function Checkout() {
                                       htmlFor={`jersey-check-${i}`}
                                       className="text-sm cursor-pointer"
                                     >
-                                      Add jersey (+${jerseyUnitPrice})
+                                      {t("checkout.addJerseyWithPrice").replace(
+                                        "{{price}}",
+                                        jerseyUnitPrice.toString(),
+                                      )}
                                     </Label>
                                   </div>
                                 </div>
@@ -561,7 +586,7 @@ export default function Checkout() {
                                         htmlFor={`jersey-name-${i}`}
                                         className="text-xs"
                                       >
-                                        Name (max 12)
+                                        {t("checkout.jerseyNameLabel")}
                                       </Label>
                                       <Input
                                         id={`jersey-name-${i}`}
@@ -584,7 +609,7 @@ export default function Checkout() {
                                         htmlFor={`jersey-number-${i}`}
                                         className="text-xs"
                                       >
-                                        Number (0-99)
+                                        {t("checkout.jerseyNumberLabel")}
                                       </Label>
                                       <Input
                                         id={`jersey-number-${i}`}
@@ -612,7 +637,9 @@ export default function Checkout() {
                                       />
                                     </div>
                                     <div>
-                                      <Label className="text-xs">Size</Label>
+                                      <Label className="text-xs">
+                                        {t("checkout.jerseySizeLabel")}
+                                      </Label>
                                       <Select
                                         value={jerseySizes[i] || ""}
                                         onValueChange={(val) =>
@@ -624,7 +651,11 @@ export default function Checkout() {
                                         }
                                       >
                                         <SelectTrigger className="w-full mt-1">
-                                          <SelectValue placeholder="Select size" />
+                                          <SelectValue
+                                            placeholder={t(
+                                              "checkout.selectSize",
+                                            )}
+                                          />
                                         </SelectTrigger>
                                         <SelectContent>
                                           {[
@@ -656,7 +687,9 @@ export default function Checkout() {
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="firstName">First Name</Label>
+                          <Label htmlFor="firstName">
+                            {t("checkout.firstName")}
+                          </Label>
                           <Input
                             id="firstName"
                             placeholder="John"
@@ -664,7 +697,9 @@ export default function Checkout() {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="lastName">Last Name</Label>
+                          <Label htmlFor="lastName">
+                            {t("checkout.lastName")}
+                          </Label>
                           <Input
                             id="lastName"
                             placeholder="Doe"
@@ -674,7 +709,7 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <Label htmlFor="email">Email Address</Label>
+                        <Label htmlFor="email">{t("checkout.email")}</Label>
                         <div className="relative mt-1">
                           <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
                           <Input
@@ -687,7 +722,7 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <Label htmlFor="phone">Phone Number</Label>
+                        <Label htmlFor="phone">{t("checkout.phone")}</Label>
                         <div className="relative mt-1">
                           <Smartphone className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
                           <Input
@@ -701,8 +736,7 @@ export default function Checkout() {
 
                       <div className="bg-blue-50 rounded-lg p-4">
                         <p className="text-sm text-blue-800">
-                          📱 Tickets will be sent to your mobile device via the
-                          Intelivoucher app
+                          {t("checkout.ticketsMobileNotice")}
                         </p>
                       </div>
                     </div>
@@ -711,7 +745,9 @@ export default function Checkout() {
                   {currentStep === 3 && (
                     <div className="space-y-6">
                       <div>
-                        <Label htmlFor="cardNumber">Card Number</Label>
+                        <Label htmlFor="cardNumber">
+                          {t("checkout.cardNumber")}
+                        </Label>
                         <div className="relative mt-1">
                           <CreditCard className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
                           <Input
@@ -724,7 +760,9 @@ export default function Checkout() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="expiry">Expiry Date</Label>
+                          <Label htmlFor="expiry">
+                            {t("checkout.expiryDate")}
+                          </Label>
                           <Input
                             id="expiry"
                             placeholder="MM/YY"
@@ -732,7 +770,7 @@ export default function Checkout() {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="cvv">CVV</Label>
+                          <Label htmlFor="cvv">{t("checkout.cvv")}</Label>
                           <Input
                             id="cvv"
                             placeholder="123"
@@ -742,7 +780,9 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <Label htmlFor="cardName">Name on Card</Label>
+                        <Label htmlFor="cardName">
+                          {t("checkout.nameOnCard")}
+                        </Label>
                         <div className="relative mt-1">
                           <User className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
                           <Input
@@ -757,10 +797,10 @@ export default function Checkout() {
                         <Lock className="w-5 h-5 text-green-600" />
                         <div>
                           <p className="text-sm font-semibold text-green-800">
-                            Secure Payment
+                            {t("checkout.securePayment")}
                           </p>
                           <p className="text-xs text-green-700">
-                            Your payment information is encrypted and secure
+                            {t("checkout.paymentSecurityNote")}
                           </p>
                         </div>
                       </div>
@@ -774,26 +814,26 @@ export default function Checkout() {
                       </div>
                       <div>
                         <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-                          Payment Successful!
+                          {t("checkout.paymentSuccessful")}
                         </h3>
                         <p className="text-slate-600 dark:text-slate-400">
-                          Your tickets have been sent to your mobile device
+                          {t("checkout.ticketsSentToDevice")}
                         </p>
                       </div>
 
                       <div className="bg-gradient-to-r from-brand-blue to-brand-cyan rounded-lg p-6 text-white">
                         <h4 className="text-lg font-semibold mb-2">
-                          Download the Intelivoucher App
+                          {t("checkout.downloadIntelivoucherApp")}
                         </h4>
                         <p className="text-white/90 mb-4">
-                          Access your tickets and get event updates
+                          {t("checkout.accessTicketsAndUpdates")}
                         </p>
                         <div className="flex space-x-4 justify-center">
                           <Button variant="secondary" size="sm">
-                            iOS App Store
+                            {t("checkout.iosAppStore")}
                           </Button>
                           <Button variant="secondary" size="sm">
-                            Google Play
+                            {t("checkout.googlePlay")}
                           </Button>
                         </div>
                       </div>
@@ -811,13 +851,15 @@ export default function Checkout() {
                     disabled={currentStep === 1}
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Previous
+                    {t("common.previous")}
                   </Button>
                   <Button
                     onClick={nextStep}
                     className="bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue"
                   >
-                    {currentStep === 3 ? "Complete Purchase" : "Continue"}
+                    {currentStep === 3
+                      ? t("checkout.completePurchaseButton")
+                      : t("common.continue")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -829,7 +871,7 @@ export default function Checkout() {
               <Card className="border-0 shadow-lg sticky top-24 dark:bg-slate-800">
                 <CardHeader>
                   <CardTitle className="text-lg dark:text-slate-200">
-                    Order Summary
+                    {t("checkout.orderSummary")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -884,19 +926,21 @@ export default function Checkout() {
                           variant="outline"
                           className="text-xs text-red-400 border-red-500/40"
                         >
-                          18+ Only
+                          {t("checkout.eighteenPlusOnly")}
                         </Badge>
                       </div>
                     )}
                     <Badge variant="outline" className="text-xs">
-                      Zone: {selectedZone}
+                      {t("checkout.zone")}: {selectedZone}
                     </Badge>
                     {includesTransportationOffer &&
                       transportationMode !== "none" && (
                         <div className="mt-2">
                           <Badge variant="outline" className="text-xs">
-                            Transport:{" "}
-                            {transportationMode === "van" ? "Van" : "Flight"}
+                            {t("checkout.transport")}:{" "}
+                            {transportationMode === "van"
+                              ? t("checkout.van")
+                              : t("checkout.flight")}
                             {transportOrigin ? ` • ${transportOrigin}` : ""}
                           </Badge>
                         </div>
@@ -907,28 +951,43 @@ export default function Checkout() {
 
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span>Tickets ({ticketQuantity}x)</span>
+                      <span>
+                        {t("checkout.ticketsCount").replace(
+                          "{{count}}",
+                          ticketQuantity.toString(),
+                        )}
+                      </span>
                       <span>${ticketsSubtotal.toFixed(2)}</span>
                     </div>
                     {includesTransportationOffer &&
                       transportationMode === "flight" && (
                         <div className="flex justify-between text-sm">
-                          <span>Flight Upgrade ({ticketQuantity}x)</span>
+                          <span>
+                            {t("checkout.flightUpgrade").replace(
+                              "{{count}}",
+                              ticketQuantity.toString(),
+                            )}
+                          </span>
                           <span>${flightUpgradeSubtotal.toFixed(2)}</span>
                         </div>
                       )}
                     {jerseyAvailable && jerseyCount > 0 && (
                       <div className="flex justify-between text-sm">
-                        <span>Personalized Jersey ({jerseyCount}x)</span>
+                        <span>
+                          {t("checkout.personalizedJersey").replace(
+                            "{{count}}",
+                            jerseyCount.toString(),
+                          )}
+                        </span>
                         <span>${jerseySubtotal.toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
-                      <span>Service Fee</span>
+                      <span>{t("checkout.serviceFee")}</span>
                       <span>${serviceFee.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
-                      <span>Processing Fee</span>
+                      <span>{t("checkout.processingFee")}</span>
                       <span>${processingFee.toFixed(2)}</span>
                     </div>
                   </div>
@@ -936,7 +995,7 @@ export default function Checkout() {
                   <Separator />
 
                   <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
+                    <span>{t("common.total")}</span>
                     <span className="text-brand-blue dark:text-brand-cyan">
                       ${total.toFixed(2)}
                     </span>
@@ -944,7 +1003,7 @@ export default function Checkout() {
 
                   <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
                     <p className="text-xs text-slate-600 dark:text-slate-400">
-                      🔒 100% secure checkout powered by Stripe
+                      {t("checkout.secureCheckoutStripe")}
                     </p>
                   </div>
                 </CardContent>

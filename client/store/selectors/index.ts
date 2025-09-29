@@ -2,3 +2,4 @@
 export * from "./tripsSelectors";
 export * from "./userSelectors";
 export * from "./checkoutSelectors";
+export * from "./languageSelectors";

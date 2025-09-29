@@ -1,0 +1,235 @@
+{
+  "common": {
+    "search": "Buscar",
+    "findEvents": "Encontrar Eventos",
+    "popular": "Popular",
+    "explore": "Explorar",
+    "viewAll": "Ver Todo",
+    "soldOut": "Agotado",
+    "date": "Fecha",
+    "location": "Ubicación",
+    "rating": "Calificación",
+    "price": "Precio",
+    "addToCart": "Agregar al Carrito",
+    "book": "Reservar",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "getTickets": "Obtener Boletos",
+    "signIn": "Iniciar Sesión",
+    "getApp": "Obtener App",
+    "subscribe": "Suscribirse",
+    "events": "Eventos",
+    "categories": "Categorías",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "back": "Atrás",
+    "continue": "Continuar",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "finish": "Finalizar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "select": "Seleccionar",
+    "quantity": "Cantidad",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "tax": "Impuesto",
+    "discount": "Descuento"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "events": "Eventos",
+    "categories": "Categorías",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "cart": "Carrito"
+  },
+  "hero": {
+    "discover": "Descubre",
+    "unforgettable": "Experiencias",
+    "experiences": "Inolvidables",
+    "subtitle": "Únete a {{count}} usuarios descubriendo eventos increíbles. Desde conciertos agotados hasta espectáculos teatrales exclusivos - asegura tus boletos en segundos con nuestro sistema de temporizador.",
+    "searchPlaceholder": "Buscar artistas, equipos, espectáculos...",
+    "cityPlaceholder": "Ciudad o lugar",
+    "datePlaceholder": "Cualquier fecha",
+    "hotTicketExpires": "🔥 Boleto caliente expira en:",
+    "trendingNow": "Tendencia Ahora",
+    "whatsHot": "Qué Está de Moda Ahora",
+    "whatsHotSubtitle": "No te pierdas los eventos más populares de los que todos hablan",
+    "neverMiss": "Nunca Te Pierdas El Próximo Gran Evento",
+    "neverMissSubtitle": "Obtén acceso anticipado a boletos, preventas exclusivas y recomendaciones de eventos personalizadas."
+  },
+  "categories": {
+    "title": "Explora Cada Experiencia",
+    "subtitle": "Desde sets acústicos íntimos hasta espectáculos masivos en estadios - encuentra tu evento perfecto",
+    "music": "Música",
+    "sports": "Deportes",
+    "theater": "Teatro",
+    "comedy": "Comedia"
+  },
+  "featuredEvents": {
+    "title": "Eventos Destacados",
+    "subtitle": "Experiencias seleccionadas que no debes perderte",
+    "viewAllEvents": "Ver Todos los Eventos"
+  },
+  "badges": {
+    "transportationIncluded": "🚌 Transporte Incluido",
+    "presale": "Preventa",
+    "ticketAllocationPending": "Asignación de Boletos Pendiente",
+    "refundableIfNoTicket": "Reembolsable si No se Asigna",
+    "reserveWithDeposit": "Reservar con Depósito",
+    "installmentsAvailable": "Cuotas Disponibles",
+    "secondPaymentInstallments": "Segundo Pago en Cuotas",
+    "includesGifts": "Incluye Regalos",
+    "underAgeAllowed": "Menores Permitidos",
+    "jerseyAddon": "Complemento de Jersey"
+  },
+  "features": {
+    "title": "¿Por Qué Elegir InteliVoucher?",
+    "subtitle": "Experimenta el futuro de la venta de boletos para eventos",
+    "instantBooking": {
+      "title": "Reserva Instantánea",
+      "description": "Asegura tus boletos en segundos con nuestro sistema de reserva ultrarrápido"
+    },
+    "mobileFirst": {
+      "title": "Móvil Primero",
+      "description": "Experiencia móvil optimizada para reservar sobre la marcha"
+    },
+    "securePayments": {
+      "title": "Pagos Seguros",
+      "description": "Seguridad de nivel bancario para todas las transacciones"
+    },
+    "realTimeUpdates": {
+      "title": "Actualizaciones en Tiempo Real",
+      "description": "Actualizaciones en vivo de disponibilidad y precios"
+    }
+  },
+  "testimonials": {
+    "title": "Lo Que Dicen Nuestros Usuarios",
+    "subtitle": "Únete a miles de clientes satisfechos",
+    "sarahChen": {
+      "name": "Sarah Chen",
+      "role": "Entusiasta de la Música",
+      "quote": "¡La mejor aplicación de boletos de todos los tiempos! Conseguí asientos de primera fila para el concierto de mi banda favorita. ¡La función de temporizador me salvó de perderlo!"
+    },
+    "mikeRodriguez": {
+      "name": "Mike Rodríguez",
+      "role": "Fanático de los Deportes",
+      "quote": "Conseguí boletos para los playoffs de los Lakers en segundos. La aplicación móvil es súper fluida y la selección de asientos es increíble."
+    },
+    "emilyJohnson": {
+      "name": "Emily Johnson",
+      "role": "Amante del Teatro",
+      "quote": "Encontré boletos para espectáculos de Broadway a excelentes precios. La experiencia del usuario es increíble y el servicio al cliente es de primera."
+    }
+  },
+  "footer": {
+    "company": "Empresa",
+    "about": "Acerca de Nosotros",
+    "careers": "Carreras",
+    "press": "Prensa",
+    "support": "Soporte",
+    "help": "Centro de Ayuda",
+    "contact": "Contáctanos",
+    "legal": "Legal",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "copyright": "© 2025 InteliVoucher. Todos los derechos reservados.",
+    "trustedByVenues": "Confiado por los Mejores Venues",
+    "trustedByVenuesSubtitle": "Los venues asociados en todo el mundo confían en nosotros con sus eventos más exclusivos"
+  },
+  "checkout": {
+    "steps": {
+      "selectTickets": {
+        "title": "Seleccionar Boletos",
+        "description": "Elige zona y cantidad"
+      },
+      "customerInfo": {
+        "title": "Información del Cliente",
+        "description": "Ingresa tus datos"
+      },
+      "payment": {
+        "title": "Pago",
+        "description": "Pago seguro"
+      },
+      "confirmation": {
+        "title": "Confirmación",
+        "description": "Obtén tus boletos"
+      }
+    },
+    "timeLeft": "Tiempo Restante",
+    "secureCheckout": "Pago Seguro",
+    "orderSummary": "Resumen del Pedido",
+    "selectZone": "Seleccionar Zona",
+    "selectQuantity": "Seleccionar Cantidad",
+    "transportation": "Transporte",
+    "none": "Ninguno",
+    "van": "Van",
+    "flight": "Vuelo",
+    "originCity": "Ciudad de Origen",
+    "passengerName": "Nombre del Pasajero",
+    "jerseyAddOn": "Complemento de Jersey",
+    "addJersey": "Agregar Jersey",
+    "jerseySize": "Talla de Jersey",
+    "playerName": "Nombre del Jugador",
+    "playerNumber": "Número del Jugador",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "email": "Correo Electrónico",
+    "phone": "Teléfono",
+    "cardNumber": "Número de Tarjeta",
+    "expiryDate": "Fecha de Vencimiento",
+    "cvv": "CVV",
+    "nameOnCard": "Nombre en la Tarjeta",
+    "processingPayment": "Procesando Pago...",
+    "congratulations": "¡Felicitaciones!",
+    "ticketsPurchased": "¡Tus boletos han sido comprados exitosamente!",
+    "downloadTickets": "Descargar Boletos",
+    "emailSent": "Correo de confirmación enviado",
+    "bookingReference": "Referencia de Reserva",
+    "includesTransportation": "Incluye Transporte",
+    "presale": "Preventa",
+    "installmentsAvailable": "Cuotas Disponibles",
+    "refundableIfNoTicket": "Reembolsable si No se Asigna",
+    "backToHome": "Atrás",
+    "secureCheckoutTitle": "Pago Seguro InteliVoucher",
+    "ticketsReserved": "Tus boletos están reservados",
+    "completePurchase": "Completa tu compra antes de que se agote el tiempo",
+    "timeRemaining": "Tiempo restante",
+    "hurryTimeWarning": "¡Date prisa! Quedan menos de 5 minutos",
+    "zoneSelection": "Selección de Zona",
+    "noteZoneSelection": "Nota: Estás seleccionando una zona. Los asientos finales pueden variar según la disponibilidad. Si los asientos asignados son de menor categoría, se reembolsará la diferencia de precio.",
+    "selectOrigin": "Seleccionar origen",
+    "selectVanSeats": "Seleccionar asientos de van",
+    "passenger": "Pasajero",
+    "chooseSeat": "Elegir asiento",
+    "seat": "Asiento",
+    "flightSelectionNote": "La selección de vuelo se proporcionará después de la asignación de boletos. El costo de actualización se aplica al pagar.",
+    "officialJerseyAddon": "Complemento de Jersey Oficial",
+    "jerseyDescription": "Elige para cada pasajero que quiera un jersey. La personalización es opcional.",
+    "addJerseyWithPrice": "Agregar jersey (+${{price}})",
+    "jerseyNameLabel": "Nombre (máx 12)",
+    "jerseyNumberLabel": "Número (0-99)",
+    "jerseySizeLabel": "Talla",
+    "selectSize": "Seleccionar talla",
+    "ticketsMobileNotice": "📱 Los boletos se enviarán a tu dispositivo móvil a través de la aplicación InteliVoucher",
+    "securePayment": "Pago Seguro",
+    "paymentSecurityNote": "Tu información de pago está encriptada y es segura",
+    "paymentSuccessful": "¡Pago Exitoso!",
+    "ticketsSentToDevice": "Tus boletos han sido enviados a tu dispositivo móvil",
+    "downloadIntelivoucherApp": "Descargar la Aplicación InteliVoucher",
+    "accessTicketsAndUpdates": "Accede a tus boletos y recibe actualizaciones del evento",
+    "iosAppStore": "iOS App Store",
+    "googlePlay": "Google Play",
+    "completePurchaseButton": "Completar Compra",
+    "ticketsCount": "Boletos ({{count}}x)",
+    "flightUpgrade": "Actualización de Vuelo ({{count}}x)",
+    "personalizedJersey": "Jersey Personalizado ({{count}}x)",
+    "serviceFee": "Tarifa de Servicio",
+    "processingFee": "Tarifa de Procesamiento",
+    "secureCheckoutStripe": "🔒 Pago 100% seguro powered by Stripe",
+    "zone": "Zona",
+    "transport": "Transporte",
+    "eighteenPlusOnly": "Solo 18+"
+  }
+}

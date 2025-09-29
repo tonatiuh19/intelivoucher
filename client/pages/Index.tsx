@@ -30,6 +30,8 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 // Redux store imports
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -57,6 +59,7 @@ import {
 export default function Index() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   // Local state
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes countdown example
@@ -213,34 +216,29 @@ export default function Index() {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-brand-blue to-brand-cyan bg-clip-text text-transparent">
                 Intelivoucher
               </h1>
-              {/* Redux Store Cart Indicator */}
-              {cartItemCount > 0 && (
-                <div className="flex items-center space-x-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                  <span>🛒 {cartItemCount}</span>
-                </div>
-              )}
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a
                 href="#events"
                 className="text-slate-700 dark:text-slate-300 hover:text-brand-blue transition-colors"
               >
-                Events
+                {t("common.events")}
               </a>
               <a
                 href="#categories"
                 className="text-slate-700 dark:text-slate-300 hover:text-brand-blue transition-colors"
               >
-                Categories
+                {t("common.categories")}
               </a>
+              <LanguageSelector />
               <Button variant="outline" size="sm">
-                Sign In
+                {t("common.signIn")}
               </Button>
               <Button
                 className="bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue"
                 size="sm"
               >
-                Get App
+                {t("common.getApp")}
               </Button>
             </nav>
             <button
@@ -264,21 +262,21 @@ export default function Index() {
                 onClick={() => setMobileOpen(false)}
                 className="block py-2 text-slate-800 dark:text-slate-200"
               >
-                Events
+                {t("common.events")}
               </a>
               <a
                 href="#categories"
                 onClick={() => setMobileOpen(false)}
                 className="block py-2 text-slate-800 dark:text-slate-200"
               >
-                Categories
+                {t("common.categories")}
               </a>
               <div className="flex gap-2 pt-2">
                 <Button variant="outline" className="flex-1">
-                  Sign In
+                  {t("common.signIn")}
                 </Button>
                 <Button className="flex-1 bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue">
-                  Get App
+                  {t("common.getApp")}
                 </Button>
               </div>
             </div>
@@ -329,23 +327,26 @@ export default function Index() {
             <div className="space-y-6">
               <h2 className="text-5xl sm:text-6xl md:text-8xl font-bold leading-tight">
                 <span className="bg-gradient-to-r from-brand-blue via-brand-cyan to-brand-green bg-clip-text text-transparent animate-pulse">
-                  Discover
+                  {t("hero.discover")}
                 </span>
                 <br />
                 <span className="text-slate-800 dark:text-slate-200">
-                  Unforgettable
+                  {t("hero.unforgettable")}
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-brand-orange to-brand-green bg-clip-text text-transparent">
-                  Experiences
+                  {t("hero.experiences")}
                 </span>
               </h2>
               <p className="text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                Join{" "}
-                <span className="font-bold text-brand-blue">2M+ users</span>{" "}
-                discovering amazing events. From sold-out concerts to exclusive
-                theater shows - secure your tickets in seconds with our
-                countdown timer system.
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: t("hero.subtitle").replace(
+                      "{{count}}",
+                      '<span class="font-bold text-brand-blue">2M+ users</span>',
+                    ),
+                  }}
+                />
               </p>
             </div>
 
@@ -356,7 +357,7 @@ export default function Index() {
                   <div className="md:col-span-2 relative">
                     <Search className="absolute left-4 top-4 w-6 h-6 text-slate-400" />
                     <Input
-                      placeholder="Search artists, teams, shows..."
+                      placeholder={t("hero.searchPlaceholder")}
                       className="pl-12 h-14 text-lg border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl"
                       value={searchTerm}
                       onChange={(e) => handleSearch(e.target.value)}
@@ -365,25 +366,25 @@ export default function Index() {
                   <div className="relative">
                     <MapPin className="absolute left-4 top-4 w-6 h-6 text-slate-400" />
                     <Input
-                      placeholder="City or venue"
+                      placeholder={t("hero.cityPlaceholder")}
                       className="pl-12 h-14 border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl"
                     />
                   </div>
                   <div className="relative">
                     <Calendar className="absolute left-4 top-4 w-6 h-6 text-slate-400" />
                     <Input
-                      placeholder="Any date"
+                      placeholder={t("hero.datePlaceholder")}
                       className="pl-12 h-14 border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl"
                     />
                   </div>
                   <Button className="h-14 bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue text-lg rounded-xl font-semibold shadow-lg">
                     <Search className="w-5 h-5 mr-2" />
-                    Find Events
+                    {t("common.findEvents")}
                   </Button>
                 </div>
                 <div className="flex items-center justify-center mt-6 space-x-6">
                   <span className="text-slate-500 dark:text-slate-400 text-sm">
-                    Popular:
+                    {t("common.popular")}:
                   </span>
                   {["Taylor Swift", "NBA Finals", "Broadway", "Coachella"].map(
                     (tag) => (
@@ -422,7 +423,7 @@ export default function Index() {
             <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-full px-8 py-4 border border-orange-500/20">
               <Timer className="w-6 h-6 text-orange-500" />
               <span className="text-orange-600 dark:text-orange-400 font-semibold text-lg">
-                🔥 Hot ticket expires in: {formatTime(timeLeft)}
+                {t("hero.hotTicketExpires")} {formatTime(timeLeft)}
               </span>
               <Sparkles className="w-5 h-5 text-orange-500 animate-pulse" />
             </div>
@@ -436,13 +437,15 @@ export default function Index() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center space-x-2 bg-red-500/10 rounded-full px-4 py-2 mb-6">
               <TrendingUp className="w-5 h-5 text-red-500" />
-              <span className="text-red-400 font-semibold">Trending Now</span>
+              <span className="text-red-400 font-semibold">
+                {t("hero.trendingNow")}
+              </span>
             </div>
             <h3 className="text-5xl font-bold text-slate-200 mb-4">
-              What's Hot Right Now
+              {t("hero.whatsHot")}
             </h3>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-              Don't miss out on the most popular events everyone's talking about
+              {t("hero.whatsHotSubtitle")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -596,7 +599,9 @@ export default function Index() {
                           }
                         }}
                       >
-                        {event.soldOut ? "Sold Out" : "Get Tickets"}
+                        {event.soldOut
+                          ? t("common.soldOut")
+                          : t("common.getTickets")}
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
@@ -612,11 +617,10 @@ export default function Index() {
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h3 className="text-5xl font-bold mb-4 text-slate-800 dark:text-slate-200">
-              Explore Every Experience
+              {t("categories.title")}
             </h3>
             <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              From intimate acoustic sets to massive stadium spectacles - find
-              your perfect event
+              {t("categories.subtitle")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -645,7 +649,8 @@ export default function Index() {
                         size="sm"
                         className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                       >
-                        Explore <ChevronRight className="w-4 h-4 ml-1" />
+                        {t("common.explore")}{" "}
+                        <ChevronRight className="w-4 h-4 ml-1" />
                       </Button>
                     </div>
                   </div>
@@ -662,17 +667,17 @@ export default function Index() {
           <div className="flex items-center justify-between mb-16">
             <div>
               <h3 className="text-5xl font-bold text-slate-800 dark:text-slate-200 mb-4">
-                Featured Events
+                {t("featuredEvents.title")}
               </h3>
               <p className="text-xl text-slate-600 dark:text-slate-400">
-                Handpicked experiences you shouldn't miss
+                {t("featuredEvents.subtitle")}
               </p>
             </div>
             <Button
               variant="outline"
               className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white dark:border-brand-cyan dark:text-brand-cyan"
             >
-              View All Events
+              {t("featuredEvents.viewAllEvents")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
@@ -691,7 +696,7 @@ export default function Index() {
                   />
                   {event.soldOut && (
                     <Badge className="absolute top-4 left-4 bg-red-500 hover:bg-red-500">
-                      Sold Out
+                      {t("common.soldOut")}
                     </Badge>
                   )}
                   <Badge className="absolute top-4 right-4 bg-brand-blue hover:bg-brand-blue">
@@ -814,7 +819,9 @@ export default function Index() {
                         }
                       }}
                     >
-                      {event.soldOut ? "Sold Out" : "Get Tickets"}
+                      {event.soldOut
+                        ? t("common.soldOut")
+                        : t("common.getTickets")}
                     </Button>
                   </div>
                 </CardContent>

@@ -148,6 +148,10 @@
         "title": "Customer Info",
         "description": "Enter your details"
       },
+      "ticketHoldersInfo": {
+        "title": "Ticket Holders",
+        "description": "Enter information for each ticket"
+      },
       "payment": {
         "title": "Payment",
         "description": "Secure checkout"
@@ -208,6 +212,10 @@
     "officialJerseyAddon": "Official Jersey Add-on",
     "jerseyDescription": "Choose for each passenger who wants a jersey. Personalization is optional.",
     "addJerseyWithPrice": "Add jersey (+${{price}})",
+    "jerseyPersonalization": "Jersey Personalization",
+    "standardJersey": "Standard Jersey",
+    "personalizedJersey": "Personalized Jersey",
+    "personalizationNote": "Add custom name and number for extra personalization",
     "jerseyNameLabel": "Name (max 12)",
     "jerseyNumberLabel": "Number (0-99)",
     "jerseySizeLabel": "Size",
@@ -224,12 +232,23 @@
     "completePurchaseButton": "Complete Purchase",
     "ticketsCount": "Tickets ({{count}}x)",
     "flightUpgrade": "Flight Upgrade ({{count}}x)",
-    "personalizedJersey": "Personalized Jersey ({{count}}x)",
+    "personalizedJerseyCount": "Personalized Jersey ({{count}}x)",
     "serviceFee": "Service Fee",
     "processingFee": "Processing Fee",
     "secureCheckoutStripe": "🔒 100% secure checkout powered by Stripe",
     "zone": "Zone",
     "transport": "Transport",
+    "ticketHoldersInfo": {
+      "description": "Please provide information for each ticket holder. This information is required for entry and must match valid identification.",
+      "primaryHolder": "Primary Ticket Holder",
+      "ticketHolder": "Ticket Holder {{number}}",
+      "primaryContact": "Primary Contact",
+      "dateOfBirth": "Date of Birth",
+      "idNumber": "ID/Passport Number",
+      "age": "Age",
+      "yearsOld": "years old",
+      "importantNote": "⚠️ Important: All ticket holders must bring valid ID matching the information provided here. Minors must be accompanied by an adult."
+    },
     "eighteenPlusOnly": "18+ Only"
   }
 }

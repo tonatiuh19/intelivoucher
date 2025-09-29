@@ -34,6 +34,20 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ZoneOption } from "@/data/mockData";
+import {
+  TicketSelectionStep,
+  CustomerInfoStep,
+  TicketHoldersInfoStep,
+  PaymentInfoStep,
+} from "@/components/checkout";
+import {
+  initialCheckoutValues,
+  CheckoutFormValues,
+  Step1Values,
+  Step2Values,
+  Step2_5Values,
+  Step3Values,
+} from "@/lib/checkoutValidation";
 
 export default function Checkout() {
   const { t } = useTranslation();
@@ -51,18 +65,29 @@ export default function Checkout() {
     },
     {
       id: 3,
+      title: t("checkout.steps.ticketHoldersInfo.title", "Ticket Holders"),
+      description: t(
+        "checkout.steps.ticketHoldersInfo.description",
+        "Enter information for each ticket",
+      ),
+    },
+    {
+      id: 4,
       title: t("checkout.steps.payment.title"),
       description: t("checkout.steps.payment.description"),
     },
     {
-      id: 4,
+      id: 5,
       title: t("checkout.steps.confirmation.title"),
       description: t("checkout.steps.confirmation.description"),
     },
   ];
   const [currentStep, setCurrentStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
-  const [ticketQuantity, setTicketQuantity] = useState(2);
+  const [formData, setFormData] = useState<CheckoutFormValues>(
+    initialCheckoutValues,
+  );
+
   const location = useLocation();
   const incomingEvent = (location.state as any)?.event as any | undefined;
   const includesTransportationOffer = Boolean(
@@ -70,13 +95,6 @@ export default function Checkout() {
   );
   // Get available zones from the event
   const availableZones = incomingEvent?.availableZones || [];
-
-  const [selectedZone, setSelectedZone] = useState<string>("");
-  const [transportationMode, setTransportationMode] = useState<
-    "none" | "van" | "flight"
-  >("none");
-  const [transportOrigin, setTransportOrigin] = useState<string>("");
-  const [vanSeats, setVanSeats] = useState<string[]>(Array(2).fill(""));
 
   // Jersey add-on state (per-ticket for soccer)
   const isSoccerCategory = (incomingEvent?.category ?? "")
@@ -87,35 +105,68 @@ export default function Checkout() {
   const jerseyUnitPrice = Number(
     (incomingEvent?.jerseyPrice as number | undefined) ?? 120,
   );
-  const [jerseySelected, setJerseySelected] = useState<boolean[]>(
-    Array(2).fill(false),
-  );
-  const [jerseyNames, setJerseyNames] = useState<string[]>(Array(2).fill(""));
-  const [jerseyNumbers, setJerseyNumbers] = useState<string[]>(
-    Array(2).fill(""),
-  );
-  const [jerseySizes, setJerseySizes] = useState<string[]>(Array(2).fill(""));
 
-  // Keep arrays in sync with ticketQuantity
+  // Initialize default zone when available zones are loaded
   useEffect(() => {
-    setVanSeats((prev) => {
-      const next = [...prev];
-      next.length = ticketQuantity;
-      return next.map((v) => v || "");
-    });
-  }, [ticketQuantity]);
+    if (availableZones.length > 0 && !formData.step1.selectedZone) {
+      const defaultZone =
+        availableZones.find((z) => z.available)?.id ||
+        availableZones[0]?.id ||
+        "";
+      setFormData((prev) => ({
+        ...prev,
+        step1: {
+          ...prev.step1,
+          selectedZone: defaultZone,
+        },
+      }));
+    }
+  }, [availableZones, formData.step1.selectedZone]);
 
+  // Sync arrays with ticket quantity changes
   useEffect(() => {
-    const sync = <T,>(arr: T[], fill: T) => {
-      const next = [...arr];
-      next.length = ticketQuantity;
-      return next.map((v) => v ?? fill);
-    };
-    setJerseySelected((prev) => sync(prev, false));
-    setJerseyNames((prev) => sync(prev, ""));
-    setJerseyNumbers((prev) => sync(prev, ""));
-    setJerseySizes((prev) => sync(prev, ""));
-  }, [ticketQuantity]);
+    const ticketQuantity = formData.step1.ticketQuantity;
+    setFormData((prev) => ({
+      ...prev,
+      step1: {
+        ...prev.step1,
+        vanSeats: Array(ticketQuantity)
+          .fill("")
+          .map((_, i) => prev.step1.vanSeats[i] || ""),
+        jerseySelected: Array(ticketQuantity)
+          .fill(false)
+          .map((_, i) => prev.step1.jerseySelected[i] || false),
+        jerseyPersonalized: Array(ticketQuantity)
+          .fill(false)
+          .map((_, i) => prev.step1.jerseyPersonalized[i] || false),
+        jerseyNames: Array(ticketQuantity)
+          .fill("")
+          .map((_, i) => prev.step1.jerseyNames[i] || ""),
+        jerseyNumbers: Array(ticketQuantity)
+          .fill("")
+          .map((_, i) => prev.step1.jerseyNumbers[i] || ""),
+        jerseySizes: Array(ticketQuantity)
+          .fill("")
+          .map((_, i) => prev.step1.jerseySizes[i] || ""),
+      },
+      step2_5: {
+        ...prev.step2_5,
+        ticketHolders: Array(ticketQuantity)
+          .fill(null)
+          .map(
+            (_, i) =>
+              prev.step2_5.ticketHolders[i] || {
+                firstName: "",
+                lastName: "",
+                email: "",
+                phone: "",
+                dateOfBirth: "",
+                idNumber: "",
+              },
+          ),
+      },
+    }));
+  }, [formData.step1.ticketQuantity]);
 
   // Define fallback event details BEFORE any usage
   const eventDetails = {
@@ -137,25 +188,18 @@ export default function Checkout() {
     const n = parseFloat(String(p).replace(/[^0-9.]/g, ""));
     return Number.isFinite(n) ? n : eventDetails.price;
   };
-  // Get price based on selected zone
-  const selectedZoneData = availableZones.find((z) => z.id === selectedZone);
-  const zonePrice =
-    selectedZoneData?.price ||
-    parsePrice(incomingEvent?.price ?? eventDetails.price);
-  const basePrice = zonePrice;
   const transportationUpgradeFee = 150;
+  const serviceFee = 8.5;
+  const processingFee = 3.99;
+  const origins = [
+    "New York, NY",
+    "Miami, FL",
+    "Los Angeles, CA",
+    "Chicago, IL",
+    "Houston, TX",
+  ];
 
-  // Set default zone when component loads
-  useEffect(() => {
-    if (availableZones.length > 0 && !selectedZone) {
-      const defaultZone =
-        availableZones.find((z) => z.available)?.id ||
-        availableZones[0]?.id ||
-        "";
-      setSelectedZone(defaultZone);
-    }
-  }, [availableZones, selectedZone]);
-
+  // Timer effect
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
@@ -173,27 +217,22 @@ export default function Checkout() {
     return ((currentStep - 1) / (STEPS.length - 1)) * 100;
   };
 
-  const nextStep = () => {
-    if (currentStep < STEPS.length) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const jerseyCount = jerseySelected.filter(Boolean).length;
+  // Calculate prices based on current form data
+  const selectedZoneData = availableZones.find(
+    (z) => z.id === formData.step1.selectedZone,
+  );
+  const zonePrice =
+    selectedZoneData?.price ||
+    parsePrice(incomingEvent?.price ?? eventDetails.price);
+  const basePrice = zonePrice;
+  const jerseyCount = formData.step1.jerseySelected.filter(Boolean).length;
   const jerseySubtotal = jerseyAvailable ? jerseyCount * jerseyUnitPrice : 0;
   const flightUpgradeSubtotal =
-    includesTransportationOffer && transportationMode === "flight"
-      ? transportationUpgradeFee * ticketQuantity
+    includesTransportationOffer &&
+    formData.step1.transportationMode === "flight"
+      ? transportationUpgradeFee * formData.step1.ticketQuantity
       : 0;
-  const serviceFee = 8.5;
-  const processingFee = 3.99;
-  const ticketsSubtotal = basePrice * ticketQuantity;
+  const ticketsSubtotal = basePrice * formData.step1.ticketQuantity;
   const total =
     ticketsSubtotal +
     flightUpgradeSubtotal +
@@ -201,13 +240,34 @@ export default function Checkout() {
     serviceFee +
     processingFee;
 
-  const origins = [
-    "New York, NY",
-    "Miami, FL",
-    "Los Angeles, CA",
-    "Chicago, IL",
-    "Houston, TX",
-  ];
+  // Step navigation handlers
+  const handleStep1Next = (values: Step1Values) => {
+    setFormData((prev) => ({ ...prev, step1: values }));
+    setCurrentStep(2);
+  };
+
+  const handleStep2Next = (values: Step2Values) => {
+    setFormData((prev) => ({ ...prev, step2: values }));
+    setCurrentStep(3);
+  };
+
+  const handleStep2_5Next = (values: Step2_5Values) => {
+    setFormData((prev) => ({ ...prev, step2_5: values }));
+    setCurrentStep(4);
+  };
+
+  const handleStep3Next = (values: Step3Values) => {
+    setFormData((prev) => ({ ...prev, step3: values }));
+    setCurrentStep(5);
+    // Here you would typically submit the form to the backend
+    console.log("Final form submission:", { ...formData, step3: values });
+  };
+
+  const handleStepBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
@@ -325,489 +385,46 @@ export default function Checkout() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {currentStep === 1 && (
-                    <div className="space-y-6">
-                      <div>
-                        <Label className="text-lg font-semibold">
-                          {t("checkout.selectQuantity")}
-                        </Label>
-                        <div className="flex items-center space-x-4 mt-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              setTicketQuantity(Math.max(1, ticketQuantity - 1))
-                            }
-                          >
-                            -
-                          </Button>
-                          <span className="text-xl font-semibold px-4">
-                            {ticketQuantity}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              setTicketQuantity(Math.min(8, ticketQuantity + 1))
-                            }
-                          >
-                            +
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-lg font-semibold">
-                          {t("checkout.zoneSelection")}
-                        </Label>
-                        <RadioGroup
-                          value={selectedZone}
-                          onValueChange={setSelectedZone}
-                          className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3"
-                        >
-                          {availableZones.map((zone) => (
-                            <div
-                              key={zone.id}
-                              className={`flex items-center justify-between space-x-2 rounded-lg border ${zone.available ? "border-slate-200 dark:border-slate-700" : "border-slate-300 dark:border-slate-600 opacity-50"} p-3`}
-                            >
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem
-                                  id={`zone-${zone.id}`}
-                                  value={zone.id}
-                                  disabled={!zone.available}
-                                />
-                                <div className="flex flex-col">
-                                  <Label
-                                    htmlFor={`zone-${zone.id}`}
-                                    className={`cursor-pointer ${zone.available ? "" : "cursor-not-allowed opacity-70"}`}
-                                  >
-                                    {zone.name}
-                                  </Label>
-                                  {zone.description && (
-                                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                                      {zone.description}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="flex flex-col items-end">
-                                <span className="font-semibold">
-                                  ${zone.price}
-                                </span>
-                                {!zone.available && (
-                                  <Badge
-                                    variant="secondary"
-                                    className="text-xs"
-                                  >
-                                    {t("common.soldOut")}
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                          {t("checkout.noteZoneSelection")}
-                        </p>
-                      </div>
-
-                      {includesTransportationOffer && (
-                        <div className="space-y-4">
-                          <Label className="text-lg font-semibold">
-                            {t("checkout.transportation")}
-                          </Label>
-                          <RadioGroup
-                            value={transportationMode}
-                            onValueChange={(v) =>
-                              setTransportationMode(
-                                v as "none" | "van" | "flight",
-                              )
-                            }
-                            className="grid grid-cols-1 md:grid-cols-3 gap-3"
-                          >
-                            <div className="flex items-center space-x-2 rounded-lg border border-slate-200 dark:border-slate-700 p-3">
-                              <RadioGroupItem id="mode-none" value="none" />
-                              <Label
-                                htmlFor="mode-none"
-                                className="cursor-pointer"
-                              >
-                                {t("checkout.none")}
-                              </Label>
-                            </div>
-                            <div className="flex items-center space-x-2 rounded-lg border border-slate-200 dark:border-slate-700 p-3">
-                              <RadioGroupItem id="mode-van" value="van" />
-                              <Label
-                                htmlFor="mode-van"
-                                className="cursor-pointer"
-                              >
-                                {t("checkout.van")} (included)
-                              </Label>
-                            </div>
-                            <div className="flex items-center space-x-2 rounded-lg border border-slate-200 dark:border-slate-700 p-3">
-                              <RadioGroupItem id="mode-flight" value="flight" />
-                              <Label
-                                htmlFor="mode-flight"
-                                className="cursor-pointer"
-                              >
-                                {t("checkout.flight")} upgrade (+$
-                                {transportationUpgradeFee} per person)
-                              </Label>
-                            </div>
-                          </RadioGroup>
-
-                          {(transportationMode === "van" ||
-                            transportationMode === "flight") && (
-                            <div className="space-y-3">
-                              <Label className="font-medium">
-                                {t("checkout.originCity")}
-                              </Label>
-                              <Select
-                                value={transportOrigin}
-                                onValueChange={setTransportOrigin}
-                              >
-                                <SelectTrigger className="w-full">
-                                  <SelectValue
-                                    placeholder={t("checkout.selectOrigin")}
-                                  />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {origins.map((o) => (
-                                    <SelectItem value={o} key={o}>
-                                      {o}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-
-                          {transportationMode === "van" && (
-                            <div className="space-y-3">
-                              <Label className="font-medium">
-                                {t("checkout.selectVanSeats")}
-                              </Label>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {Array.from(
-                                  { length: ticketQuantity },
-                                  (_, i) => (
-                                    <div
-                                      key={i}
-                                      className="flex items-center space-x-2"
-                                    >
-                                      <span className="text-sm w-24 text-slate-600 dark:text-slate-400">
-                                        {t("checkout.passenger")} {i + 1}
-                                      </span>
-                                      <Select
-                                        value={vanSeats[i]}
-                                        onValueChange={(val) =>
-                                          setVanSeats((prev) => {
-                                            const next = [...prev];
-                                            next[i] = val;
-                                            return next;
-                                          })
-                                        }
-                                      >
-                                        <SelectTrigger className="w-full">
-                                          <SelectValue
-                                            placeholder={t(
-                                              "checkout.chooseSeat",
-                                            )}
-                                          />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {Array.from({ length: 12 }, (_, s) =>
-                                            String(s + 1),
-                                          ).map((s) => (
-                                            <SelectItem value={s} key={s}>
-                                              {t("checkout.seat")} {s}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </div>
-                                  ),
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {transportationMode === "flight" && (
-                            <div className="text-sm text-slate-600 dark:text-slate-400">
-                              {t("checkout.flightSelectionNote")}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {jerseyAvailable && (
-                        <div className="space-y-3">
-                          <Label className="text-lg font-semibold">
-                            {t("checkout.officialJerseyAddon")}
-                          </Label>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">
-                            {t("checkout.jerseyDescription")}
-                          </p>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {Array.from({ length: ticketQuantity }, (_, i) => (
-                              <div
-                                key={i}
-                                className="p-3 rounded-lg border border-slate-200 dark:border-slate-700"
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="text-sm font-medium">
-                                    {t("checkout.passenger")} {i + 1}
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                      id={`jersey-check-${i}`}
-                                      checked={!!jerseySelected[i]}
-                                      onCheckedChange={(v) =>
-                                        setJerseySelected((prev) => {
-                                          const next = [...prev];
-                                          next[i] = Boolean(v);
-                                          return next;
-                                        })
-                                      }
-                                    />
-                                    <Label
-                                      htmlFor={`jersey-check-${i}`}
-                                      className="text-sm cursor-pointer"
-                                    >
-                                      {t("checkout.addJerseyWithPrice").replace(
-                                        "{{price}}",
-                                        jerseyUnitPrice.toString(),
-                                      )}
-                                    </Label>
-                                  </div>
-                                </div>
-                                {jerseySelected[i] && (
-                                  <div className="mt-3 grid grid-cols-2 gap-2">
-                                    <div className="col-span-2">
-                                      <Label
-                                        htmlFor={`jersey-name-${i}`}
-                                        className="text-xs"
-                                      >
-                                        {t("checkout.jerseyNameLabel")}
-                                      </Label>
-                                      <Input
-                                        id={`jersey-name-${i}`}
-                                        maxLength={12}
-                                        value={jerseyNames[i] || ""}
-                                        onChange={(e) =>
-                                          setJerseyNames((prev) => {
-                                            const next = [...prev];
-                                            next[i] =
-                                              e.target.value.toUpperCase();
-                                            return next;
-                                          })
-                                        }
-                                        className="mt-1 dark:bg-slate-700 dark:text-white"
-                                        placeholder="e.g. MESSI"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label
-                                        htmlFor={`jersey-number-${i}`}
-                                        className="text-xs"
-                                      >
-                                        {t("checkout.jerseyNumberLabel")}
-                                      </Label>
-                                      <Input
-                                        id={`jersey-number-${i}`}
-                                        type="number"
-                                        min={0}
-                                        max={99}
-                                        value={jerseyNumbers[i] || ""}
-                                        onChange={(e) => {
-                                          const v = e.target.value.replace(
-                                            /[^0-9]/g,
-                                            "",
-                                          );
-                                          const n = Math.max(
-                                            0,
-                                            Math.min(99, Number(v || 0)),
-                                          );
-                                          setJerseyNumbers((prev) => {
-                                            const next = [...prev];
-                                            next[i] = String(n);
-                                            return next;
-                                          });
-                                        }}
-                                        className="mt-1 dark:bg-slate-700 dark:text-white"
-                                        placeholder="10"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label className="text-xs">
-                                        {t("checkout.jerseySizeLabel")}
-                                      </Label>
-                                      <Select
-                                        value={jerseySizes[i] || ""}
-                                        onValueChange={(val) =>
-                                          setJerseySizes((prev) => {
-                                            const next = [...prev];
-                                            next[i] = val;
-                                            return next;
-                                          })
-                                        }
-                                      >
-                                        <SelectTrigger className="w-full mt-1">
-                                          <SelectValue
-                                            placeholder={t(
-                                              "checkout.selectSize",
-                                            )}
-                                          />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {[
-                                            "XS",
-                                            "S",
-                                            "M",
-                                            "L",
-                                            "XL",
-                                            "XXL",
-                                          ].map((s) => (
-                                            <SelectItem key={s} value={s}>
-                                              {s}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <TicketSelectionStep
+                      initialValues={formData.step1}
+                      availableZones={availableZones}
+                      includesTransportationOffer={includesTransportationOffer}
+                      jerseyAvailable={jerseyAvailable}
+                      jerseyUnitPrice={jerseyUnitPrice}
+                      transportationUpgradeFee={transportationUpgradeFee}
+                      origins={origins}
+                      onNext={handleStep1Next}
+                      onBack={handleStepBack}
+                    />
                   )}
 
                   {currentStep === 2 && (
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="firstName">
-                            {t("checkout.firstName")}
-                          </Label>
-                          <Input
-                            id="firstName"
-                            placeholder="John"
-                            className="mt-1 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="lastName">
-                            {t("checkout.lastName")}
-                          </Label>
-                          <Input
-                            id="lastName"
-                            placeholder="Doe"
-                            className="mt-1 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="email">{t("checkout.email")}</Label>
-                        <div className="relative mt-1">
-                          <Mail className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder="john.doe@example.com"
-                            className="pl-10 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="phone">{t("checkout.phone")}</Label>
-                        <div className="relative mt-1">
-                          <Smartphone className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                          <Input
-                            id="phone"
-                            type="tel"
-                            placeholder="+1 (555) 123-4567"
-                            className="pl-10 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="bg-blue-50 rounded-lg p-4">
-                        <p className="text-sm text-blue-800">
-                          {t("checkout.ticketsMobileNotice")}
-                        </p>
-                      </div>
-                    </div>
+                    <CustomerInfoStep
+                      initialValues={formData.step2}
+                      onNext={handleStep2Next}
+                      onBack={handleStepBack}
+                    />
                   )}
 
                   {currentStep === 3 && (
-                    <div className="space-y-6">
-                      <div>
-                        <Label htmlFor="cardNumber">
-                          {t("checkout.cardNumber")}
-                        </Label>
-                        <div className="relative mt-1">
-                          <CreditCard className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                          <Input
-                            id="cardNumber"
-                            placeholder="1234 5678 9012 3456"
-                            className="pl-10 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="expiry">
-                            {t("checkout.expiryDate")}
-                          </Label>
-                          <Input
-                            id="expiry"
-                            placeholder="MM/YY"
-                            className="mt-1 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="cvv">{t("checkout.cvv")}</Label>
-                          <Input
-                            id="cvv"
-                            placeholder="123"
-                            className="mt-1 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="cardName">
-                          {t("checkout.nameOnCard")}
-                        </Label>
-                        <div className="relative mt-1">
-                          <User className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
-                          <Input
-                            id="cardName"
-                            placeholder="John Doe"
-                            className="pl-10 dark:bg-slate-700 dark:text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="bg-green-50 rounded-lg p-4 flex items-center space-x-3">
-                        <Lock className="w-5 h-5 text-green-600" />
-                        <div>
-                          <p className="text-sm font-semibold text-green-800">
-                            {t("checkout.securePayment")}
-                          </p>
-                          <p className="text-xs text-green-700">
-                            {t("checkout.paymentSecurityNote")}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <TicketHoldersInfoStep
+                      initialValues={formData.step2_5}
+                      ticketQuantity={formData.step1.ticketQuantity}
+                      primaryContact={formData.step2}
+                      onNext={handleStep2_5Next}
+                      onBack={handleStepBack}
+                    />
                   )}
 
                   {currentStep === 4 && (
+                    <PaymentInfoStep
+                      initialValues={formData.step3}
+                      onNext={handleStep3Next}
+                      onBack={handleStepBack}
+                    />
+                  )}
+
+                  {currentStep === 5 && (
                     <div className="text-center space-y-6">
                       <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                         <CheckCircle className="w-12 h-12 text-green-600" />
@@ -841,29 +458,6 @@ export default function Checkout() {
                   )}
                 </CardContent>
               </Card>
-
-              {/* Navigation Buttons */}
-              {currentStep < 4 && (
-                <div className="flex justify-between mt-8">
-                  <Button
-                    variant="outline"
-                    onClick={prevStep}
-                    disabled={currentStep === 1}
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    {t("common.previous")}
-                  </Button>
-                  <Button
-                    onClick={nextStep}
-                    className="bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue"
-                  >
-                    {currentStep === 3
-                      ? t("checkout.completePurchaseButton")
-                      : t("common.continue")}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
-              )}
             </div>
 
             {/* Order Summary */}
@@ -931,17 +525,19 @@ export default function Checkout() {
                       </div>
                     )}
                     <Badge variant="outline" className="text-xs">
-                      {t("checkout.zone")}: {selectedZone}
+                      {t("checkout.zone")}: {formData.step1.selectedZone}
                     </Badge>
                     {includesTransportationOffer &&
-                      transportationMode !== "none" && (
+                      formData.step1.transportationMode !== "none" && (
                         <div className="mt-2">
                           <Badge variant="outline" className="text-xs">
                             {t("checkout.transport")}:{" "}
-                            {transportationMode === "van"
+                            {formData.step1.transportationMode === "van"
                               ? t("checkout.van")
                               : t("checkout.flight")}
-                            {transportOrigin ? ` • ${transportOrigin}` : ""}
+                            {formData.step1.transportOrigin
+                              ? ` • ${formData.step1.transportOrigin}`
+                              : ""}
                           </Badge>
                         </div>
                       )}
@@ -954,18 +550,18 @@ export default function Checkout() {
                       <span>
                         {t("checkout.ticketsCount").replace(
                           "{{count}}",
-                          ticketQuantity.toString(),
+                          formData.step1.ticketQuantity.toString(),
                         )}
                       </span>
                       <span>${ticketsSubtotal.toFixed(2)}</span>
                     </div>
                     {includesTransportationOffer &&
-                      transportationMode === "flight" && (
+                      formData.step1.transportationMode === "flight" && (
                         <div className="flex justify-between text-sm">
                           <span>
                             {t("checkout.flightUpgrade").replace(
                               "{{count}}",
-                              ticketQuantity.toString(),
+                              formData.step1.ticketQuantity.toString(),
                             )}
                           </span>
                           <span>${flightUpgradeSubtotal.toFixed(2)}</span>

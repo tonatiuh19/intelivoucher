@@ -17,7 +17,7 @@ import { rootReducer } from "./rootReducer";
 const persistConfig = {
   key: "intelivoucher",
   storage,
-  whitelist: ["trips", "user", "checkout", "language"], // Only persist these slices
+  whitelist: ["trips", "user", "language"], // Only persist these slices
 };
 
 // Create persisted reducer

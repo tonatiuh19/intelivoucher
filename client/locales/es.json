@@ -148,6 +148,10 @@
         "title": "Información del Cliente",
         "description": "Ingresa tus datos"
       },
+      "ticketHoldersInfo": {
+        "title": "Portadores de Boletos",
+        "description": "Información de cada boleto"
+      },
       "payment": {
         "title": "Pago",
         "description": "Pago seguro"
@@ -208,6 +212,10 @@
     "officialJerseyAddon": "Complemento de Jersey Oficial",
     "jerseyDescription": "Elige para cada pasajero que quiera un jersey. La personalización es opcional.",
     "addJerseyWithPrice": "Agregar jersey (+${{price}})",
+    "jerseyPersonalization": "Personalización de Jersey",
+    "standardJersey": "Jersey Estándar",
+    "personalizedJersey": "Jersey Personalizado",
+    "personalizationNote": "Añade nombre y número personalizados",
     "jerseyNameLabel": "Nombre (máx 12)",
     "jerseyNumberLabel": "Número (0-99)",
     "jerseySizeLabel": "Talla",
@@ -224,12 +232,23 @@
     "completePurchaseButton": "Completar Compra",
     "ticketsCount": "Boletos ({{count}}x)",
     "flightUpgrade": "Actualización de Vuelo ({{count}}x)",
-    "personalizedJersey": "Jersey Personalizado ({{count}}x)",
+    "personalizedJerseyCount": "Jersey Personalizado ({{count}}x)",
     "serviceFee": "Tarifa de Servicio",
     "processingFee": "Tarifa de Procesamiento",
     "secureCheckoutStripe": "🔒 Pago 100% seguro powered by Stripe",
     "zone": "Zona",
     "transport": "Transporte",
-    "eighteenPlusOnly": "Solo 18+"
+    "eighteenPlusOnly": "Solo 18+",
+    "ticketHoldersInfo": {
+      "description": "Proporciona información para cada portador de boleto. Esta información es requerida para el ingreso y debe coincidir con una identificación válida.",
+      "primaryHolder": "Portador Principal del Boleto",
+      "ticketHolder": "Portador de Boleto {{number}}",
+      "primaryContact": "Contacto Principal",
+      "dateOfBirth": "Fecha de Nacimiento",
+      "idNumber": "Número de ID/Pasaporte",
+      "age": "Edad",
+      "yearsOld": "años",
+      "importantNote": "⚠️ Importante: Todos los portadores de boletos deben traer una identificación válida que coincida con la información proporcionada aquí. Los menores deben estar acompañados por un adulto."
+    }
   }
 }

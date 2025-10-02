@@ -32,6 +32,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { SignInModal } from "@/components/SignInModal";
+import { UserDropdown } from "@/components/UserDropdown";
 
 // Redux store imports
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -47,6 +49,11 @@ import {
   selectTripsLoading,
   selectCartItemCount,
 } from "../store/selectors";
+import {
+  selectIsAuthenticated,
+  selectUser,
+} from "../store/selectors/authSelectors";
+import { openSignInModal, signOut } from "../store/slices/authSlice";
 
 // Import test data
 import {
@@ -72,6 +79,8 @@ export default function Index() {
   const trendingTrips = useAppSelector(selectTrendingTrips);
   const tripsLoading = useAppSelector(selectTripsLoading);
   const cartItemCount = useAppSelector(selectCartItemCount);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const user = useAppSelector(selectUser);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -230,16 +239,19 @@ export default function Index() {
               >
                 {t("common.categories")}
               </a>
+
+              {isAuthenticated ? (
+                <UserDropdown user={user} />
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => dispatch(openSignInModal())}
+                >
+                  {t("common.signIn")}
+                </Button>
+              )}
               <LanguageSelector />
-              <Button variant="outline" size="sm">
-                {t("common.signIn")}
-              </Button>
-              <Button
-                className="bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue"
-                size="sm"
-              >
-                {t("common.getApp")}
-              </Button>
             </nav>
             <button
               aria-label="Toggle menu"
@@ -271,13 +283,25 @@ export default function Index() {
               >
                 {t("common.categories")}
               </a>
-              <div className="flex gap-2 pt-2">
-                <Button variant="outline" className="flex-1">
-                  {t("common.signIn")}
-                </Button>
-                <Button className="flex-1 bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue">
-                  {t("common.getApp")}
-                </Button>
+              <div className="pt-2">
+                {isAuthenticated ? (
+                  <div className="py-2">
+                    <UserDropdown user={user} />
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        dispatch(openSignInModal());
+                        setMobileOpen(false);
+                      }}
+                    >
+                      {t("common.signIn")}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1215,6 +1239,9 @@ export default function Index() {
           </div>
         </div>
       </footer>
+
+      {/* Sign In Modal */}
+      <SignInModal />
     </div>
   );
 }

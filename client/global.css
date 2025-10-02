@@ -5,6 +5,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "AlanSans";
+  src: url("../client/shared/fonts/AlanSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: "AlanSans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  @apply bg-background text-foreground;
+}
+
 @layer base {
   /**
    * Tailwind CSS theme

@@ -17,7 +17,8 @@ import { rootReducer } from "./rootReducer";
 const persistConfig = {
   key: "intelivoucher",
   storage,
-  whitelist: ["trips", "user", "language"], // Only persist these slices
+  whitelist: ["trips", "user", "language", "auth"], // Only persist these slices
+  debug: process.env.NODE_ENV === "development",
 };
 
 // Create persisted reducer

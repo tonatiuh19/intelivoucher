@@ -650,3 +650,112 @@ export const mockVenuesData = [
   { name: "Carnegie Hall", logo: "🎼" },
   { name: "Fenway Park", logo: "⚾" },
 ];
+
+// Mock user data for authentication testing
+export interface MockUser {
+  id: string;
+  email: string;
+  fullName: string;
+  phone: string;
+  birthdate: string;
+}
+
+export const mockUsersData: MockUser[] = [
+  {
+    id: "1",
+    email: "john@example.com",
+    fullName: "John Doe",
+    phone: "+1234567890",
+    birthdate: "1990-05-15",
+  },
+  {
+    id: "2",
+    email: "sarah@example.com",
+    fullName: "Sarah Johnson",
+    phone: "+1987654321",
+    birthdate: "1985-12-03",
+  },
+  {
+    id: "3",
+    email: "mike@example.com",
+    fullName: "Mike Rodriguez",
+    phone: "+1122334455",
+    birthdate: "1992-08-22",
+  },
+  {
+    id: "4",
+    email: "emily@example.com",
+    fullName: "Emily Chen",
+    phone: "+1555666777",
+    birthdate: "1988-03-10",
+  },
+  {
+    id: "5",
+    email: "test@example.com",
+    fullName: "Test User",
+    phone: "+1999888777",
+    birthdate: "1995-01-01",
+  },
+];
+
+// Mock functions for authentication
+export const checkUserExists = async (
+  email: string,
+): Promise<{ exists: boolean; user?: MockUser }> => {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const user = mockUsersData.find(
+    (u) => u.email.toLowerCase() === email.toLowerCase(),
+  );
+  return {
+    exists: !!user,
+    user: user,
+  };
+};
+
+export const createUser = async (
+  userData: Omit<MockUser, "id">,
+): Promise<MockUser> => {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  const newUser: MockUser = {
+    ...userData,
+    id: (mockUsersData.length + 1).toString(),
+  };
+
+  // In a real app, this would save to the database
+  mockUsersData.push(newUser);
+
+  return newUser;
+};
+
+export const verifyCode = async (
+  email: string,
+  code: string,
+): Promise<{ success: boolean; user?: MockUser }> => {
+  // Simulate API delay
+  await new Promise((resolve) => setTimeout(resolve, 800));
+
+  // For demo purposes, accept any 6-digit code
+  if (!/^\d{6}$/.test(code)) {
+    throw new Error("Invalid code format");
+  }
+
+  // Accept codes: 123456, 000000, or any code ending in 99
+  const validCodes = ["123456", "000000"];
+  const isValid = validCodes.includes(code) || code.endsWith("99");
+
+  if (!isValid) {
+    throw new Error("Invalid verification code");
+  }
+
+  const user = mockUsersData.find(
+    (u) => u.email.toLowerCase() === email.toLowerCase(),
+  );
+  return {
+    success: true,
+    user: user,
+  };
+};

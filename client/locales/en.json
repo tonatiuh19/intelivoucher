@@ -34,7 +34,8 @@
     "total": "Total",
     "subtotal": "Subtotal",
     "tax": "Tax",
-    "discount": "Discount"
+    "discount": "Discount",
+    "hi": "Hi"
   },
   "navigation": {
     "home": "Home",
@@ -250,5 +251,40 @@
       "importantNote": "⚠️ Important: All ticket holders must bring valid ID matching the information provided here. Minors must be accompanied by an adult."
     },
     "eighteenPlusOnly": "18+ Only"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "enterEmail": "Enter Your Email",
+    "completeProfile": "Complete Your Profile",
+    "verifyEmail": "Verify Your Email",
+    "enterEmailDescription": "Enter your email address to sign in or create a new account.",
+    "newUserDescription": "We need a few details to create your account.",
+    "verificationDescription": "We've sent a 6-digit verification code to",
+    "emailAddress": "Email Address",
+    "fullName": "Full Name",
+    "phoneNumber": "Phone Number",
+    "birthdate": "Date of Birth",
+    "verificationCode": "Verification Code",
+    "createAccount": "Create Account",
+    "verifyAccount": "Verify Account",
+    "testEmails": "Try test emails",
+    "testCodes": "Try test codes",
+    "testCodesAnyEnding": "or any ending in 99",
+    "resendCode": "Resend Code",
+    "signOut": "Sign Out",
+    "placeholders": {
+      "email": "john@example.com",
+      "fullName": "John Doe",
+      "phone": "+1234567890",
+      "verificationCode": "123456"
+    },
+    "testEmailExamples": {
+      "john": "john@example.com",
+      "test": "test@example.com"
+    },
+    "testCodeExamples": {
+      "default": "123456",
+      "zeros": "000000"
+    }
   }
 }

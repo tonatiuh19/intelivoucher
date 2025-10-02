@@ -34,7 +34,8 @@
     "total": "Total",
     "subtotal": "Subtotal",
     "tax": "Impuesto",
-    "discount": "Descuento"
+    "discount": "Descuento",
+    "hi": "Hola"
   },
   "navigation": {
     "home": "Inicio",
@@ -249,6 +250,41 @@
       "age": "Edad",
       "yearsOld": "años",
       "importantNote": "⚠️ Importante: Todos los portadores de boletos deben traer una identificación válida que coincida con la información proporcionada aquí. Los menores deben estar acompañados por un adulto."
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "enterEmail": "Ingresa tu Email",
+    "completeProfile": "Completa tu Perfil",
+    "verifyEmail": "Verifica tu Email",
+    "enterEmailDescription": "Ingresa tu dirección de email para iniciar sesión o crear una nueva cuenta.",
+    "newUserDescription": "Necesitamos algunos detalles para crear tu cuenta.",
+    "verificationDescription": "Hemos enviado un código de verificación de 6 dígitos a",
+    "emailAddress": "Dirección de Email",
+    "fullName": "Nombre Completo",
+    "phoneNumber": "Número de Teléfono",
+    "birthdate": "Fecha de Nacimiento",
+    "verificationCode": "Código de Verificación",
+    "createAccount": "Crear Cuenta",
+    "verifyAccount": "Verificar Cuenta",
+    "testEmails": "Prueba emails de test",
+    "testCodes": "Prueba códigos de test",
+    "testCodesAnyEnding": "o cualquiera que termine en 99",
+    "resendCode": "Reenviar Código",
+    "signOut": "Cerrar Sesión",
+    "placeholders": {
+      "email": "juan@ejemplo.com",
+      "fullName": "Juan Pérez",
+      "phone": "+52123456789",
+      "verificationCode": "123456"
+    },
+    "testEmailExamples": {
+      "john": "john@example.com",
+      "test": "test@example.com"
+    },
+    "testCodeExamples": {
+      "default": "123456",
+      "zeros": "000000"
     }
   }
 }

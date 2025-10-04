@@ -19,6 +19,7 @@ import { LanguageSync } from "./components/LanguageSync";
 // Lazy load admin and user pages
 const AdminTrips = lazy(() => import("./pages/admin/Trips"));
 const UserTrips = lazy(() => import("./pages/user/Trips"));
+const LoadingDemo = lazy(() => import("./pages/LoadingDemo"));
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,14 @@ const App = () => (
                 element={
                   <Suspense fallback={<div>Loading...</div>}>
                     <UserTrips />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/loading-demo"
+                element={
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <LoadingDemo />
                   </Suspense>
                 }
               />

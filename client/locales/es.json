@@ -272,6 +272,10 @@
     "testCodesAnyEnding": "o cualquiera que termine en 99",
     "resendCode": "Reenviar Código",
     "signOut": "Cerrar Sesión",
+    "checkingEmail": "Verificando email...",
+    "creatingAccount": "Creando cuenta...",
+    "sendingVerificationCode": "Enviando código de verificación...",
+    "verifyingCode": "Verificando código...",
     "placeholders": {
       "email": "juan@ejemplo.com",
       "fullName": "Juan Pérez",

@@ -241,7 +241,9 @@ export default function Index() {
               </a>
 
               {isAuthenticated ? (
-                <UserDropdown user={user} />
+                <UserDropdown
+                  user={user ? { ...user, id: String(user.id) } : null}
+                />
               ) : (
                 <Button
                   variant="outline"
@@ -286,7 +288,9 @@ export default function Index() {
               <div className="pt-2">
                 {isAuthenticated ? (
                   <div className="py-2">
-                    <UserDropdown user={user} />
+                    <UserDropdown
+                      user={user ? { ...user, id: String(user.id) } : null}
+                    />
                   </div>
                 ) : (
                   <div className="flex gap-2">

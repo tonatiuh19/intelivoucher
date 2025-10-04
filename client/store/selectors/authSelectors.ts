@@ -59,6 +59,11 @@ export const selectIsCreatingUser = createSelector(
   (auth) => auth.isCreatingUser,
 );
 
+export const selectIsSendingCode = createSelector(
+  selectAuth,
+  (auth) => auth.isSendingCode,
+);
+
 export const selectIsVerifyingCode = createSelector(
   selectAuth,
   (auth) => auth.isVerifyingCode,
@@ -66,7 +71,11 @@ export const selectIsVerifyingCode = createSelector(
 
 export const selectIsAnyAuthLoading = createSelector(
   selectAuth,
-  (auth) => auth.isCheckingEmail || auth.isCreatingUser || auth.isVerifyingCode,
+  (auth) =>
+    auth.isCheckingEmail ||
+    auth.isCreatingUser ||
+    auth.isSendingCode ||
+    auth.isVerifyingCode,
 );
 
 // Error selector

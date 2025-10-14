@@ -180,74 +180,76 @@ export default function Index() {
 
   // Extract popular event titles from actual API data for popular tags
   const popularEventTags = React.useMemo(() => {
-    console.log("🔍 Debug: filteredTrips length:", filteredTrips.length);
-    console.log("🔍 Debug: first trip:", filteredTrips[0]);
+    console.log(
+      "🎯 Popular Tags Debug: filteredTrips length:",
+      filteredTrips.length,
+    );
 
     if (filteredTrips.length > 0) {
-      // Use the current language from i18n context (already available as 't')
-      const currentLanguage = t("common.search") === "Buscar" ? "es" : "en";
-      console.log("🔍 Debug: current language:", currentLanguage);
+      // Get the current language
+      const currentLanguage = i18n.language || "en";
+      console.log("🎯 Current language:", currentLanguage);
 
-      // Extract real event titles from API data, limit to 4
+      // Extract actual event titles directly (not keywords)
       const eventTitles = filteredTrips
-        .slice(0, 4)
+        .slice(0, 6) // Take more events to get better variety
         .map((event) => {
-          // Use title_es for Spanish, title for English, with fallback
-          const title =
+          // Use appropriate title based on language
+          let title =
             currentLanguage === "es"
               ? event.title_es || event.title
               : event.title || event.title_es;
 
-          console.log(
-            "🔍 Debug: event title:",
+          console.log("🎯 Event:", {
             title,
-            "title_es:",
-            event.title_es,
-          );
+            title_es: event.title_es,
+            original_title: event.title,
+          });
 
-          // Extract meaningful keywords from title (first 2-3 words, remove common words)
-          const words = title.split(" ");
-          const meaningfulWords = words.filter(
-            (word) =>
-              word.length > 2 &&
-              !["vs", "and", "the", "de", "del", "la", "el", "y", "-"].includes(
-                word.toLowerCase(),
-              ),
-          );
+          // Clean up the title - remove extra spaces and trim
+          title = title.trim();
 
-          // Return first meaningful word or first 2 words if title is short
-          const result =
-            meaningfulWords.length > 0
-              ? meaningfulWords[0]
-              : words.slice(0, 2).join(" ");
+          // For better readability, limit title length if too long
+          if (title.length > 25) {
+            // Split by common separators and take first meaningful part
+            const parts = title.split(/[-:|–—]/);
+            title = parts[0].trim();
 
-          console.log("🔍 Debug: extracted keyword:", result);
-          return result;
+            // If still too long, truncate at word boundary
+            if (title.length > 25) {
+              const words = title.split(" ");
+              title = words.slice(0, 3).join(" ");
+              if (title.length > 25) {
+                title = title.substring(0, 22) + "...";
+              }
+            }
+          }
+
+          return title;
         })
-        .filter((title, index, array) => array.indexOf(title) === index) // Remove duplicates
-        .slice(0, 4); // Ensure maximum of 4 tags
+        .filter((title, index, array) => {
+          // Remove duplicates and empty titles
+          return title && array.indexOf(title) === index;
+        })
+        .slice(0, 4); // Take only 4 for display
 
-      console.log("🔍 Debug: final eventTitles:", eventTitles);
+      console.log("🎯 Final event titles for tags:", eventTitles);
 
-      // If we have at least 1 real title, use them, otherwise fallback
-      return eventTitles.length >= 1
-        ? eventTitles
-        : [
-            t("categories.concerts"),
-            t("categories.sports"),
-            t("categories.theater"),
-            t("categories.festivals"),
-          ];
+      // Return event titles if we have any, otherwise use fallback
+      if (eventTitles.length > 0) {
+        return eventTitles;
+      }
     }
 
-    // Fallback to category translations when no events are loaded
+    // Fallback when no events are available
+    console.log("🎯 Using fallback categories");
     return [
       t("categories.concerts"),
       t("categories.sports"),
       t("categories.theater"),
       t("categories.festivals"),
     ];
-  }, [filteredTrips, t]);
+  }, [filteredTrips, i18n.language, t]);
 
   return (
     <LoadingMask

@@ -81,6 +81,9 @@ export default function Checkout() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
+  // Go Back confirmation dialog state
+  const [showGoBackDialog, setShowGoBackDialog] = useState(false);
+
   const STEPS = [
     {
       id: 1,
@@ -167,7 +170,7 @@ export default function Checkout() {
   const transportationOptions = incomingEvent?.transportationOptions || [];
 
   // Jersey add-on state (per-ticket for soccer)
-  const isSoccerCategory = (incomingEvent?.category ?? "")
+  const isSoccerCategory = (incomingEvent?.category?.name ?? "")
     .toLowerCase()
     .includes("soccer");
   const jerseyAvailable =
@@ -341,6 +344,18 @@ export default function Checkout() {
     setIsCheckoutCompleted(false); // Reset completion flag
     setShowExpiredDialog(false);
     navigate("/", { replace: true });
+  };
+
+  const handleGoBackConfirm = () => {
+    // Clear all checkout state when user confirms they want to leave
+    dispatch(clearCart());
+    dispatch(clearCurrentReservation());
+    dispatch(clearReservationErrors());
+    setCurrentStep(1);
+    setFormData(initialCheckoutValues);
+    setIsCheckoutCompleted(false);
+    setShowGoBackDialog(false);
+    navigate("/eventos", { replace: true });
   };
 
   const formatTime = (seconds: number) => {
@@ -533,6 +548,19 @@ export default function Checkout() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
       <AppHeader variant="checkout" />
+
+      {/* Go Back Button */}
+      <div className="container mx-auto px-4 pt-4">
+        <Button
+          variant="ghost"
+          onClick={() => setShowGoBackDialog(true)}
+          className="flex items-center space-x-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 mb-4"
+          disabled={isReservationLoading || isProcessingPayment}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>{t("checkout.goBack")}</span>
+        </Button>
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
@@ -1241,6 +1269,54 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+
+      {/* Go Back Confirmation Dialog */}
+      <AlertDialog open={showGoBackDialog} onOpenChange={setShowGoBackDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center space-x-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
+              <span>{t("checkout.goBackConfirmTitle")}</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("checkout.goBackConfirmMessage")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          {/* Warning Section - Outside of AlertDialogDescription to avoid nesting issues */}
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mx-6 mb-6">
+            <div className="flex items-start space-x-3">
+              <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h5 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
+                  {t("checkout.processingWarningTitle", "⚠️ Important:")}
+                </h5>
+                <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1">
+                  <li>• {t("checkout.goBackConsequences1")}</li>
+                  <li>• {t("checkout.goBackConsequences2")}</li>
+                  <li>• {t("checkout.goBackConsequences3")}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <AlertDialogFooter className="space-x-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowGoBackDialog(false)}
+              className="bg-green-50 hover:bg-green-100 text-green-700 border-green-300 dark:bg-green-900/20 dark:hover:bg-green-900/30 dark:text-green-300 dark:border-green-700"
+            >
+              {t("checkout.stayAndContinue")}
+            </Button>
+            <AlertDialogAction
+              onClick={handleGoBackConfirm}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              {t("checkout.leaveCheckout")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Session Expired Dialog */}
       <AlertDialog open={showExpiredDialog}>

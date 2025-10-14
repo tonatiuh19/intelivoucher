@@ -24,6 +24,7 @@ const MyReservations = lazy(() => import("./pages/user/MyReservations"));
 const MyProfile = lazy(() => import("./pages/user/MyProfile"));
 const LoadingDemo = lazy(() => import("./pages/LoadingDemo"));
 const PaymentKeysTest = lazy(() => import("./components/PaymentKeysTest"));
+const Eventos = lazy(() => import("./pages/Eventos"));
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,14 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route
+                path="/eventos"
+                element={
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Eventos />
+                  </Suspense>
+                }
+              />
               <Route
                 path="/admin/trips"
                 element={

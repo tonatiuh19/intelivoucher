@@ -100,18 +100,20 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             <a href="#events" className={getNavTextClasses()}>
               {t("common.events")}
             </a>
-            <a href="#categories" className={getNavTextClasses()}>
+            {/* <a href="#categories" className={getNavTextClasses()}>
               {t("common.categories")}
-            </a>
+            </a> */}
           </>
         ) : (
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/")}
-            className={getNavTextClasses()}
-          >
-            {t("common.events")}
-          </Button>
+          <>
+            <Button
+              variant="ghost"
+              onClick={() => navigate("/eventos")}
+              className={getNavTextClasses()}
+            >
+              {t("common.events")}
+            </Button>
+          </>
         )}
         {isAuthenticated ? (
           <UserDropdown user={user ? { ...user, id: String(user.id) } : null} />
@@ -238,7 +240,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
                   >
                     {t("common.events")}
                   </a>
-                  <a
+                  {/* <a
                     href="#categories"
                     className={`block transition-colors py-2 ${
                       shouldUseScrollEffect && !isScrolled
@@ -248,19 +250,31 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
                     onClick={() => setMobileOpen?.(false)}
                   >
                     {t("common.categories")}
-                  </a>
+                  </a> */}
                 </>
               ) : (
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start"
-                  onClick={() => {
-                    navigate("/");
-                    setMobileOpen?.(false);
-                  }}
-                >
-                  {t("common.events")}
-                </Button>
+                <>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      navigate("/");
+                      setMobileOpen?.(false);
+                    }}
+                  >
+                    {t("common.home")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      navigate("/eventos");
+                      setMobileOpen?.(false);
+                    }}
+                  >
+                    {t("common.events")}
+                  </Button>
+                </>
               )}
 
               <div className="flex items-center justify-between">
@@ -306,13 +320,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
     const baseClasses = shouldUseScrollEffect
       ? "fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out"
       : "sticky top-0 z-50 transition-all duration-500 ease-out";
-
-    // Debug logging
-    console.log("Header state:", {
-      shouldUseScrollEffect,
-      isScrolled,
-      variant,
-    });
 
     if (!shouldUseScrollEffect) {
       // Default behavior for checkout, mobile-minimal variants

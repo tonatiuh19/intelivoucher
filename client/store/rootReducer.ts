@@ -7,6 +7,7 @@ import authReducer from "./slices/authSlice";
 import paymentKeysReducer from "./slices/paymentKeysSlice";
 import reservationReducer from "./slices/reservationSlice";
 import profileReducer from "./slices/profileSlice";
+import eventsReducer from "./slices/eventsSlice";
 
 // Combine all feature reducers
 export const rootReducer = combineReducers({
@@ -18,4 +19,5 @@ export const rootReducer = combineReducers({
   paymentKeys: paymentKeysReducer,
   reservation: reservationReducer,
   profile: profileReducer,
+  events: eventsReducer,
 });

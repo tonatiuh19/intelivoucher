@@ -142,30 +142,30 @@ export default function Index() {
 
   const testimonials = [
     {
-      name: "Sarah Chen",
-      role: "Music Enthusiast",
+      name: "María González",
+      role: "Amante de la Música",
       avatar:
         "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=150&h=150&fit=crop",
       content:
-        "Best ticketing app ever! Got front row seats to my favorite band's concert. The countdown timer feature saved me from missing out!",
+        "¡La mejor app de boletos que he usado! Conseguí asientos en primera fila para el concierto de mi banda favorita. ¡El temporizador me salvó de perderme el evento!",
       rating: 5,
     },
     {
-      name: "Mike Rodriguez",
-      role: "Sports Fan",
+      name: "Carlos Rodríguez",
+      role: "Fanático del Fútbol",
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
       content:
-        "Secured Lakers playoff tickets in seconds. The mobile app is super smooth and the seat selection is amazing.",
+        "Conseguí boletos para la final del América vs Chivas en segundos. La app móvil es súper fluida y la selección de asientos es increíble.",
       rating: 5,
     },
     {
-      name: "Emily Johnson",
-      role: "Theater Lover",
+      name: "Ana Martínez",
+      role: "Amante del Teatro",
       avatar:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
       content:
-        "Found Broadway show tickets that were sold out everywhere else. Intelivoucher has the best selection!",
+        "Encontré boletos para obras de teatro que estaban agotadas en todos lados. ¡Intelivoucher tiene la mejor selección de eventos en México!",
       rating: 5,
     },
   ];
@@ -263,33 +263,19 @@ export default function Index() {
               </div>
 
               {/* Enhanced Search Bar */}
-              <div className="max-w-5xl mx-auto">
+              <div className="max-w-4xl mx-auto">
                 <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-slate-200/50 dark:border-slate-700/50">
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                    <div className="md:col-span-2 relative">
-                      <Search className="absolute left-4 top-4 w-6 h-6 text-slate-400" />
+                  <div className="flex gap-4 items-center">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-slate-400" />
                       <Input
                         placeholder={t("hero.searchPlaceholder")}
-                        className="pl-12 h-14 text-lg border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl"
+                        className="pl-12 h-14 text-lg border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl min-h-[56px]"
                         value={searchTerm}
                         onChange={(e) => handleSearch(e.target.value)}
                       />
                     </div>
-                    <div className="relative">
-                      <MapPin className="absolute left-4 top-4 w-6 h-6 text-slate-400" />
-                      <Input
-                        placeholder={t("hero.cityPlaceholder")}
-                        className="pl-12 h-14 border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl"
-                      />
-                    </div>
-                    <div className="relative">
-                      <Calendar className="absolute left-4 top-4 w-6 h-6 text-slate-400" />
-                      <Input
-                        placeholder={t("hero.datePlaceholder")}
-                        className="pl-12 h-14 border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl"
-                      />
-                    </div>
-                    <Button className="h-14 bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue text-lg rounded-xl font-semibold shadow-lg">
+                    <Button className="h-14 min-h-[56px] bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue text-lg rounded-xl font-semibold shadow-lg px-8 flex items-center justify-center">
                       <Search className="w-5 h-5 mr-2" />
                       {t("common.findEvents")}
                     </Button>
@@ -744,10 +730,11 @@ export default function Index() {
           <div className="container mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-5xl font-bold mb-4 text-slate-200">
-                What Our Users Say
+                Lo Que Dicen Nuestros Usuarios
               </h3>
               <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                Join millions of happy customers who found their perfect events
+                Únete a millones de clientes felices que encontraron sus eventos
+                perfectos
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

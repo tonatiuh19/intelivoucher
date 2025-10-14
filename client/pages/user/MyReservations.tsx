@@ -392,6 +392,35 @@ const MyReservations: React.FC = () => {
           setMobileOpen={setMobileOpen}
         />
 
+        {/* Breadcrumb Navigation */}
+        <nav className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-b border-border/50 py-4 px-4">
+          <div className="container mx-auto">
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/")}
+                className="h-auto p-0 text-muted-foreground hover:text-foreground"
+              >
+                {t("common.home")}
+              </Button>
+              <span>/</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/eventos")}
+                className="h-auto p-0 text-muted-foreground hover:text-foreground"
+              >
+                {t("common.events")}
+              </Button>
+              <span>/</span>
+              <span className="text-foreground font-medium">
+                {t("common.myReservations")}
+              </span>
+            </div>
+          </div>
+        </nav>
+
         {/* Hero Section */}
         <section className="relative py-20 px-4 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-400/5 dark:to-purple-400/5" />
@@ -543,9 +572,14 @@ const MyReservations: React.FC = () => {
                       : "Try adjusting your search or filter criteria"}
                   </p>
                   {userReservations.length === 0 && (
-                    <Button onClick={() => navigate("/")}>
-                      {t("common.browseEvents")}
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button onClick={() => navigate("/eventos")}>
+                        {t("common.browseEvents")}
+                      </Button>
+                      <Button variant="outline" onClick={() => navigate("/")}>
+                        {t("common.home")}
+                      </Button>
+                    </div>
                   )}
                 </CardContent>
               </Card>

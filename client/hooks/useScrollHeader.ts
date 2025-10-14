@@ -14,17 +14,23 @@ export const useScrollHeader = (): UseScrollHeaderResult => {
       const currentScrollY = window.scrollY;
       setScrollY(currentScrollY);
 
-      // Find the first h2 element in the hero section
-      const firstH2 = document.querySelector("h2");
+      // For Eventos page, we want to trigger based on leaving the hero section
+      // Look for the hero H1 element first, then fallback to H2 if needed
+      const heroH1 = document.querySelector("h1");
+      const targetElement = heroH1;
 
-      if (firstH2) {
-        const h2Position = firstH2.getBoundingClientRect().top + window.scrollY;
-        // Add some offset to trigger the crystallized state a bit before reaching the h2
-        const threshold = h2Position - 100;
+      if (targetElement) {
+        const elementPosition =
+          targetElement.getBoundingClientRect().top + window.scrollY;
+        // Use a small offset to trigger when we start leaving the hero section
+        // This should trigger around 400-500px scroll for better UX
+        const offset = 100;
+        const threshold = Math.max(elementPosition - offset, 400);
+
         setIsScrolled(currentScrollY > threshold);
       } else {
-        // Fallback: use a fixed scroll threshold if no h2 is found
-        setIsScrolled(currentScrollY > 80);
+        // Fallback: use a reasonable fixed threshold for hero sections
+        setIsScrolled(currentScrollY > 400);
       }
     };
 

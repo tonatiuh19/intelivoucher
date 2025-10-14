@@ -91,7 +91,7 @@
     "searchPlaceholder": "Buscar artistas, equipos, espectáculos...",
     "cityPlaceholder": "Ciudad o lugar",
     "datePlaceholder": "Cualquier fecha",
-    "hotTicketExpires": "🔥 Boleto caliente expira en:",
+    "secureBooking": "🎫 Reserva Segura y Rápida",
     "trendingNow": "Tendencia Ahora",
     "whatsHot": "Qué Está de Moda Ahora",
     "whatsHotSubtitle": "No te pierdas los eventos más populares de los que todos hablan",
@@ -104,7 +104,9 @@
     "music": "Música",
     "sports": "Deportes",
     "theater": "Teatro",
-    "comedy": "Comedia"
+    "comedy": "Comedia",
+    "concerts": "Conciertos",
+    "festivals": "Festivales"
   },
   "featuredEvents": {
     "title": "Eventos Destacados",

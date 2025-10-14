@@ -59,6 +59,7 @@ export function transformApiEventToTrip(apiEvent: ApiEvent): Trip {
   return {
     id: apiEvent.id,
     title: apiEvent.title,
+    title_es: apiEvent.title_es,
     category: apiEvent.category.name,
     date: apiEvent.event_date,
     location: `Event ${apiEvent.id}`, // You may want to add venue information to your API

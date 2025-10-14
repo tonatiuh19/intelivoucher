@@ -91,7 +91,7 @@
     "searchPlaceholder": "Search artists, teams, shows...",
     "cityPlaceholder": "City or venue",
     "datePlaceholder": "Any date",
-    "hotTicketExpires": "🔥 Hot ticket expires in:",
+    "secureBooking": "🎫 Secure & Fast Booking",
     "trendingNow": "Trending Now",
     "whatsHot": "What's Hot Right Now",
     "whatsHotSubtitle": "Don't miss out on the most popular events everyone's talking about",
@@ -104,7 +104,9 @@
     "music": "Music",
     "sports": "Sports",
     "theater": "Theater",
-    "comedy": "Comedy"
+    "comedy": "Comedy",
+    "concerts": "Concerts",
+    "festivals": "Festivals"
   },
   "featuredEvents": {
     "title": "Featured Events",

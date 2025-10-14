@@ -149,6 +149,7 @@ export interface TransportationOption {
 export interface Trip {
   id: string;
   title: string;
+  title_es?: string;
   category: string;
   date: string;
   location: string;

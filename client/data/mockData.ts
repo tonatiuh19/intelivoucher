@@ -589,57 +589,57 @@ export const mockCategoriesData = [
     name: "Concerts",
     icon: "🎵",
     color: "bg-gradient-to-r from-brand-blue to-brand-cyan",
-    count: "2,847 events",
+    count: "Live Music",
   },
   {
     name: "Theater",
     icon: "🎭",
     color: "bg-gradient-to-r from-brand-green to-brand-orange",
-    count: "892 events",
+    count: "Stage Shows",
   },
   {
     name: "Festivals",
     icon: "🎪",
     color: "bg-gradient-to-r from-brand-orange to-brand-green",
-    count: "567 events",
+    count: "Multi-Day Events",
   },
   {
     name: "Marathons",
     icon: "🏃",
     color: "bg-gradient-to-r from-brand-cyan to-brand-blue",
-    count: "312 events",
+    count: "Sports Events",
   },
   {
     name: "Soccer",
     icon: "⚽",
     color: "bg-gradient-to-r from-brand-blue to-brand-cyan",
-    count: "1,102 events",
+    count: "Football Matches",
   },
   {
     name: "NFL",
     icon: "🏈",
     color: "bg-gradient-to-r from-brand-green to-brand-orange",
-    count: "764 events",
+    count: "American Football",
   },
   {
     name: "NBA",
     icon: "🏀",
     color: "bg-gradient-to-r from-brand-cyan to-brand-blue",
-    count: "845 events",
+    count: "Basketball Games",
   },
   {
     name: "NHL",
     icon: "🏒",
     color: "bg-gradient-to-r from-brand-blue to-brand-cyan",
-    count: "523 events",
+    count: "Hockey Games",
   },
 ];
 
 export const mockStatsData = [
-  { number: "2M+", label: "Happy Customers" },
-  { number: "50K+", label: "Events Monthly" },
-  { number: "500+", label: "Cities Worldwide" },
-  { number: "99.9%", label: "Uptime" },
+  { number: "", label: "Find Events" },
+  { number: "", label: "Fast Booking" },
+  { number: "", label: "Secure Payment" },
+  { number: "", label: "Mobile Ready" },
 ];
 
 export const mockVenuesData = [

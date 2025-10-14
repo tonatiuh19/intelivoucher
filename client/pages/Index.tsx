@@ -29,7 +29,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import AppHeader from "@/components/AppHeader";
@@ -67,7 +67,7 @@ import { formatCurrency } from "@/lib/utils";
 export default function Index() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Local state
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes countdown example
@@ -178,6 +178,77 @@ export default function Index() {
   }));
   const venues = mockVenuesData;
 
+  // Extract popular event titles from actual API data for popular tags
+  const popularEventTags = React.useMemo(() => {
+    console.log("🔍 Debug: filteredTrips length:", filteredTrips.length);
+    console.log("🔍 Debug: first trip:", filteredTrips[0]);
+
+    if (filteredTrips.length > 0) {
+      // Use the current language from i18n context (already available as 't')
+      const currentLanguage = t("common.search") === "Buscar" ? "es" : "en";
+      console.log("🔍 Debug: current language:", currentLanguage);
+
+      // Extract real event titles from API data, limit to 4
+      const eventTitles = filteredTrips
+        .slice(0, 4)
+        .map((event) => {
+          // Use title_es for Spanish, title for English, with fallback
+          const title =
+            currentLanguage === "es"
+              ? event.title_es || event.title
+              : event.title || event.title_es;
+
+          console.log(
+            "🔍 Debug: event title:",
+            title,
+            "title_es:",
+            event.title_es,
+          );
+
+          // Extract meaningful keywords from title (first 2-3 words, remove common words)
+          const words = title.split(" ");
+          const meaningfulWords = words.filter(
+            (word) =>
+              word.length > 2 &&
+              !["vs", "and", "the", "de", "del", "la", "el", "y", "-"].includes(
+                word.toLowerCase(),
+              ),
+          );
+
+          // Return first meaningful word or first 2 words if title is short
+          const result =
+            meaningfulWords.length > 0
+              ? meaningfulWords[0]
+              : words.slice(0, 2).join(" ");
+
+          console.log("🔍 Debug: extracted keyword:", result);
+          return result;
+        })
+        .filter((title, index, array) => array.indexOf(title) === index) // Remove duplicates
+        .slice(0, 4); // Ensure maximum of 4 tags
+
+      console.log("🔍 Debug: final eventTitles:", eventTitles);
+
+      // If we have at least 1 real title, use them, otherwise fallback
+      return eventTitles.length >= 1
+        ? eventTitles
+        : [
+            t("categories.concerts"),
+            t("categories.sports"),
+            t("categories.theater"),
+            t("categories.festivals"),
+          ];
+    }
+
+    // Fallback to category translations when no events are loaded
+    return [
+      t("categories.concerts"),
+      t("categories.sports"),
+      t("categories.theater"),
+      t("categories.festivals"),
+    ];
+  }, [filteredTrips, t]);
+
   return (
     <LoadingMask
       isLoading={tripsLoading}
@@ -284,17 +355,13 @@ export default function Index() {
                     <span className="text-slate-500 dark:text-slate-400 text-sm">
                       {t("common.popular")}:
                     </span>
-                    {[
-                      "Taylor Swift",
-                      "NBA Finals",
-                      "Broadway",
-                      "Coachella",
-                    ].map((tag) => (
+                    {popularEventTags.map((tag) => (
                       <Button
                         key={tag}
                         variant="ghost"
                         size="sm"
                         className="text-brand-blue hover:bg-brand-blue/10 rounded-full"
+                        onClick={() => handleSearch(tag)}
                       >
                         {tag}
                       </Button>
@@ -320,13 +387,13 @@ export default function Index() {
                 ))}
               </div>
 
-              {/* Countdown Timer Demo */}
-              <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-full px-8 py-4 border border-orange-500/20">
-                <Timer className="w-6 h-6 text-orange-500" />
-                <span className="text-orange-600 dark:text-orange-400 font-semibold text-lg">
-                  {t("hero.hotTicketExpires")} {formatTime(timeLeft)}
+              {/* Feature Highlight */}
+              <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full px-8 py-4 border border-blue-500/20">
+                <Ticket className="w-6 h-6 text-blue-500" />
+                <span className="text-blue-600 dark:text-blue-400 font-semibold text-lg">
+                  {t("hero.secureBooking")}
                 </span>
-                <Sparkles className="w-5 h-5 text-orange-500 animate-pulse" />
+                <Sparkles className="w-5 h-5 text-blue-500 animate-pulse" />
               </div>
             </div>
           </div>

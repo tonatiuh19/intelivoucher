@@ -37,6 +37,7 @@
     "discount": "Discount",
     "hi": "Hi",
     "from": "From",
+    "profile": "Profile",
     "myReservations": "My Reservations",
     "refresh": "Refresh",
     "retry": "Retry",
@@ -500,6 +501,53 @@
       "max": "Name on card must not exceed 50 characters",
       "matches": "Name on card can only contain letters and spaces",
       "required": "Name on card is required"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "contactInfo": "Contact Information",
+    "settings": "Settings",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "saved": "Profile updated successfully",
+    "error": "Failed to update profile",
+    "fields": {
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "dateOfBirth": "Date of Birth",
+      "country": "Country",
+      "languagePreference": "Language Preference"
+    },
+    "placeholders": {
+      "fullName": "Enter your full name",
+      "email": "Enter your email address",
+      "phone": "Enter your phone number",
+      "dateOfBirth": "Select your date of birth",
+      "country": "Select your country"
+    },
+    "validation": {
+      "fullName": {
+        "required": "Full name is required",
+        "minLength": "Full name must be at least 2 characters",
+        "maxLength": "Full name must not exceed 100 characters"
+      },
+      "email": {
+        "required": "Email address is required",
+        "invalid": "Please enter a valid email address"
+      },
+      "phone": {
+        "required": "Phone number is required",
+        "invalid": "Please enter a valid phone number"
+      },
+      "dateOfBirth": {
+        "required": "Date of birth is required",
+        "invalid": "Please enter a valid date"
+      },
+      "country": {
+        "required": "Country is required"
+      }
     }
   }
 }

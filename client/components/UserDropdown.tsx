@@ -68,7 +68,10 @@ export function UserDropdown({ user }: UserDropdownProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => navigate("/profile")}
+        >
           <User className="mr-2 h-4 w-4" />
           <span>{t("common.profile", "Profile")}</span>
         </DropdownMenuItem>
@@ -78,10 +81,6 @@ export function UserDropdown({ user }: UserDropdownProps) {
         >
           <TicketIcon className="mr-2 h-4 w-4" />
           <span>{t("common.myReservations", "My Reservations")}</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
-          <span>{t("common.settings", "Settings")}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

@@ -21,6 +21,7 @@ import { PaymentKeysInitializer } from "./hooks/usePaymentKeysInit";
 const AdminTrips = lazy(() => import("./pages/admin/Trips"));
 const UserTrips = lazy(() => import("./pages/user/Trips"));
 const MyReservations = lazy(() => import("./pages/user/MyReservations"));
+const MyProfile = lazy(() => import("./pages/user/MyProfile"));
 const LoadingDemo = lazy(() => import("./pages/LoadingDemo"));
 const PaymentKeysTest = lazy(() => import("./components/PaymentKeysTest"));
 
@@ -60,6 +61,14 @@ const App = () => (
                 element={
                   <Suspense fallback={<div>Loading...</div>}>
                     <MyReservations />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <MyProfile />
                   </Suspense>
                 }
               />

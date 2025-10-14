@@ -1,4 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import type { RootState } from "../index";
 
 // Base selector
@@ -93,9 +94,21 @@ export const selectCanProceedFromEmail = createSelector(
 export const selectCanProceedFromRegistration = createSelector(
   [selectFullName, selectPhone, selectBirthdate, selectIsCreatingUser],
   (fullName, phone, birthdate, isCreating) => {
+    // Validate phone number using libphonenumber-js
+    const isPhoneValid =
+      phone.trim().length > 0
+        ? (() => {
+            try {
+              return isValidPhoneNumber(phone);
+            } catch {
+              return false;
+            }
+          })()
+        : false;
+
     return (
       fullName.trim().length > 0 &&
-      phone.trim().length > 0 &&
+      isPhoneValid &&
       birthdate.length > 0 &&
       !isCreating
     );

@@ -15,4 +15,6 @@ export const API_ENDPOINTS = {
   GET_INFO: `${API_CONFIG.BASE_URL}/getInfo.php`,
   CREATE_RESERVATION: `${API_CONFIG.BASE_URL}/createReservation.php`,
   FETCH_USER_RESERVATIONS: `${API_CONFIG.BASE_URL}/getReservationsByUser.php`,
+  GET_USER_INFO_BY_ID: `${API_CONFIG.BASE_URL}/getUserInfoById.php`,
+  UPDATE_USER: `${API_CONFIG.BASE_URL}/updateUser.php`,
 } as const;

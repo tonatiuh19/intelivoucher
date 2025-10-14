@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import PhoneInput from "react-phone-number-input";
+import { isValidPhoneNumber } from "libphonenumber-js";
+import "react-phone-number-input/style.css";
+import "./signin-phone-input.css";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +27,39 @@ import {
   Clock,
 } from "lucide-react";
 import { LoadingMask } from "@/components/ui/loading-mask";
+import { cn } from "@/lib/utils";
+
+// Custom PhoneInput wrapper for better styling
+const CustomPhoneInput = React.forwardRef<
+  any,
+  {
+    value?: string;
+    onChange?: (value: string | undefined) => void;
+    placeholder?: string;
+    className?: string;
+    error?: boolean;
+  }
+>(({ value, onChange, placeholder, className, error, ...props }, ref) => {
+  return (
+    <PhoneInput
+      ref={ref}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      international
+      countryCallingCodeEditable={false}
+      defaultCountry="MX" // Default to Mexico
+      className={cn(
+        "phone-input-signin",
+        error && "phone-input-error",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+
+CustomPhoneInput.displayName = "CustomPhoneInput";
 
 // Redux imports
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -364,19 +401,14 @@ export const SignInModal: React.FC = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="phone">{t("auth.phoneNumber")}</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder={t("auth.placeholders.phone")}
-                        value={phone}
-                        onChange={(e) =>
-                          handleInputChange("phone", e.target.value)
-                        }
-                        className="pl-10"
-                      />
-                    </div>
+                    <CustomPhoneInput
+                      value={phone}
+                      onChange={(value) =>
+                        handleInputChange("phone", value || "")
+                      }
+                      placeholder={t("auth.placeholders.phone")}
+                      error={false}
+                    />
                   </div>
 
                   <div className="space-y-2">

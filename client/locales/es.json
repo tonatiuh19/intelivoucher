@@ -37,7 +37,8 @@
     "discount": "Descuento",
     "hi": "Hola",
     "from": "Desde",
-    "myReservations": "Mis Reservas",
+    "profile": "Perfil",
+    "myReservations": "Mis Reservaciones",
     "refresh": "Actualizar",
     "retry": "Reintentar",
     "noReservationsFound": "No Se Encontraron Reservas",
@@ -500,6 +501,53 @@
       "max": "El nombre en la tarjeta no debe exceder 50 caracteres",
       "matches": "El nombre en la tarjeta solo puede contener letras y espacios",
       "required": "El nombre en la tarjeta es requerido"
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "personalInfo": "Información Personal",
+    "contactInfo": "Información de Contacto",
+    "settings": "Configuraciones",
+    "save": "Guardar Cambios",
+    "saving": "Guardando...",
+    "saved": "Perfil actualizado exitosamente",
+    "error": "Error al actualizar el perfil",
+    "fields": {
+      "fullName": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "phone": "Número de Teléfono",
+      "dateOfBirth": "Fecha de Nacimiento",
+      "country": "País",
+      "languagePreference": "Idioma Preferido"
+    },
+    "placeholders": {
+      "fullName": "Ingrese su nombre completo",
+      "email": "Ingrese su correo electrónico",
+      "phone": "Ingrese su número de teléfono",
+      "dateOfBirth": "Seleccione su fecha de nacimiento",
+      "country": "Seleccione su país"
+    },
+    "validation": {
+      "fullName": {
+        "required": "El nombre completo es requerido",
+        "minLength": "El nombre completo debe tener al menos 2 caracteres",
+        "maxLength": "El nombre completo no debe exceder 100 caracteres"
+      },
+      "email": {
+        "required": "El correo electrónico es requerido",
+        "invalid": "Por favor ingrese un correo electrónico válido"
+      },
+      "phone": {
+        "required": "El número de teléfono es requerido",
+        "invalid": "Por favor ingrese un número de teléfono válido"
+      },
+      "dateOfBirth": {
+        "required": "La fecha de nacimiento es requerida",
+        "invalid": "Por favor ingrese una fecha válida"
+      },
+      "country": {
+        "required": "El país es requerido"
+      }
     }
   }
 }

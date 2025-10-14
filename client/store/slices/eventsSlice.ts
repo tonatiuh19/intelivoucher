@@ -10,10 +10,17 @@ export interface EventsState {
   filters: {
     category: string;
     search: string;
+    language: "en" | "es";
     dateRange: [string, string];
     priceRange: [number, number];
     trending: boolean;
     presale: boolean;
+    includesTransportation: boolean;
+    refundableIfNoTicket: boolean;
+    acceptsUnderAge: boolean;
+    jerseyAddonAvailable: boolean;
+    location: string;
+    venueName: string;
   };
   loading: boolean;
   error: string | null;
@@ -30,10 +37,17 @@ const initialState: EventsState = {
   filters: {
     category: "",
     search: "",
+    language: "en",
     dateRange: ["", ""],
     priceRange: [0, 5000],
     trending: false,
     presale: false,
+    includesTransportation: false,
+    refundableIfNoTicket: false,
+    acceptsUnderAge: false,
+    jerseyAddonAvailable: false,
+    location: "",
+    venueName: "",
   },
   loading: false,
   error: null,
@@ -42,16 +56,61 @@ const initialState: EventsState = {
   itemsPerPage: 12,
 };
 
-// Async thunk for fetching active events
+// Async thunk for fetching active events with filters
 export const fetchActiveEventsAsync = createAsyncThunk(
   "events/fetchActiveEvents",
-  async (_, { rejectWithValue }) => {
+  async (
+    filters: Partial<EventsState["filters"]> = {},
+    { rejectWithValue },
+  ) => {
     try {
+      // Build request body with API filter format
+      const requestBody: any = {};
+
+      // Title search
+      if (filters.search) {
+        requestBody.title = filters.search;
+      }
+
+      // Language for title search
+      if (filters.language) {
+        requestBody.language = filters.language;
+      }
+
+      // Boolean filters (only send if true to match API behavior)
+      if (filters.trending) {
+        requestBody.is_trending = 1;
+      }
+      if (filters.presale) {
+        requestBody.is_presale = 1;
+      }
+      if (filters.includesTransportation) {
+        requestBody.includes_transportation = 1;
+      }
+      if (filters.refundableIfNoTicket) {
+        requestBody.refundable_if_no_ticket = 1;
+      }
+      if (filters.acceptsUnderAge) {
+        requestBody.accepts_under_age = 1;
+      }
+      if (filters.jerseyAddonAvailable) {
+        requestBody.jersey_addon_available = 1;
+      }
+
+      // Venue filters
+      if (filters.location) {
+        requestBody.location = filters.location;
+      }
+      if (filters.venueName) {
+        requestBody.venue_name = filters.venueName;
+      }
+
       const response = await fetch(API_ENDPOINTS.GET_ACTIVE_EVENTS, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -105,6 +164,14 @@ export const fetchEventByIdAsync = createAsyncThunk(
 
       // The API might return event directly or in a success wrapper
       if (data.success && data.event) {
+        console.log(
+          "🎯 API Response (fetchEventById) - event.jersey_addon_available:",
+          data.event.jersey_addon_available,
+        );
+        console.log(
+          "🎯 API Response (fetchEventById) - Full event:",
+          data.event,
+        );
         return data.event as ApiEvent;
       } else if (data.id) {
         // Event data returned directly
@@ -120,53 +187,6 @@ export const fetchEventByIdAsync = createAsyncThunk(
   },
 );
 
-// Helper function to apply filters
-const applyFilters = (
-  events: ApiEvent[],
-  filters: EventsState["filters"],
-): ApiEvent[] => {
-  return events.filter((event) => {
-    // Search filter
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      const matchesTitle =
-        event.title.toLowerCase().includes(searchLower) ||
-        event.title_es.toLowerCase().includes(searchLower);
-      const matchesDescription =
-        event.description.toLowerCase().includes(searchLower) ||
-        event.description_es.toLowerCase().includes(searchLower);
-      if (!matchesTitle && !matchesDescription) return false;
-    }
-
-    // Category filter
-    if (filters.category && event.category_id !== filters.category) {
-      return false;
-    }
-
-    // Trending filter
-    if (filters.trending && event.is_trending !== "1") {
-      return false;
-    }
-
-    // Presale filter
-    if (filters.presale && event.is_presale !== "1") {
-      return false;
-    }
-
-    // Date range filter
-    if (filters.dateRange[0] && filters.dateRange[1]) {
-      const eventDate = new Date(event.event_date);
-      const startDate = new Date(filters.dateRange[0]);
-      const endDate = new Date(filters.dateRange[1]);
-      if (eventDate < startDate || eventDate > endDate) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-};
-
 // Events slice
 export const eventsSlice = createSlice({
   name: "events",
@@ -180,15 +200,13 @@ export const eventsSlice = createSlice({
       action: PayloadAction<Partial<EventsState["filters"]>>,
     ) => {
       state.filters = { ...state.filters, ...action.payload };
-      state.filteredEvents = applyFilters(state.events, state.filters);
-      state.totalCount = state.filteredEvents.length;
       state.currentPage = 1; // Reset to first page when filters change
+      // Note: Filtering is now done server-side via fetchActiveEventsAsync
     },
     clearFilters: (state) => {
       state.filters = initialState.filters;
-      state.filteredEvents = state.events;
-      state.totalCount = state.events.length;
       state.currentPage = 1;
+      // Note: Need to call fetchActiveEventsAsync after clearing filters
     },
     setCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
@@ -199,9 +217,8 @@ export const eventsSlice = createSlice({
     },
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.filters.search = action.payload;
-      state.filteredEvents = applyFilters(state.events, state.filters);
-      state.totalCount = state.filteredEvents.length;
       state.currentPage = 1;
+      // Note: Need to call fetchActiveEventsAsync after updating search
     },
     clearError: (state) => {
       state.error = null;
@@ -217,8 +234,8 @@ export const eventsSlice = createSlice({
       .addCase(fetchActiveEventsAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.events = action.payload;
-        state.filteredEvents = applyFilters(action.payload, state.filters);
-        state.totalCount = state.filteredEvents.length;
+        state.filteredEvents = action.payload; // Server-side filtered results
+        state.totalCount = action.payload.length;
         state.error = null;
       })
       .addCase(fetchActiveEventsAsync.rejected, (state, action) => {

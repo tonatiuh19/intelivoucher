@@ -47,7 +47,9 @@ export const fetchTrips = createAsyncThunk(
 
       if (params?.category) {
         filteredTrips = filteredTrips.filter((trip) =>
-          trip.category.toLowerCase().includes(params.category!.toLowerCase()),
+          trip.category.name
+            .toLowerCase()
+            .includes(params.category!.toLowerCase()),
         );
       }
 

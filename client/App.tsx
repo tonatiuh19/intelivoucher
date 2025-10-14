@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import { HelmetProvider } from "react-helmet-async";
 import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
 import Checkout from "./pages/Checkout";
@@ -25,6 +26,7 @@ const MyProfile = lazy(() => import("./pages/user/MyProfile"));
 const LoadingDemo = lazy(() => import("./pages/LoadingDemo"));
 const PaymentKeysTest = lazy(() => import("./components/PaymentKeysTest"));
 const Eventos = lazy(() => import("./pages/Eventos"));
+const EventDetails = lazy(() => import("./pages/EventDetails"));
 
 const queryClient = new QueryClient();
 
@@ -32,76 +34,86 @@ const App = () => (
   <Provider store={store}>
     <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <LanguageSync />
-          <PaymentKeysInitializer />
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route
-                path="/eventos"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <Eventos />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/admin/trips"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <AdminTrips />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/user/trips"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <UserTrips />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/reservations"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <MyReservations />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <MyProfile />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/loading-demo"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <LoadingDemo />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/payment-test"
-                element={
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <PaymentKeysTest />
-                  </Suspense>
-                }
-              />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <HelmetProvider>
+          <TooltipProvider>
+            <LanguageSync />
+            <PaymentKeysInitializer />
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route
+                  path="/eventos"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Eventos />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/eventos/:id"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <EventDetails />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/admin/trips"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <AdminTrips />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/user/trips"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <UserTrips />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/reservations"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <MyReservations />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <MyProfile />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/loading-demo"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <LoadingDemo />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="/payment-test"
+                  element={
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <PaymentKeysTest />
+                    </Suspense>
+                  }
+                />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </HelmetProvider>
       </QueryClientProvider>
     </PersistGate>
   </Provider>

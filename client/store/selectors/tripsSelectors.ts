@@ -24,11 +24,11 @@ export const selectFilteredTrips = createSelector(
         !searchQuery ||
         trip.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         trip.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        trip.category.toLowerCase().includes(searchQuery.toLowerCase());
+        trip.category.name.toLowerCase().includes(searchQuery.toLowerCase());
 
       // Category filter
       const matchesCategory =
-        !filters.category || trip.category === filters.category;
+        !filters.category || trip.category.name === filters.category;
 
       // Location filter
       const matchesLocation =
@@ -68,10 +68,11 @@ export const selectTripsByCategory = createSelector([selectTrips], (trips) => {
   const validTrips = trips.filter((trip) => trip != null);
 
   validTrips.forEach((trip) => {
-    if (!categories[trip.category]) {
-      categories[trip.category] = [];
+    const categoryName = trip.category.name;
+    if (!categories[categoryName]) {
+      categories[categoryName] = [];
     }
-    categories[trip.category].push(trip);
+    categories[categoryName].push(trip);
   });
 
   return categories;

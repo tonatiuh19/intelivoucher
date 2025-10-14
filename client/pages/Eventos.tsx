@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
@@ -27,8 +27,10 @@ import {
   Shirt,
   AlertCircle,
   User,
+  ExternalLink,
 } from "lucide-react";
 import { format } from "date-fns";
+import { debounce } from "lodash";
 
 // Components
 import AppHeader from "@/components/AppHeader";
@@ -59,6 +61,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // Store
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -83,6 +99,7 @@ import {
   selectPresaleEvents,
 } from "@/store/selectors/eventsSelectors";
 import { selectIsAuthenticated } from "@/store/selectors/authSelectors";
+import { selectCurrentLanguage } from "@/store/selectors/languageSelectors";
 import { openSignInModal } from "@/store/slices/authSlice";
 
 // Types
@@ -98,6 +115,10 @@ const Eventos: React.FC = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchInput, setSearchInput] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState<ApiEvent[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Selectors
   const events = useAppSelector(selectPaginatedEvents);
@@ -111,11 +132,100 @@ const Eventos: React.FC = () => {
   const trendingEvents = useAppSelector(selectTrendingEvents);
   const presaleEvents = useAppSelector(selectPresaleEvents);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const currentLanguage = useAppSelector(selectCurrentLanguage);
 
   // Effects
   useEffect(() => {
-    dispatch(fetchActiveEventsAsync());
-  }, [dispatch]);
+    // Only fetch all events on initial load if no search input
+    if (!searchInput) {
+      dispatch(
+        fetchActiveEventsAsync({ ...filters, language: currentLanguage }),
+      );
+    }
+  }, [dispatch, currentLanguage]);
+
+  // Debounced search for suggestions
+  const debouncedSearch = React.useMemo(
+    () =>
+      debounce(async (searchTerm: string) => {
+        if (!searchTerm || searchTerm.length < 2) {
+          setSearchResults([]);
+          setSearchLoading(false);
+          return;
+        }
+
+        setSearchLoading(true);
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/getActiveEvents.php`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                title: searchTerm,
+                language: currentLanguage,
+              }),
+            },
+          );
+
+          const data = await response.json();
+          const events = Array.isArray(data)
+            ? data
+            : data.success && Array.isArray(data.events)
+              ? data.events
+              : [];
+
+          setSearchResults(events.slice(0, 5)); // Limit to 5 suggestions
+        } catch (error) {
+          console.error("Search error:", error);
+          setSearchResults([]);
+        } finally {
+          setSearchLoading(false);
+        }
+      }, 300),
+    [currentLanguage],
+  );
+
+  // Handle search input change
+  useEffect(() => {
+    if (searchInput) {
+      setSearchOpen(true);
+      debouncedSearch(searchInput);
+    } else {
+      setSearchOpen(false);
+      setSearchResults([]);
+    }
+
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchInput, debouncedSearch]);
+
+  // Debounced function to re-fetch all events when filters change (NOT search)
+  const debouncedFetchEvents = React.useMemo(
+    () =>
+      debounce(() => {
+        if (!searchInput) {
+          // Only fetch all events if not actively searching
+          dispatch(
+            fetchActiveEventsAsync({ ...filters, language: currentLanguage }),
+          );
+        }
+      }, 500),
+    [dispatch, filters, currentLanguage, searchInput],
+  );
+
+  // Re-fetch events when filters change (but not search)
+  useEffect(() => {
+    if (!searchInput) {
+      debouncedFetchEvents();
+    }
+    return () => {
+      debouncedFetchEvents.cancel();
+    };
+  }, [filters, debouncedFetchEvents, searchInput]);
 
   // Force dark mode like MyProfile component
   useEffect(() => {
@@ -142,7 +252,29 @@ const Eventos: React.FC = () => {
   // Handlers
   const handleSearch = (value: string) => {
     setSearchInput(value);
-    dispatch(updateFilters({ search: value }));
+  };
+
+  const handleSearchSelect = (eventId: string, action: "view" | "checkout") => {
+    const event = searchResults.find((e) => e.id.toString() === eventId);
+    if (!event) return;
+
+    setSearchOpen(false);
+    setSearchInput("");
+
+    if (action === "view") {
+      navigate(`/eventos/${eventId}`);
+    } else {
+      const trip = handleAddToCart(event);
+      navigate("/checkout", { state: { event: trip } });
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setSearchResults([]);
+    setSearchOpen(false);
+    // Re-fetch all events when search is cleared
+    dispatch(fetchActiveEventsAsync({ ...filters, language: currentLanguage }));
   };
 
   const handleCategoryFilter = (categoryId: string) => {
@@ -155,6 +287,32 @@ const Eventos: React.FC = () => {
 
   const handlePresaleFilter = (presale: boolean) => {
     dispatch(updateFilters({ presale }));
+  };
+
+  const handleIncludesTransportationFilter = (
+    includesTransportation: boolean,
+  ) => {
+    dispatch(updateFilters({ includesTransportation }));
+  };
+
+  const handleRefundableIfNoTicketFilter = (refundableIfNoTicket: boolean) => {
+    dispatch(updateFilters({ refundableIfNoTicket }));
+  };
+
+  const handleAcceptsUnderAgeFilter = (acceptsUnderAge: boolean) => {
+    dispatch(updateFilters({ acceptsUnderAge }));
+  };
+
+  const handleJerseyAddonAvailableFilter = (jerseyAddonAvailable: boolean) => {
+    dispatch(updateFilters({ jerseyAddonAvailable }));
+  };
+
+  const handleLocationFilter = (location: string) => {
+    dispatch(updateFilters({ location }));
+  };
+
+  const handleVenueNameFilter = (venueName: string) => {
+    dispatch(updateFilters({ venueName }));
   };
 
   const handleClearFilters = () => {
@@ -173,7 +331,7 @@ const Eventos: React.FC = () => {
     const trip = {
       id: event.id,
       title: event.title,
-      category: event.category.name,
+      category: event.category,
       date: event.event_date,
       location: "", // Note: venue information might need to be added to API
       price:
@@ -184,12 +342,18 @@ const Eventos: React.FC = () => {
           : "0",
       image: event.image_url || "",
       rating: 4.5, // Default rating - could be dynamic
-      soldOut: event.is_sold_out === "1",
-      trending: event.is_trending === "1",
-      includesTransportation: event.includes_transportation === "1",
-      isPresale: event.is_presale === "1",
-      requiresTicketAcquisition: event.requires_ticket_acquisition === "1",
-      refundableIfNoTicket: event.refundable_if_no_ticket === "1",
+      soldOut: event.is_sold_out === "1" || event.is_sold_out === 1,
+      trending: event.is_trending === "1" || event.is_trending === 1,
+      includesTransportation:
+        event.includes_transportation === "1" ||
+        event.includes_transportation === 1,
+      isPresale: event.is_presale === "1" || event.is_presale === 1,
+      requiresTicketAcquisition:
+        event.requires_ticket_acquisition === "1" ||
+        event.requires_ticket_acquisition === 1,
+      refundableIfNoTicket:
+        event.refundable_if_no_ticket === "1" ||
+        event.refundable_if_no_ticket === 1,
       paymentOptions: {
         installmentsAvailable:
           event.event_payment_options.length > 0 &&
@@ -208,8 +372,11 @@ const Eventos: React.FC = () => {
         gift_name: gift.gift_name,
         gift_name_es: gift.gift_name_es,
       })),
-      acceptsUnderAge: event.accepts_under_age === "1",
-      jerseyAddonAvailable: event.jersey_addon_available === "1",
+      acceptsUnderAge:
+        event.accepts_under_age === "1" || event.accepts_under_age === 1,
+      jerseyAddonAvailable:
+        event.jersey_addon_available === "1" ||
+        event.jersey_addon_available === 1,
       jerseyPrice: parseFloat(event.jersey_price) || 120,
       availableZones: event.event_zones.map((zone) => ({
         id: zone.id.toString(),
@@ -427,33 +594,54 @@ const Eventos: React.FC = () => {
         </CardContent>
 
         <CardFooter className="pt-0">
-          <div className="w-full flex items-center justify-between">
-            <div>
-              {minPrice > 0 && (
-                <div className="text-sm text-muted-foreground">
-                  {t("common.from")}
+          <div className="w-full space-y-4">
+            {/* Price */}
+            <div className="flex items-center justify-between">
+              <div>
+                {minPrice > 0 && (
+                  <div className="text-sm text-muted-foreground">
+                    {t("common.from")}
+                  </div>
+                )}
+                <div className="text-2xl font-bold text-foreground">
+                  {minPrice > 0
+                    ? formatCurrency(minPrice.toString())
+                    : t("common.free")}
                 </div>
-              )}
-              <div className="text-xl font-bold text-foreground">
-                {minPrice > 0
-                  ? formatCurrency(minPrice.toString())
-                  : t("common.free")}
               </div>
             </div>
 
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                const trip = handleAddToCart(event);
-                navigate("/checkout", { state: { event: trip } });
-              }}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0"
-              disabled={event.is_sold_out === "1"}
-            >
-              {event.is_sold_out === "1"
-                ? t("common.soldOut")
-                : t("common.getTickets")}
-            </Button>
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/eventos/${event.id}`);
+                }}
+                className="flex-1 h-11 text-xs sm:text-sm px-2"
+              >
+                <Eye className="w-4 h-4 mr-1" />
+                <span className="truncate">
+                  {t("eventDetails.viewDetails")}
+                </span>
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const trip = handleAddToCart(event);
+                  navigate("/checkout", { state: { event: trip } });
+                }}
+                className="flex-1 h-11 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0 text-xs sm:text-sm px-2"
+                disabled={event.is_sold_out === "1"}
+              >
+                <span className="truncate">
+                  {event.is_sold_out === "1"
+                    ? t("common.soldOut")
+                    : t("common.getTickets")}
+                </span>
+              </Button>
+            </div>
           </div>
         </CardFooter>
       </Card>
@@ -531,17 +719,164 @@ const Eventos: React.FC = () => {
                 {t("eventos.heroSubtitle")}
               </p>
 
-              {/* Hero Search */}
+              {/* Hero Search with Suggestions */}
               <div className="max-w-2xl mx-auto mb-12">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                  <Input
-                    placeholder={t("common.searchEvents")}
-                    value={searchInput}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    className="pl-12 pr-4 py-4 text-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-border/50 focus:border-primary/50 rounded-2xl shadow-lg"
-                  />
-                </div>
+                <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+                  <PopoverTrigger asChild>
+                    <div className="relative">
+                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 z-10" />
+                      <Input
+                        ref={searchInputRef}
+                        placeholder={t("common.searchEvents")}
+                        value={searchInput}
+                        onChange={(e) => handleSearch(e.target.value)}
+                        onFocus={() => searchInput && setSearchOpen(true)}
+                        className="pl-12 pr-4 py-4 text-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-border/50 focus:border-primary/50 rounded-2xl shadow-lg"
+                      />
+                      {searchInput && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleClearSearch}
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50"
+                        >
+                          <AlertCircle className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-[600px] p-0"
+                    align="start"
+                    onOpenAutoFocus={(e) => e.preventDefault()}
+                  >
+                    <Command>
+                      <CommandList>
+                        {searchLoading ? (
+                          <CommandEmpty>
+                            <div className="p-4 text-center text-sm text-muted-foreground">
+                              {t("common.loading")}
+                            </div>
+                          </CommandEmpty>
+                        ) : searchResults.length === 0 ? (
+                          <CommandEmpty>
+                            <div className="p-4 text-center">
+                              <Search className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                              <p className="text-sm text-muted-foreground">
+                                {t("eventDetails.noResultsFound")}
+                              </p>
+                            </div>
+                          </CommandEmpty>
+                        ) : (
+                          <CommandGroup
+                            heading={t("eventDetails.searchResults")}
+                          >
+                            {searchResults.map((event) => {
+                              const title =
+                                currentLanguage === "es" && event.title_es
+                                  ? event.title_es
+                                  : event.title;
+                              const minPrice =
+                                event.event_zones.length > 0
+                                  ? Math.min(
+                                      ...event.event_zones.map((zone) =>
+                                        parseFloat(zone.price),
+                                      ),
+                                    )
+                                  : 0;
+
+                              return (
+                                <div
+                                  key={event.id}
+                                  className="flex items-center gap-4 p-3 hover:bg-muted/50 rounded-lg cursor-pointer group"
+                                >
+                                  {/* Event Image Thumbnail */}
+                                  <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500">
+                                    {event.image_url ? (
+                                      <img
+                                        src={event.image_url}
+                                        alt={title}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center">
+                                        <Music className="w-8 h-8 text-white" />
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Event Info */}
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="font-semibold text-sm truncate">
+                                      {title}
+                                    </h4>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                      >
+                                        {event.category.name}
+                                      </Badge>
+                                      <span className="text-xs text-muted-foreground">
+                                        {format(
+                                          new Date(event.event_date),
+                                          "MMM dd, yyyy",
+                                        )}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {/* Price */}
+                                  <div className="flex-shrink-0 text-right">
+                                    <p className="text-sm font-bold text-primary">
+                                      {formatCurrency(minPrice.toString())}
+                                    </p>
+                                  </div>
+
+                                  {/* Action Buttons */}
+                                  <div className="flex-shrink-0 flex gap-2">
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSearchSelect(
+                                          event.id.toString(),
+                                          "view",
+                                        );
+                                      }}
+                                      className="h-8"
+                                    >
+                                      <ExternalLink className="w-4 h-4 mr-1" />
+                                      {t("eventDetails.viewDetails")}
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSearchSelect(
+                                          event.id.toString(),
+                                          "checkout",
+                                        );
+                                      }}
+                                      className="h-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                                      disabled={event.is_sold_out === "1"}
+                                    >
+                                      <Ticket className="w-4 h-4 mr-1" />
+                                      {event.is_sold_out === "1"
+                                        ? t("common.soldOut")
+                                        : t("common.getTickets")}
+                                    </Button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </CommandGroup>
+                        )}
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {/* Stats Grid */}
@@ -668,18 +1003,152 @@ const Eventos: React.FC = () => {
                       {t("eventos.advancedFilters")}
                     </Button>
                   </SheetTrigger>
-                  <SheetContent>
+                  <SheetContent className="overflow-y-auto">
                     <SheetHeader>
                       <SheetTitle>{t("eventos.advancedFilters")}</SheetTitle>
                       <SheetDescription>
                         {t("eventos.advancedFiltersDescription")}
                       </SheetDescription>
                     </SheetHeader>
-                    {/* Add more advanced filter controls here */}
-                    <div className="py-6">
-                      <p className="text-sm text-muted-foreground">
-                        {t("eventos.moreFiltersComingSoon")}
-                      </p>
+
+                    <div className="py-6 space-y-6">
+                      {/* Location Filter */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">
+                          <MapPin className="w-4 h-4 inline mr-2" />
+                          {t("eventos.location")}
+                        </label>
+                        <Input
+                          placeholder={t("eventos.locationPlaceholder")}
+                          value={filters.location}
+                          onChange={(e) => handleLocationFilter(e.target.value)}
+                          className="w-full"
+                        />
+                      </div>
+
+                      {/* Venue Name Filter */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-foreground">
+                          <MapPin className="w-4 h-4 inline mr-2" />
+                          {t("eventos.venueName")}
+                        </label>
+                        <Input
+                          placeholder={t("eventos.venueNamePlaceholder")}
+                          value={filters.venueName}
+                          onChange={(e) =>
+                            handleVenueNameFilter(e.target.value)
+                          }
+                          className="w-full"
+                        />
+                      </div>
+
+                      {/* Transportation Filter */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-foreground">
+                          <Car className="w-4 h-4 inline mr-2" />
+                          {t("eventos.includesTransportation")}
+                        </label>
+                        <Button
+                          variant={
+                            filters.includesTransportation
+                              ? "default"
+                              : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            handleIncludesTransportationFilter(
+                              !filters.includesTransportation,
+                            )
+                          }
+                        >
+                          {filters.includesTransportation
+                            ? t("common.yes")
+                            : t("common.no")}
+                        </Button>
+                      </div>
+
+                      {/* Accepts Under Age Filter */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-foreground">
+                          <Users className="w-4 h-4 inline mr-2" />
+                          {t("eventos.acceptsUnderAge")}
+                        </label>
+                        <Button
+                          variant={
+                            filters.acceptsUnderAge ? "default" : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            handleAcceptsUnderAgeFilter(
+                              !filters.acceptsUnderAge,
+                            )
+                          }
+                        >
+                          {filters.acceptsUnderAge
+                            ? t("common.yes")
+                            : t("common.no")}
+                        </Button>
+                      </div>
+
+                      {/* Jersey Add-on Available Filter */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-foreground">
+                          <Shirt className="w-4 h-4 inline mr-2" />
+                          {t("eventos.jerseyAddonAvailable")}
+                        </label>
+                        <Button
+                          variant={
+                            filters.jerseyAddonAvailable ? "default" : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            handleJerseyAddonAvailableFilter(
+                              !filters.jerseyAddonAvailable,
+                            )
+                          }
+                        >
+                          {filters.jerseyAddonAvailable
+                            ? t("common.yes")
+                            : t("common.no")}
+                        </Button>
+                      </div>
+
+                      {/* Refundable If No Ticket Filter */}
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-foreground">
+                          <AlertCircle className="w-4 h-4 inline mr-2" />
+                          {t("eventos.refundableIfNoTicket")}
+                        </label>
+                        <Button
+                          variant={
+                            filters.refundableIfNoTicket ? "default" : "outline"
+                          }
+                          size="sm"
+                          onClick={() =>
+                            handleRefundableIfNoTicketFilter(
+                              !filters.refundableIfNoTicket,
+                            )
+                          }
+                        >
+                          {filters.refundableIfNoTicket
+                            ? t("common.yes")
+                            : t("common.no")}
+                        </Button>
+                      </div>
+
+                      {/* Clear All Button */}
+                      <div className="pt-4 border-t border-border">
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => {
+                            handleClearFilters();
+                            setFiltersOpen(false);
+                          }}
+                        >
+                          {t("eventos.clearAllFilters")}
+                        </Button>
+                      </div>
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -691,7 +1160,25 @@ const Eventos: React.FC = () => {
         {/* Events Section */}
         <section className="py-16 px-4 bg-background dark:bg-slate-900">
           <div className="container mx-auto max-w-7xl">
-            {loading ? (
+            {searchInput ? (
+              /* Show message when actively searching */
+              <Card className="text-center py-16 border-border/50 bg-card backdrop-blur-sm">
+                <CardContent>
+                  <div className="w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <Search className="h-12 w-12 text-blue-500" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-foreground">
+                    {t("eventDetails.searchingEvents")}
+                  </h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    {t("eventDetails.useSearchSuggestions")}
+                  </p>
+                  <Button onClick={handleClearSearch}>
+                    {t("eventDetails.showAllEvents")}
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : loading ? (
               <div className="relative min-h-[500px]">
                 <LoadingMask isLoading={true} />
               </div>

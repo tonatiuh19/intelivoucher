@@ -73,7 +73,9 @@
     "emailSupport": "Soporte por Email",
     "downloadTickets": "Descargar Boletos",
     "requestInvoice": "Solicitar Factura",
-    "language": "Idioma"
+    "language": "Idioma",
+    "yes": "Sí",
+    "no": "No"
   },
   "navigation": {
     "home": "Inicio",
@@ -129,7 +131,42 @@
     "noEventsFoundDescription": "Intenta ajustar tus criterios de búsqueda o filtros para encontrar más eventos.",
     "clearAllFilters": "Limpiar Todos los Filtros",
     "trackYourAdventures": "Rastrea tus Aventuras",
-    "trackYourAdventuresDescription": "Mantén un registro de todos tus eventos reservados, descarga boletos y nunca te pierdas una experiencia increíble."
+    "trackYourAdventuresDescription": "Mantén un registro de todos tus eventos reservados, descarga boletos y nunca te pierdas una experiencia increíble.",
+    "location": "Ubicación",
+    "locationPlaceholder": "Ingresa ubicación (ej., Miami, Nueva York)",
+    "venueName": "Nombre del Lugar",
+    "venueNamePlaceholder": "Ingresa nombre del lugar (ej., Estadio, Arena)",
+    "includesTransportation": "Incluye Transporte",
+    "acceptsUnderAge": "Acepta Menores de Edad",
+    "jerseyAddonAvailable": "Jersey Disponible",
+    "refundableIfNoTicket": "Reembolsable si No Hay Boleto"
+  },
+  "eventDetails": {
+    "backToEvents": "Volver a Eventos",
+    "eventNotFound": "Evento no encontrado",
+    "time": "Hora",
+    "saveEvent": "Guardar Evento",
+    "share": "Compartir",
+    "about": "Acerca de Este Evento",
+    "availableZones": "Zonas Disponibles",
+    "transportation": "Opciones de Transporte",
+    "extras": "Extras",
+    "includedGifts": "Regalos Incluidos",
+    "eventInfo": "Información del Evento",
+    "transportationIncluded": "Transporte Incluido",
+    "allAgesWelcome": "Todas las Edades Bienvenidas",
+    "jerseyAvailable": "Jersey Disponible",
+    "refundablePolicy": "Reembolsable si No se Asigna Boleto",
+    "paymentOptions": "Opciones de Pago",
+    "installmentsAvailable": "Cuotas Disponibles",
+    "presaleDeposit": "Depósito de Preventa Disponible",
+    "capacity": "Capacidad",
+    "noResultsFound": "No se encontraron resultados. Intenta con otro término de búsqueda.",
+    "searchResults": "Resultados de Búsqueda",
+    "viewDetails": "Ver Detalles",
+    "searchingEvents": "Buscando eventos",
+    "useSearchSuggestions": "Usa el cuadro de búsqueda arriba para encontrar eventos. Selecciona de las sugerencias para ver detalles u obtener boletos.",
+    "showAllEvents": "Mostrar Todos los Eventos"
   },
   "badges": {
     "transportationIncluded": "🚌 Transporte Incluido",
@@ -498,7 +535,7 @@
       "required": "El modo de transporte es requerido"
     },
     "transportOrigin": {
-      "required": "La ciudad de origen es requerida para el transporte"
+      "required": "La ciudad de origen es requerida para el transporte/hospedaje"
     },
     "jersey": {
       "namesRequired": "Los nombres de jersey son requeridos para jerseys personalizados",

@@ -5,6 +5,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LoadingMask } from "@/components/ui/loading-mask";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
   Search,
   Calendar,
   MapPin,
@@ -31,10 +44,14 @@ import {
   Lock,
   CreditCard,
   Eye,
+  ExternalLink,
+  Loader2,
 } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { format } from "date-fns";
+import { debounce } from "lodash";
 import AppHeader from "@/components/AppHeader";
 import AppFooter from "@/components/AppFooter";
 
@@ -66,6 +83,8 @@ import {
   mockVenuesData,
 } from "../data/mockData";
 import { formatCurrency } from "@/lib/utils";
+import type { ApiEvent } from "@/types";
+import { selectCurrentLanguage } from "@/store/selectors/languageSelectors";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -77,6 +96,10 @@ export default function Index() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState<ApiEvent[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Redux store state
   const filteredTrips = useAppSelector(selectFilteredTrips);
@@ -85,6 +108,66 @@ export default function Index() {
   const cartItemCount = useAppSelector(selectCartItemCount);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const user = useAppSelector(selectUser);
+  const currentLanguage = useAppSelector(selectCurrentLanguage);
+
+  // Debounced search for suggestions
+  const debouncedSearch = React.useMemo(
+    () =>
+      debounce(async (searchQuery: string) => {
+        if (!searchQuery || searchQuery.length < 2) {
+          setSearchResults([]);
+          setSearchLoading(false);
+          return;
+        }
+
+        setSearchLoading(true);
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/getActiveEvents.php`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                title: searchQuery,
+                language: currentLanguage,
+              }),
+            },
+          );
+
+          const data = await response.json();
+          const events = Array.isArray(data)
+            ? data
+            : data.success && Array.isArray(data.events)
+              ? data.events
+              : [];
+
+          setSearchResults(events.slice(0, 5)); // Limit to 5 suggestions
+        } catch (error) {
+          console.error("Search error:", error);
+          setSearchResults([]);
+        } finally {
+          setSearchLoading(false);
+        }
+      }, 300),
+    [currentLanguage],
+  );
+
+  // Handle search input change
+  useEffect(() => {
+    if (searchTerm) {
+      setSearchOpen(true);
+      debouncedSearch(searchTerm);
+    } else {
+      setSearchOpen(false);
+      setSearchResults([]);
+    }
+
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchTerm, debouncedSearch]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -121,7 +204,104 @@ export default function Index() {
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     dispatch(setSearchQuery(value));
-    console.log("🔍 Search updated in Redux store:", value);
+  };
+
+  const handleSearchSelect = (eventId: string, action: "view" | "checkout") => {
+    const event = searchResults.find((e) => e.id.toString() === eventId);
+    if (!event) return;
+
+    setSearchOpen(false);
+    setSearchTerm("");
+
+    if (action === "view") {
+      navigate(`/eventos/${eventId}`);
+    } else {
+      // Convert ApiEvent to Trip format
+      const trip = {
+        id: event.id,
+        title: event.title,
+        title_es: event.title_es,
+        category: event.category,
+        date: event.event_date,
+        location: "",
+        price:
+          event.event_zones.length > 0
+            ? Math.min(
+                ...event.event_zones.map((zone) => parseFloat(zone.price)),
+              ).toString()
+            : "0",
+        image: event.image_url || "",
+        rating: 4.5,
+        soldOut: event.is_sold_out === "1" || event.is_sold_out === 1,
+        trending: event.is_trending === "1" || event.is_trending === 1,
+        includesTransportation:
+          event.includes_transportation === "1" ||
+          event.includes_transportation === 1,
+        isPresale: event.is_presale === "1" || event.is_presale === 1,
+        requiresTicketAcquisition:
+          event.requires_ticket_acquisition === "1" ||
+          event.requires_ticket_acquisition === 1,
+        refundableIfNoTicket:
+          event.refundable_if_no_ticket === "1" ||
+          event.refundable_if_no_ticket === 1,
+        paymentOptions: {
+          installmentsAvailable:
+            event.event_payment_options.length > 0 &&
+            event.event_payment_options[0].installments_available > 0,
+          presaleDepositAvailable:
+            event.event_payment_options.length > 0 &&
+            event.event_payment_options[0].presale_deposit_available > 0,
+          secondPaymentInstallmentsAvailable:
+            event.event_payment_options.length > 0 &&
+            event.event_payment_options[0]
+              .second_payment_installments_available > 0,
+        },
+        gifts: event.event_gifts.map((gift) => ({
+          id: gift.id,
+          event_id: gift.event_id,
+          gift_name: gift.gift_name,
+          gift_name_es: gift.gift_name_es,
+        })),
+        acceptsUnderAge:
+          event.accepts_under_age === "1" || event.accepts_under_age === 1,
+        jerseyAddonAvailable:
+          event.jersey_addon_available === "1" ||
+          event.jersey_addon_available === 1,
+        jerseyPrice: parseFloat(event.jersey_price) || 120,
+        availableZones: event.event_zones.map((zone) => ({
+          id: zone.id.toString(),
+          name: zone.zone_name,
+          price: parseFloat(zone.price),
+          description: zone.zone_description,
+          available: zone.is_available === 1,
+          zone_name: zone.zone_name,
+          zone_description: zone.zone_description,
+          zone_name_es: zone.zone_name_es,
+          zone_description_es: zone.zone_description_es,
+        })),
+        transportationOptions: event.transportation_options.map((option) => ({
+          id: option.id.toString(),
+          name: option.type_name,
+          name_es: option.type_name_es,
+          description: option.description,
+          description_es: option.description_es,
+          additionalCost: parseFloat(option.additional_cost),
+          capacity: option.capacity,
+          available: option.is_available === 1,
+          specialInstructions: option.special_instructions,
+          specialInstructions_es: option.special_instructions_es,
+          transportationTypeId: option.transportation_type_id,
+          lodgingTypeId: option.lodging_type_id,
+          lodgingName: option.lodging_name,
+          lodgingName_es: option.lodging_name_es,
+          lodgingDescription: option.lodging_description,
+          lodgingDescription_es: option.lodging_description_es,
+          lodgingActive: option.lodging_is_active === 1,
+        })),
+      };
+      handleAddToCart(trip);
+      navigate("/checkout", { state: { event: trip } });
+    }
   };
 
   // Handle add to cart using Redux store
@@ -331,24 +511,154 @@ export default function Index() {
                 </p>
               </div>
 
-              {/* Enhanced Search Bar */}
+              {/* Enhanced Search Bar with Dropdown */}
               <div className="max-w-4xl mx-auto">
                 <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-slate-200/50 dark:border-slate-700/50">
-                  <div className="flex gap-4 items-center">
-                    <div className="flex-1 relative">
-                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-slate-400" />
-                      <Input
-                        placeholder={t("hero.searchPlaceholder")}
-                        className="pl-12 h-14 text-lg border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl min-h-[56px]"
-                        value={searchTerm}
-                        onChange={(e) => handleSearch(e.target.value)}
-                      />
-                    </div>
-                    <Button className="h-14 min-h-[56px] bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue text-lg rounded-xl font-semibold shadow-lg px-8 flex items-center justify-center">
-                      <Search className="w-5 h-5 mr-2" />
-                      {t("common.findEvents")}
-                    </Button>
-                  </div>
+                  <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+                    <PopoverTrigger asChild>
+                      <div className="flex-1 relative">
+                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-slate-400 z-10" />
+                        <Input
+                          ref={searchInputRef}
+                          placeholder={t("hero.searchPlaceholder")}
+                          className="pl-12 h-14 text-lg border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl min-h-[56px] w-full"
+                          value={searchTerm}
+                          onChange={(e) => handleSearch(e.target.value)}
+                          onFocus={() => searchTerm && setSearchOpen(true)}
+                        />
+                        {searchLoading && (
+                          <Loader2 className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-brand-blue animate-spin" />
+                        )}
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-[800px] p-0"
+                      align="center"
+                      onOpenAutoFocus={(e) => e.preventDefault()}
+                    >
+                      <Command>
+                        <CommandList>
+                          {searchLoading && (
+                            <div className="py-6 text-center text-sm text-muted-foreground">
+                              <Loader2 className="w-4 h-4 animate-spin mx-auto mb-2" />
+                              {t("eventDetails.searchingEvents")}
+                            </div>
+                          )}
+                          {!searchLoading && searchResults.length === 0 && (
+                            <CommandEmpty>
+                              {t("eventDetails.noResultsFound")}
+                            </CommandEmpty>
+                          )}
+                          {!searchLoading && searchResults.length > 0 && (
+                            <CommandGroup
+                              heading={t("eventDetails.searchResults")}
+                            >
+                              {searchResults.map((event) => {
+                                const minPrice =
+                                  event.event_zones.length > 0
+                                    ? Math.min(
+                                        ...event.event_zones.map((zone) =>
+                                          parseFloat(zone.price),
+                                        ),
+                                      )
+                                    : 0;
+
+                                const title =
+                                  currentLanguage === "es" && event.title_es
+                                    ? event.title_es
+                                    : event.title;
+
+                                const formatCurrency = (price: number) => {
+                                  return new Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "USD",
+                                  }).format(price);
+                                };
+
+                                return (
+                                  <div
+                                    key={event.id}
+                                    className="flex items-center gap-4 px-4 py-3 cursor-pointer rounded-lg transition-colors group"
+                                  >
+                                    {/* Event Image */}
+                                    <img
+                                      src={event.image_url}
+                                      alt={title}
+                                      className="w-16 h-16 object-cover rounded-lg"
+                                    />
+
+                                    {/* Event Info */}
+                                    <div className="flex-1 min-w-0">
+                                      <h4 className="font-semibold text-sm line-clamp-1 group-hover:text-primary transition-colors">
+                                        {title}
+                                      </h4>
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <Badge
+                                          variant="secondary"
+                                          className="text-xs"
+                                        >
+                                          {event.category.name}
+                                        </Badge>
+                                        <span className="text-xs text-muted-foreground">
+                                          {format(
+                                            new Date(event.event_date),
+                                            "MMM dd, yyyy",
+                                          )}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    {/* Price */}
+                                    <div className="flex-shrink-0 text-right">
+                                      <p className="text-sm font-bold text-primary">
+                                        {formatCurrency(minPrice)}
+                                      </p>
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex-shrink-0 flex gap-2">
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleSearchSelect(
+                                            event.id.toString(),
+                                            "view",
+                                          );
+                                        }}
+                                        className="h-8"
+                                      >
+                                        <ExternalLink className="w-4 h-4 mr-1" />
+                                        {t("eventDetails.viewDetails")}
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleSearchSelect(
+                                            event.id.toString(),
+                                            "checkout",
+                                          );
+                                        }}
+                                        className="h-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                                        disabled={event.is_sold_out === "1"}
+                                      >
+                                        <Ticket className="w-4 h-4 mr-1" />
+                                        {event.is_sold_out === "1"
+                                          ? t("common.soldOut")
+                                          : t("common.getTickets")}
+                                      </Button>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </CommandGroup>
+                          )}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <div className="flex items-center justify-center mt-6 space-x-6">
                     <span className="text-slate-500 dark:text-slate-400 text-sm">
                       {t("common.popular")}:
@@ -426,7 +736,7 @@ export default function Index() {
                   {event.trending && (
                     <div className="absolute top-4 left-4 z-10">
                       <Badge className="bg-red-500 hover:bg-red-500 animate-pulse">
-                        🔥 Trending
+                        🔥 {t("common.trending")}
                       </Badge>
                     </div>
                   )}
@@ -438,7 +748,7 @@ export default function Index() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     <Badge className="absolute top-4 right-4 bg-brand-blue hover:bg-brand-blue">
-                      {event.category}
+                      {event.category.name}
                     </Badge>
                   </div>
                   <CardContent className="p-6">
@@ -465,7 +775,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-green-500/40 text-green-400 bg-green-500/10"
                         >
-                          🚌 Transportation Included
+                          {t("badges.transportationIncluded")}
                         </Badge>
                       )}
                       {event.isPresale && (
@@ -473,7 +783,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-blue-500/40 text-blue-400 bg-blue-500/10"
                         >
-                          Pre-sale
+                          {t("badges.presale")}
                         </Badge>
                       )}
                       {event.isPresale && event.requiresTicketAcquisition && (
@@ -481,7 +791,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-yellow-500/40 text-yellow-400 bg-yellow-500/10"
                         >
-                          Ticket Allocation Pending
+                          {t("badges.ticketAllocationPending")}
                         </Badge>
                       )}
                       {event.refundableIfNoTicket && (
@@ -489,7 +799,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
                         >
-                          Refundable if Not Allocated
+                          {t("badges.refundableIfNoTicket")}
                         </Badge>
                       )}
                       {event.paymentOptions?.presaleDepositAvailable && (
@@ -497,7 +807,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-cyan-500/40 text-cyan-400 bg-cyan-500/10"
                         >
-                          Reserve with Deposit
+                          {t("badges.reserveWithDeposit")}
                         </Badge>
                       )}
                       {event.paymentOptions?.installmentsAvailable && (
@@ -505,7 +815,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-purple-500/40 text-purple-400 bg-purple-500/10"
                         >
-                          Installments Available
+                          {t("badges.installmentsAvailable")}
                         </Badge>
                       )}
                       {event.isPresale &&
@@ -515,7 +825,7 @@ export default function Index() {
                             variant="outline"
                             className="text-xs border-indigo-500/40 text-indigo-400 bg-indigo-500/10"
                           >
-                            Second Payment in Installments
+                            {t("badges.secondPaymentInstallments")}
                           </Badge>
                         )}
                       {event.gifts && event.gifts.length > 0 && (
@@ -523,7 +833,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-pink-500/40 text-pink-400 bg-pink-500/10"
                         >
-                          Includes Gifts
+                          {t("badges.includesGifts")}
                         </Badge>
                       )}
                       {event.acceptsUnderAge && (
@@ -531,7 +841,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-teal-500/40 text-teal-400 bg-teal-500/10"
                         >
-                          Under-age Allowed
+                          {t("badges.underAgeAllowed")}
                         </Badge>
                       )}
                       {event.jerseyAddonAvailable && (
@@ -539,30 +849,49 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-orange-500/40 text-orange-400 bg-orange-500/10"
                         >
-                          Jersey Add-on
+                          {t("badges.jerseyAddon")}
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-brand-cyan">
-                        {t("common.from")}: $
-                        {formatCurrency(event.price, "", 2)}
-                      </span>
-                      <Button
-                        className="bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue"
-                        disabled={event.soldOut}
-                        onClick={() => {
-                          if (!event.soldOut) {
-                            handleAddToCart(event);
-                            navigate("/checkout", { state: { event } });
-                          }
-                        }}
-                      >
-                        {event.soldOut
-                          ? t("common.soldOut")
-                          : t("common.getTickets")}
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-brand-cyan">
+                          {t("common.from")}: $
+                          {formatCurrency(event.price, "", 2)}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          className="flex-1 h-11 border-brand-cyan text-brand-cyan hover:bg-brand-cyan/10 text-xs sm:text-sm px-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/eventos/${event.id}`);
+                          }}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          <span className="truncate">
+                            {t("eventDetails.viewDetails")}
+                          </span>
+                        </Button>
+                        <Button
+                          className="flex-1 h-11 bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue text-xs sm:text-sm px-2"
+                          disabled={event.soldOut}
+                          onClick={() => {
+                            if (!event.soldOut) {
+                              handleAddToCart(event);
+                              navigate("/checkout", { state: { event } });
+                            }
+                          }}
+                        >
+                          <span className="truncate">
+                            {event.soldOut
+                              ? t("common.soldOut")
+                              : t("common.getTickets")}
+                          </span>
+                          <ArrowRight className="w-4 h-4 ml-1 flex-shrink-0" />
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -667,7 +996,7 @@ export default function Index() {
                       </Badge>
                     )}
                     <Badge className="absolute top-4 right-4 bg-brand-blue hover:bg-brand-blue">
-                      {event.category}
+                      {event.category.name}
                     </Badge>
                   </div>
                   <CardContent className="p-6">
@@ -694,7 +1023,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-green-500/40 text-green-400 bg-green-500/10"
                         >
-                          🚌 Transportation Included
+                          {t("badges.transportationIncluded")}
                         </Badge>
                       )}
                       {event.isPresale && (
@@ -702,7 +1031,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-blue-500/40 text-blue-400 bg-blue-500/10"
                         >
-                          Pre-sale
+                          {t("badges.presale")}
                         </Badge>
                       )}
                       {event.isPresale && event.requiresTicketAcquisition && (
@@ -710,7 +1039,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-yellow-500/40 text-yellow-400 bg-yellow-500/10"
                         >
-                          Ticket Allocation Pending
+                          {t("badges.ticketAllocationPending")}
                         </Badge>
                       )}
                       {event.refundableIfNoTicket && (
@@ -718,7 +1047,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
                         >
-                          Refundable if Not Allocated
+                          {t("badges.refundableIfNoTicket")}
                         </Badge>
                       )}
                       {event.paymentOptions?.presaleDepositAvailable && (
@@ -726,7 +1055,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-cyan-500/40 text-cyan-400 bg-cyan-500/10"
                         >
-                          Reserve with Deposit
+                          {t("badges.reserveWithDeposit")}
                         </Badge>
                       )}
                       {event.paymentOptions?.installmentsAvailable && (
@@ -734,7 +1063,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-purple-500/40 text-purple-400 bg-purple-500/10"
                         >
-                          Installments Available
+                          {t("badges.installmentsAvailable")}
                         </Badge>
                       )}
                       {event.isPresale &&
@@ -744,7 +1073,7 @@ export default function Index() {
                             variant="outline"
                             className="text-xs border-indigo-500/40 text-indigo-400 bg-indigo-500/10"
                           >
-                            Second Payment in Installments
+                            {t("badges.secondPaymentInstallments")}
                           </Badge>
                         )}
                       {event.gifts && event.gifts.length > 0 && (
@@ -752,7 +1081,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-pink-500/40 text-pink-400 bg-pink-500/10"
                         >
-                          Includes Gifts
+                          {t("badges.includesGifts")}
                         </Badge>
                       )}
                       {event.acceptsUnderAge && (
@@ -760,7 +1089,7 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-teal-500/40 text-teal-400 bg-teal-500/10"
                         >
-                          Under-age Allowed
+                          {t("badges.underAgeAllowed")}
                         </Badge>
                       )}
                       {event.jerseyAddonAvailable && (
@@ -768,28 +1097,47 @@ export default function Index() {
                           variant="outline"
                           className="text-xs border-orange-500/40 text-orange-400 bg-orange-500/10"
                         >
-                          Jersey Add-on
+                          {t("badges.jerseyAddon")}
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-brand-cyan">
-                        {event.price}
-                      </span>
-                      <Button
-                        className="bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue"
-                        disabled={event.soldOut}
-                        onClick={() => {
-                          if (!event.soldOut) {
-                            handleAddToCart(event);
-                            navigate("/checkout", { state: { event } });
-                          }
-                        }}
-                      >
-                        {event.soldOut
-                          ? t("common.soldOut")
-                          : t("common.getTickets")}
-                      </Button>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-brand-cyan">
+                          {event.price}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          className="flex-1 h-11 border-brand-cyan text-brand-cyan hover:bg-brand-cyan/10 text-xs sm:text-sm px-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/eventos/${event.id}`);
+                          }}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          <span className="truncate">
+                            {t("eventDetails.viewDetails")}
+                          </span>
+                        </Button>
+                        <Button
+                          className="flex-1 h-11 bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-brand-cyan hover:to-brand-blue text-xs sm:text-sm px-2"
+                          disabled={event.soldOut}
+                          onClick={() => {
+                            if (!event.soldOut) {
+                              handleAddToCart(event);
+                              navigate("/checkout", { state: { event } });
+                            }
+                          }}
+                        >
+                          <span className="truncate">
+                            {event.soldOut
+                              ? t("common.soldOut")
+                              : t("common.getTickets")}
+                          </span>
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

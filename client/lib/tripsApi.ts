@@ -65,22 +65,31 @@ export function transformApiEventToTrip(apiEvent: ApiEvent): Trip {
     id: apiEvent.id,
     title: apiEvent.title,
     title_es: apiEvent.title_es,
-    category: apiEvent.category.name,
+    category: apiEvent.category,
     date: apiEvent.event_date,
     location: `Event ${apiEvent.id}`, // You may want to add venue information to your API
     price: lowestPrice === Infinity ? "0" : lowestPrice.toString(),
     image: apiEvent.image_url,
     rating: 4.5, // Default rating since it's not in the API
-    soldOut: apiEvent.is_sold_out === "1",
-    trending: apiEvent.is_trending === "1",
-    includesTransportation: apiEvent.includes_transportation === "1",
-    isPresale: apiEvent.is_presale === "1",
-    requiresTicketAcquisition: apiEvent.requires_ticket_acquisition === "1",
-    refundableIfNoTicket: apiEvent.refundable_if_no_ticket === "1",
+    soldOut: apiEvent.is_sold_out === "1" || apiEvent.is_sold_out === 1,
+    trending: apiEvent.is_trending === "1" || apiEvent.is_trending === 1,
+    includesTransportation:
+      apiEvent.includes_transportation === "1" ||
+      apiEvent.includes_transportation === 1,
+    isPresale: apiEvent.is_presale === "1" || apiEvent.is_presale === 1,
+    requiresTicketAcquisition:
+      apiEvent.requires_ticket_acquisition === "1" ||
+      apiEvent.requires_ticket_acquisition === 1,
+    refundableIfNoTicket:
+      apiEvent.refundable_if_no_ticket === "1" ||
+      apiEvent.refundable_if_no_ticket === 1,
     paymentOptions,
     gifts: gifts.length > 0 ? gifts : undefined,
-    acceptsUnderAge: apiEvent.accepts_under_age === "1",
-    jerseyAddonAvailable: apiEvent.jersey_addon_available === "1",
+    acceptsUnderAge:
+      apiEvent.accepts_under_age === "1" || apiEvent.accepts_under_age === 1,
+    jerseyAddonAvailable:
+      apiEvent.jersey_addon_available === "1" ||
+      apiEvent.jersey_addon_available === 1,
     jerseyPrice: parseFloat(apiEvent.jersey_price),
     availableZones,
     transportationOptions:

@@ -87,7 +87,7 @@
     "discover": "Discover",
     "unforgettable": "Unforgettable",
     "experiences": "Experiences",
-    "subtitle": "Join {{count}} users discovering amazing events. From sold-out concerts to exclusive theater shows - secure your tickets in seconds with our countdown timer system.",
+    "subtitle": "Life whispers its secrets through unforgettable experiences. Open your heart to adventures that paint your world in colors you never knew existed.",
     "searchPlaceholder": "Search artists, teams, shows...",
     "cityPlaceholder": "City or venue",
     "datePlaceholder": "Any date",
@@ -146,8 +146,8 @@
   "features": {
     "title": "Why Choose InteliVoucher?",
     "subtitle": "Experience the future of event ticketing",
-    "whyChooseTitle": "Why Choose Intelivoucher?",
-    "whyChooseSubtitle": "The most secure and user-friendly way to discover and purchase event tickets online.",
+    "whyChooseTitle": "Where Dreams Come Alive and Emotions Find Their Stage",
+    "whyChooseSubtitle": "When the curtain rises, every moment becomes eternal and every experience, unforgettable.",
     "instantBooking": {
       "title": "Instant Booking",
       "description": "Secure your tickets in seconds with our lightning-fast booking system"
@@ -201,6 +201,7 @@
     "emailNotificationText": "We'll notify you via email about new events, ticket availability, and exclusive offers. Check your email regularly for the latest updates!"
   },
   "footer": {
+    "description": "Your heart beats stronger when you live unique experiences. We help you find those magical moments that transform lives.",
     "events": "Events",
     "concerts": "Concerts",
     "sports": "Sports",
@@ -635,5 +636,9 @@
     },
     "guarantee": "100% Secure Transactions Guaranteed",
     "certified": "Security Certified"
+  },
+  "notFound": {
+    "message": "Oops! Page not found",
+    "returnHome": "Return to Home"
   }
 }

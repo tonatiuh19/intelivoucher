@@ -29,6 +29,13 @@ export interface ApiEventGift {
   gift_name_es: string;
 }
 
+export interface Gift {
+  id: number;
+  event_id: number;
+  gift_name: string;
+  gift_name_es: string;
+}
+
 export interface ApiEventPaymentOptions {
   id: number;
   event_id: number;
@@ -163,7 +170,7 @@ export interface Trip {
   requiresTicketAcquisition: boolean;
   refundableIfNoTicket: boolean;
   paymentOptions: PaymentOptions;
-  gifts?: string[];
+  gifts?: Gift[];
   acceptsUnderAge: boolean;
   jerseyAddonAvailable?: boolean;
   jerseyPrice?: number;

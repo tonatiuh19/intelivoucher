@@ -87,7 +87,7 @@
     "discover": "Descubre",
     "unforgettable": "Experiencias",
     "experiences": "Inolvidables",
-    "subtitle": "Únete a {{count}} usuarios descubriendo eventos increíbles. Desde conciertos agotados hasta espectáculos teatrales exclusivos - asegura tus boletos en segundos y recibe confirmaciones por email.",
+    "subtitle": "La vida susurra sus secretos a través de experiencias inolvidables. Abre tu corazón a aventuras que pintan tu mundo en colores que nunca supiste que existían.",
     "searchPlaceholder": "Buscar artistas, equipos, espectáculos...",
     "cityPlaceholder": "Ciudad o lugar",
     "datePlaceholder": "Cualquier fecha",
@@ -146,8 +146,8 @@
   "features": {
     "title": "¿Por Qué Elegir InteliVoucher?",
     "subtitle": "Experimenta el futuro de la venta de boletos para eventos",
-    "whyChooseTitle": "¿Por Qué Elegir Intelivoucher?",
-    "whyChooseSubtitle": "La forma más segura y fácil de descubrir y comprar boletos para eventos en línea.",
+    "whyChooseTitle": "Donde los Sueños Cobran Vida y las Emociones Encuentran su Escenario",
+    "whyChooseSubtitle": "Cuando el telón abre, cada momento se vuelve eterno y cada experiencia, inolvidable.",
     "instantBooking": {
       "title": "Reserva Instantánea",
       "description": "Asegura tus boletos en segundos con nuestro sistema de reserva ultrarrápido"
@@ -201,6 +201,7 @@
     "emailNotificationText": "Te notificaremos por email sobre nuevos eventos, disponibilidad de boletos y ofertas exclusivas. ¡Revisa tu email regularmente para las últimas actualizaciones!"
   },
   "footer": {
+    "description": "Tu corazón late más fuerte cuando vives experiencias únicas. Nosotros te ayudamos a encontrar esos momentos mágicos que transforman vidas.",
     "events": "Eventos",
     "concerts": "Conciertos",
     "sports": "Deportes",
@@ -635,5 +636,9 @@
     },
     "guarantee": "Transacciones 100% Seguras Garantizadas",
     "certified": "Certificado de Seguridad"
+  },
+  "notFound": {
+    "message": "¡Ups! Página no encontrada",
+    "returnHome": "Volver al Inicio"
   }
 }

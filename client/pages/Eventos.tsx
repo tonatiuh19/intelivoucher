@@ -202,7 +202,12 @@ const Eventos: React.FC = () => {
           event.event_payment_options[0].second_payment_installments_available >
             0,
       },
-      gifts: event.event_gifts.map((gift) => gift.gift_name),
+      gifts: event.event_gifts.map((gift) => ({
+        id: gift.id,
+        event_id: gift.event_id,
+        gift_name: gift.gift_name,
+        gift_name_es: gift.gift_name_es,
+      })),
       acceptsUnderAge: event.accepts_under_age === "1",
       jerseyAddonAvailable: event.jersey_addon_available === "1",
       jerseyPrice: parseFloat(event.jersey_price) || 120,

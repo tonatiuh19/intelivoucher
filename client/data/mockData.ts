@@ -1,6 +1,8 @@
 // Test data for populating the Redux store
 // This simulates data that would come from an API
 
+import { Gift } from "@/types";
+
 export interface ZoneOption {
   id: string;
   name: string;
@@ -29,7 +31,7 @@ export interface TripEvent {
     presaleDepositAvailable: boolean;
     secondPaymentInstallmentsAvailable: boolean;
   };
-  gifts: string[];
+  gifts: Gift[];
   acceptsUnderAge: boolean;
   jerseyAddonAvailable?: boolean;
   jerseyPrice?: number;
@@ -58,7 +60,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: true,
     },
-    gifts: ["Band T-shirt", "Signed poster", "VIP lanyard"],
+    gifts: [
+      {
+        id: 1,
+        event_id: 1,
+        gift_name: "Band T-shirt",
+        gift_name_es: "Camiseta de la Banda",
+      },
+      {
+        id: 2,
+        event_id: 1,
+        gift_name: "Signed poster",
+        gift_name_es: "Póster Autografiado",
+      },
+      {
+        id: 3,
+        event_id: 1,
+        gift_name: "VIP lanyard",
+        gift_name_es: "Cordón VIP",
+      },
+    ],
     acceptsUnderAge: true,
     availableZones: [
       {
@@ -112,7 +133,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: true,
     },
-    gifts: ["Team jersey", "Signed ball", "Court side meal voucher"],
+    gifts: [
+      {
+        id: 4,
+        event_id: 2,
+        gift_name: "Team jersey",
+        gift_name_es: "Jersey del Equipo",
+      },
+      {
+        id: 5,
+        event_id: 2,
+        gift_name: "Signed ball",
+        gift_name_es: "Balón Autografiado",
+      },
+      {
+        id: 6,
+        event_id: 2,
+        gift_name: "Court side meal voucher",
+        gift_name_es: "Voucher de Comida Lateral",
+      },
+    ],
     acceptsUnderAge: true,
     availableZones: [
       {
@@ -166,7 +206,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: true,
     },
-    gifts: ["Running gear", "Medal display", "NYC guidebook"],
+    gifts: [
+      {
+        id: 7,
+        event_id: 3,
+        gift_name: "Running gear",
+        gift_name_es: "Equipo de Correr",
+      },
+      {
+        id: 8,
+        event_id: 3,
+        gift_name: "Medal display",
+        gift_name_es: "Expositor de Medalla",
+      },
+      {
+        id: 9,
+        event_id: 3,
+        gift_name: "NYC guidebook",
+        gift_name_es: "Guía de NYC",
+      },
+    ],
     acceptsUnderAge: true,
     availableZones: [
       {
@@ -220,7 +279,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: true,
       secondPaymentInstallmentsAvailable: true,
     },
-    gifts: ["Team scarf", "Match program", "Stadium tour"],
+    gifts: [
+      {
+        id: 10,
+        event_id: 4,
+        gift_name: "Team scarf",
+        gift_name_es: "Bufanda del Equipo",
+      },
+      {
+        id: 11,
+        event_id: 4,
+        gift_name: "Match program",
+        gift_name_es: "Programa del Partido",
+      },
+      {
+        id: 12,
+        event_id: 4,
+        gift_name: "Stadium tour",
+        gift_name_es: "Tour del Estadio",
+      },
+    ],
     acceptsUnderAge: true,
     jerseyAddonAvailable: true,
     jerseyPrice: 120,
@@ -276,7 +354,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: false,
     },
-    gifts: ["Team hat", "Stadium blanket", "Cheese curds voucher"],
+    gifts: [
+      {
+        id: 13,
+        event_id: 5,
+        gift_name: "Team hat",
+        gift_name_es: "Gorra del Equipo",
+      },
+      {
+        id: 14,
+        event_id: 5,
+        gift_name: "Stadium blanket",
+        gift_name_es: "Manta del Estadio",
+      },
+      {
+        id: 15,
+        event_id: 5,
+        gift_name: "Cheese curds voucher",
+        gift_name_es: "Voucher de Queso",
+      },
+    ],
     acceptsUnderAge: true,
     availableZones: [
       {
@@ -330,8 +427,27 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: true,
       secondPaymentInstallmentsAvailable: false,
     },
-    gifts: ["Winter hat", "Hot chocolate voucher", "Team puck"],
-    acceptsUnderAge: true,
+    gifts: [
+      {
+        id: 16,
+        event_id: 6,
+        gift_name: "Winter hat",
+        gift_name_es: "Gorro de Invierno",
+      },
+      {
+        id: 17,
+        event_id: 6,
+        gift_name: "Hot chocolate voucher",
+        gift_name_es: "Voucher de Chocolate Caliente",
+      },
+      {
+        id: 18,
+        event_id: 6,
+        gift_name: "Team puck",
+        gift_name_es: "Disco del Equipo",
+      },
+    ],
+    acceptsUnderAge: false,
     availableZones: [
       {
         id: "glass-seats",
@@ -384,7 +500,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: false,
     },
-    gifts: ["Program book", "Cast photo", "Broadway pin"],
+    gifts: [
+      {
+        id: 19,
+        event_id: 7,
+        gift_name: "Program book",
+        gift_name_es: "Libro del Programa",
+      },
+      {
+        id: 20,
+        event_id: 7,
+        gift_name: "Cast photo",
+        gift_name_es: "Foto del Reparto",
+      },
+      {
+        id: 21,
+        event_id: 7,
+        gift_name: "Broadway pin",
+        gift_name_es: "Pin de Broadway",
+      },
+    ],
     acceptsUnderAge: true,
     availableZones: [
       {
@@ -439,7 +574,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: true,
     },
-    gifts: ["Festival wristband", "Exclusive tote bag", "Sunglasses"],
+    gifts: [
+      {
+        id: 22,
+        event_id: 8,
+        gift_name: "Festival wristband",
+        gift_name_es: "Pulsera del Festival",
+      },
+      {
+        id: 23,
+        event_id: 8,
+        gift_name: "Exclusive tote bag",
+        gift_name_es: "Bolsa Exclusiva",
+      },
+      {
+        id: 24,
+        event_id: 8,
+        gift_name: "Sunglasses",
+        gift_name_es: "Gafas de Sol",
+      },
+    ],
     acceptsUnderAge: false,
     availableZones: [
       {
@@ -495,7 +649,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: false,
     },
-    gifts: ["Comedy CD", "Drink voucher", "Meet and greet pass"],
+    gifts: [
+      {
+        id: 25,
+        event_id: 9,
+        gift_name: "Comedy CD",
+        gift_name_es: "CD de Comedia",
+      },
+      {
+        id: 26,
+        event_id: 9,
+        gift_name: "Drink voucher",
+        gift_name_es: "Voucher de Bebida",
+      },
+      {
+        id: 27,
+        event_id: 9,
+        gift_name: "Meet and greet pass",
+        gift_name_es: "Pase de Conocer y Saludar",
+      },
+    ],
     acceptsUnderAge: false,
     availableZones: [
       {
@@ -549,7 +722,26 @@ export const mockEventsData: TripEvent[] = [
       presaleDepositAvailable: false,
       secondPaymentInstallmentsAvailable: false,
     },
-    gifts: ["Program booklet", "Classical music CD", "Carnegie Hall pin"],
+    gifts: [
+      {
+        id: 28,
+        event_id: 10,
+        gift_name: "Program booklet",
+        gift_name_es: "Folleto del Programa",
+      },
+      {
+        id: 29,
+        event_id: 10,
+        gift_name: "Classical music CD",
+        gift_name_es: "CD de Música Clásica",
+      },
+      {
+        id: 30,
+        event_id: 10,
+        gift_name: "Carnegie Hall pin",
+        gift_name_es: "Pin de Carnegie Hall",
+      },
+    ],
     acceptsUnderAge: true,
     availableZones: [
       {

@@ -41,10 +41,7 @@ export const AppFooter: React.FC<AppFooterProps> = ({
               </div>
               <h4 className="text-2xl font-bold">Intelivoucher</h4>
             </div>
-            <p className="text-slate-400 mb-6">
-              The ultimate event ticketing platform for concerts, sports, and
-              cultural experiences.
-            </p>
+            <p className="text-slate-400 mb-6">{t("footer.description")}</p>
             <div className="flex space-x-4">
               <Button
                 variant="ghost"

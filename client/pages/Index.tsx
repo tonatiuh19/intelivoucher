@@ -327,14 +327,7 @@ export default function Index() {
                   </span>
                 </h2>
                 <p className="text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: t("hero.subtitle").replace(
-                        "{{count}}",
-                        '<span class="font-bold text-brand-blue">2M+ users</span>',
-                      ),
-                    }}
-                  />
+                  {t("hero.subtitle")}
                 </p>
               </div>
 
@@ -616,14 +609,14 @@ export default function Index() {
                             ? category.count_es || category.count
                             : category.count}
                         </p>
-                        <Button
+                        {/* <Button
                           variant="secondary"
                           size="sm"
                           className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                         >
                           {t("common.explore")}{" "}
                           <ChevronRight className="w-4 h-4 ml-1" />
-                        </Button>
+                        </Button> */}
                       </div>
                     </div>
                   </CardContent>
@@ -648,6 +641,7 @@ export default function Index() {
               <Button
                 variant="outline"
                 className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white dark:border-brand-cyan dark:text-brand-cyan"
+                onClick={() => navigate("/eventos")}
               >
                 {t("featuredEvents.viewAllEvents")}
                 <ArrowRight className="w-4 h-4 ml-2" />

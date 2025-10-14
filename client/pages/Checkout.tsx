@@ -1163,9 +1163,16 @@ export default function Checkout() {
                     </div>
                     {incomingEvent?.gifts?.length ? (
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {incomingEvent.gifts.map((g: string) => (
-                          <Badge key={g} variant="outline" className="text-xs">
-                            🎁 {g}
+                        {incomingEvent.gifts.map((gift: any) => (
+                          <Badge
+                            key={gift.id || gift.gift_name}
+                            variant="outline"
+                            className="text-xs"
+                          >
+                            🎁{" "}
+                            {i18n.language === "es"
+                              ? gift.gift_name_es || gift.gift_name
+                              : gift.gift_name}
                           </Badge>
                         ))}
                       </div>

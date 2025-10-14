@@ -27,7 +27,12 @@ export function transformApiEventToTrip(apiEvent: ApiEvent): Trip {
     zone_description_es: zone.zone_description_es,
   }));
 
-  const gifts = apiEvent.event_gifts.map((gift) => gift.gift_name);
+  const gifts = apiEvent.event_gifts.map((gift) => ({
+    id: gift.id,
+    event_id: gift.event_id,
+    gift_name: gift.gift_name,
+    gift_name_es: gift.gift_name_es,
+  }));
 
   const transportationOptions = apiEvent.transportation_options?.map(
     (transport) => ({

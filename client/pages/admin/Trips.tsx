@@ -44,6 +44,8 @@ const emptyTrip = (): Trip => ({
   acceptsUnderAge: true,
   jerseyAddonAvailable: false,
   jerseyPrice: 120,
+  availableZones: [],
+  transportationOptions: [],
 });
 
 export default function AdminTrips() {

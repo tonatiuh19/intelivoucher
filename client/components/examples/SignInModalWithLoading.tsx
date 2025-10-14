@@ -97,7 +97,7 @@ export const EnhancedSignInModalExample: React.FC = () => {
 };
 
 /*
-Usage examples for different scenarios in your app:
+Usage examples for different scenarios:
 
 1. AUTHENTICATION FLOW:
 <LoadingMask

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   ArrowRight,
   AlertCircle,
+  Clock,
 } from "lucide-react";
 import { LoadingMask } from "@/components/ui/loading-mask";
 
@@ -89,6 +90,33 @@ export const SignInModal: React.FC = () => {
     (state) => state.language.currentLanguage,
   );
 
+  // Timer state for resend functionality (5 minutes = 300 seconds)
+  const [resendTimer, setResendTimer] = useState(0);
+
+  // Timer effect - counts down every second
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [resendTimer]);
+
+  // Reset timer when verification step is reached or code is sent
+  useEffect(() => {
+    if (modalStep === "verification" && resendTimer === 0) {
+      setResendTimer(300); // 5 minutes
+    }
+  }, [modalStep]);
+
   // Handle email check
   const handleEmailCheck = async () => {
     if (!canProceedFromEmail) return;
@@ -128,6 +156,7 @@ export const SignInModal: React.FC = () => {
   // Handle sending verification code
   const handleSendCode = async (userId: number) => {
     await dispatch(sendCode({ userId, email }));
+    setResendTimer(300); // Reset timer to 5 minutes after sending code
   };
 
   // Handle code verification
@@ -141,12 +170,21 @@ export const SignInModal: React.FC = () => {
   const handleBack = () => {
     if (modalStep === "registration" || modalStep === "verification") {
       dispatch(setModalStep("email"));
+      setResendTimer(0); // Reset timer when going back
     }
   };
 
   // Handle close
   const handleClose = () => {
     dispatch(closeSignInModal());
+    setResendTimer(0); // Reset timer when modal closes
+  };
+
+  // Format timer display (MM:SS)
+  const formatTimer = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   // Clear error when user starts typing
@@ -247,18 +285,7 @@ export const SignInModal: React.FC = () => {
           blur={true}
         >
           <div className="space-y-6">
-            {/* Progress indicator */}
-            <div className="flex items-center justify-center space-x-2">
-              <div
-                className={`w-3 h-3 rounded-full ${modalStep === "email" ? "bg-brand-blue" : "bg-gray-300"}`}
-              />
-              <div
-                className={`w-3 h-3 rounded-full ${modalStep === "registration" || modalStep === "verification" ? "bg-brand-blue" : "bg-gray-300"}`}
-              />
-              <div
-                className={`w-3 h-3 rounded-full ${modalStep === "verification" ? "bg-brand-blue" : "bg-gray-300"}`}
-              />
-            </div>
+            <div className="flex items-center justify-center space-y-5"></div>
 
             {/* Error display */}
             {error && (
@@ -393,6 +420,13 @@ export const SignInModal: React.FC = () => {
                   </p>
                 </div>
 
+                {/* Code delivery notice */}
+                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                  <p className="text-sm text-blue-700 dark:text-blue-300 text-center">
+                    {t("auth.codeDeliveryNotice")}
+                  </p>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="verificationCode">
                     {t("auth.verificationCode")}
@@ -431,15 +465,28 @@ export const SignInModal: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="mt-2 text-brand-blue hover:text-brand-cyan"
+                    className={`mt-2 transition-all duration-200 ${
+                      resendTimer > 0
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-brand-blue hover:text-brand-cyan"
+                    }`}
                     onClick={() => {
-                      if (user) {
+                      if (user && resendTimer === 0) {
                         handleSendCode(user.id);
                       }
                     }}
-                    disabled={isAnyLoading || !user}
+                    disabled={isAnyLoading || !user || resendTimer > 0}
                   >
-                    {t("auth.resendCode")}
+                    {resendTimer > 0 ? (
+                      <div className="flex items-center space-x-2">
+                        <Clock className="w-4 h-4" />
+                        <span>
+                          {t("auth.resendCodeIn")} {formatTimer(resendTimer)}
+                        </span>
+                      </div>
+                    ) : (
+                      t("auth.resendCode")
+                    )}
                   </Button>
                 </div>
               </div>

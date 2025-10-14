@@ -35,7 +35,39 @@
     "subtotal": "Subtotal",
     "tax": "Impuesto",
     "discount": "Descuento",
-    "hi": "Hola"
+    "hi": "Hola",
+    "from": "Desde",
+    "myReservations": "Mis Reservas",
+    "refresh": "Actualizar",
+    "retry": "Reintentar",
+    "noReservationsFound": "No Se Encontraron Reservas",
+    "noReservationsText": "Aún no has hecho ninguna reserva.",
+    "browseEvents": "Ver Eventos",
+    "tickets": "Boletos",
+    "jerseySelections": "Selecciones de Jersey",
+    "paymentInstallments": "Cuotas de Pago",
+    "emergencyContact": "Contacto de Emergencia",
+    "specialRequests": "Solicitudes Especiales",
+    "includesJersey": "Incluye Jersey",
+    "size": "Talla",
+    "type": "Tipo",
+    "installment": "Cuota",
+    "due": "Vence",
+    "paid": "Pagado",
+    "purchase": "Compra",
+    "filter": "Filtrar",
+    "all": "Todos",
+    "confirmed": "Confirmado",
+    "completed": "Completado",
+    "pending": "Pendiente",
+    "cancelled": "Cancelado",
+    "active": "Activo",
+    "searchReservations": "Buscar reservas...",
+    "whatsappSupport": "Soporte WhatsApp",
+    "emailSupport": "Soporte por Email",
+    "downloadTickets": "Descargar Boletos",
+    "requestInvoice": "Solicitar Factura",
+    "language": "Idioma"
   },
   "navigation": {
     "home": "Inicio",
@@ -140,10 +172,13 @@
     "trustedByVenuesSubtitle": "Los venues asociados en todo el mundo confían en nosotros con sus eventos más exclusivos"
   },
   "checkout": {
+    "extras": "Extras",
     "steps": {
       "selectTickets": {
         "title": "Seleccionar Boletos",
-        "description": "Elige zona y cantidad"
+        "description": "Elige zona y cantidad",
+        "included": "Incluido",
+        "per_person": "por persona"
       },
       "customerInfo": {
         "title": "Información del Cliente",
@@ -182,6 +217,11 @@
     "lastName": "Apellido",
     "email": "Correo Electrónico",
     "phone": "Teléfono",
+    "specialInstructions": "Instrucciones Especiales",
+    "specialInstructionsPlaceholder": "Por favor ingrese cualquier solicitud especial, restricciones dietéticas o información adicional...",
+    "optional": "Opcional",
+    "emergencyContactName": "Nombre de Contacto de Emergencia",
+    "emergencyContactPhone": "Teléfono de Contacto de Emergencia",
     "cardNumber": "Número de Tarjeta",
     "expiryDate": "Fecha de Vencimiento",
     "cvv": "CVV",
@@ -194,14 +234,14 @@
     "bookingReference": "Referencia de Reserva",
     "includesTransportation": "Incluye Transporte",
     "presale": "Preventa",
-    "installmentsAvailable": "Cuotas Disponibles",
+    "installmentsAvailableBadge": "Cuotas Disponibles",
     "refundableIfNoTicket": "Reembolsable si No se Asigna",
     "backToHome": "Atrás",
     "secureCheckoutTitle": "Pago Seguro InteliVoucher",
     "ticketsReserved": "Tus boletos están reservados",
     "completePurchase": "Completa tu compra antes de que se agote el tiempo",
     "timeRemaining": "Tiempo restante",
-    "hurryTimeWarning": "¡Date prisa! Quedan menos de 5 minutos",
+    "hurryTimeWarningShort": "¡Date prisa! Quedan menos de 5 minutos",
     "zoneSelection": "Selección de Zona",
     "noteZoneSelection": "Nota: Estás seleccionando una zona. Los asientos finales pueden variar según la disponibilidad. Si los asientos asignados son de menor categoría, se reembolsará la diferencia de precio.",
     "selectOrigin": "Seleccionar origen",
@@ -210,6 +250,10 @@
     "chooseSeat": "Elegir asiento",
     "seat": "Asiento",
     "flightSelectionNote": "La selección de vuelo se proporcionará después de la asignación de boletos. El costo de actualización se aplica al pagar.",
+    "flightNotice": {
+      "title": "Transporte Aéreo Seleccionado",
+      "description": "La información adicional de pasajeros (fecha de nacimiento, ID/pasaporte) será solicitada después de la confirmación de la reserva para los arreglos de vuelo."
+    },
     "officialJerseyAddon": "Complemento de Jersey Oficial",
     "jerseyDescription": "Elige para cada pasajero que quiera un jersey. La personalización es opcional.",
     "addJerseyWithPrice": "Agregar jersey (+${{price}})",
@@ -236,9 +280,91 @@
     "personalizedJerseyCount": "Jersey Personalizado ({{count}}x)",
     "serviceFee": "Tarifa de Servicio",
     "processingFee": "Tarifa de Procesamiento",
-    "secureCheckoutStripe": "🔒 Pago 100% seguro powered by Stripe",
+    "secureCheckoutStripe": "🔒 Pago 100% seguro",
     "zone": "Zona",
     "transport": "Transporte",
+    "selectPaymentMethod": "Seleccionar Método de Pago",
+    "creditCardPayment": "Pago con Tarjeta de Crédito",
+    "paypalPayment": "Pago con PayPal",
+    "creditCardDescription": "Paga con tu tarjeta de crédito o débito",
+    "paypalDescription": "Paga con tu cuenta de PayPal",
+    "installments": "Cuotas",
+    "installmentsAvailable": "Disponible para esta cantidad",
+    "selectInstallments": "Seleccionar cuotas",
+    "payInFull": "Pagar completo",
+    "monthlyPayments": "pagos mensuales",
+    "perMonth": "por mes",
+    "cardDetails": "Detalles de la Tarjeta",
+    "installmentSummary": "Resumen de Cuotas",
+    "monthlyPaymentsOf": "pagos mensuales de",
+    "totalAmount": "Monto total",
+    "payFirstInstallment": "Pagar Primera Cuota",
+    "payNow": "Pagar Ahora",
+    "checkingCardEligibility": "Verificando elegibilidad de tarjeta...",
+    "installmentsNotAvailable": "No disponible para esta tarjeta",
+    "cardDoesNotSupportInstallments": "Esta tarjeta no admite cuotas. Por favor usa un método de pago diferente o paga completo.",
+    "enterCardDetailsForInstallments": "Ingresa los detalles de tu tarjeta para verificar disponibilidad de cuotas.",
+    "installmentsNotAvailableForAmount": "Las cuotas no están disponibles para esta cantidad.",
+    "stripeSecurityNote": "Tu pago es procesado de forma segura por Stripe. Los detalles de la tarjeta nunca se almacenan en nuestros servidores.",
+    "paypalNote": "Serás redirigido a PayPal para completar tu pago de forma segura.",
+    "paymentSummary": "Resumen del Pago",
+    "loadingPaypal": "Cargando PayPal...",
+    "paypalError": "El pago de PayPal falló",
+    "paymentCancelled": "El pago fue cancelado",
+    "paypalAccepted": "PayPal, Visa, MasterCard, American Express aceptados",
+    "paypalRedirect": "Serás redirigido a PayPal para completar el pago",
+    "paypalSecurityNote": "Tu pago es procesado de forma segura por PayPal. Nunca vemos ni almacenamos los detalles de tu pago.",
+    "acceptedCards": "Aceptadas:",
+    "buyerProtection": "Protección al Comprador",
+    "paypalInfo": "Paga con tu saldo de PayPal, banco o tarjeta",
+    "securityNotice": "Todos los pagos están asegurados con encriptación SSL de 256 bits. Tu información de pago nunca se almacena en nuestros servidores.",
+    "months": "meses",
+    "processingOrder": "Procesando tu pedido...",
+    "ticketPurchase": "Compra de Boletos del Evento",
+    "redirecting": "Redirigiendo...",
+    "sessionExpiredTitle": "Sesión Expirada",
+    "sessionExpiredMessage": "Tu tiempo de reserva ha expirado. Serás redirigido para seleccionar tus boletos nuevamente.",
+    "goBack": "Regresar",
+    "criticalTimeWarning": "⚠️ ¡Queda menos de 1 minuto! Completa tu compra ahora.",
+    "hurryTimeWarning": "¡Date prisa! Completa tu compra antes de que se agote el tiempo.",
+    "timeExpired": "¡Tiempo expirado! Redirigiendo...",
+    "creatingReservation": "Creando su reservación...",
+    "processingPaymentMessage": "Por favor espere mientras procesamos su pago y creamos su reservación.",
+    "processingPaymentTitle": "Procesando Su Pago",
+    "processingStayOnPage": "Por favor permanezca en esta página mientras procesamos su pedido",
+    "dontRefresh": "No actualizar",
+    "dontGoBack": "No regresar",
+    "stayHere": "Quedarse aquí",
+    "processingWarningTitle": "⚠️ Importante: No Salga de Esta Página",
+    "processingWarning1": "No actualice o cierre su navegador",
+    "processingWarning2": "No presione el botón de atrás",
+    "processingWarning3": "Su pago está siendo procesado de forma segura",
+    "processingWarning4": "Este proceso puede tomar hasta 30 segundos",
+    "preventNavigationMessage": "Su pago está siendo procesado. ¿Está seguro que desea salir? Esto puede causar que su pago falle.",
+    "tryAgain": "Intentar de Nuevo",
+    "taxes": "IVA (16%)",
+    "jerseyTypeLabel": "Tipo de Jersey",
+    "jerseyLocal": "Local",
+    "jerseyAway": "Visitante",
+    "approximateRate": "Tasa aproximada",
+    "reservationError": "Error de Reservación",
+    "reservationDetails": "Detalles de Reservación",
+    "purchaseId": "ID de Compra",
+    "transactionId": "ID de Transacción",
+    "paymentMethod": "Método de Pago",
+    "totalPaid": "Total Pagado",
+    "yourTickets": "Sus Boletos",
+    "purchaseCompleted": "¡Compra Completada Exitosamente!",
+    "confirmationSent": "Los detalles de confirmación han sido enviados a su email",
+    "secured": "Seguro",
+    "emailConfirmation": "Confirmación por Email",
+    "emailConfirmationDesc": "Revisa tu email para la confirmación detallada de reserva e información de boletos.",
+    "mobileTickets": "Boletos Móviles",
+    "mobileTicketsDesc": "Tus boletos están listos para entrada móvil. ¡No necesitas imprimir nada!",
+    "importantReminders": "Recordatorios Importantes",
+    "bringId": "Trae una identificación válida que coincida con la información de tu boleto",
+    "arriveEarly": "Llega al menos 30 minutos antes del inicio del evento",
+    "downloadApp": "Descarga la app Intelivoucher para la mejor experiencia",
     "eighteenPlusOnly": "Solo 18+",
     "ticketHoldersInfo": {
       "description": "Proporciona información para cada portador de boleto. Esta información es requerida para el ingreso y debe coincidir con una identificación válida.",
@@ -271,6 +397,8 @@
     "testCodes": "Prueba códigos de test",
     "testCodesAnyEnding": "o cualquiera que termine en 99",
     "resendCode": "Reenviar Código",
+    "resendCodeIn": "Reenviar código en",
+    "codeDeliveryNotice": "Puede tomar hasta 5 minutos recibir tu código de verificación.",
     "signOut": "Cerrar Sesión",
     "checkingEmail": "Verificando email...",
     "creatingAccount": "Creando cuenta...",
@@ -289,6 +417,89 @@
     "testCodeExamples": {
       "default": "123456",
       "zeros": "000000"
+    }
+  },
+  "validation": {
+    "ticketQuantity": {
+      "min": "Se requiere al menos 1 boleto",
+      "max": "Máximo 8 boletos permitidos",
+      "required": "La cantidad de boletos es requerida"
+    },
+    "zone": {
+      "required": "Por favor selecciona una zona"
+    },
+    "transportationMode": {
+      "required": "El modo de transporte es requerido"
+    },
+    "transportOrigin": {
+      "required": "La ciudad de origen es requerida para el transporte"
+    },
+    "jersey": {
+      "namesRequired": "Los nombres de jersey son requeridos para jerseys personalizados",
+      "numbersRequired": "Los números de jersey son requeridos para jerseys personalizados",
+      "sizesRequired": "Las tallas de jersey son requeridas para todos los jerseys",
+      "typesRequired": "Los tipos de jersey son requeridos para todos los jerseys"
+    },
+    "firstName": {
+      "min": "El nombre debe tener al menos 2 caracteres",
+      "max": "El nombre no debe exceder 50 caracteres",
+      "matches": "El nombre solo puede contener letras y espacios",
+      "required": "El nombre es requerido"
+    },
+    "lastName": {
+      "min": "El apellido debe tener al menos 2 caracteres",
+      "max": "El apellido no debe exceder 50 caracteres",
+      "matches": "El apellido solo puede contener letras y espacios",
+      "required": "El apellido es requerido"
+    },
+    "email": {
+      "format": "Por favor ingresa una dirección de email válida",
+      "required": "El email es requerido"
+    },
+    "phone": {
+      "format": "Por favor ingresa un número de teléfono válido",
+      "required": "El número de teléfono es requerido"
+    },
+    "dateOfBirth": {
+      "max": "La fecha de nacimiento no puede estar en el futuro",
+      "required": "La fecha de nacimiento es requerida"
+    },
+    "idNumber": {
+      "min": "El número de ID debe tener al menos 5 caracteres",
+      "max": "El número de ID no debe exceder 20 caracteres",
+      "required": "El número de ID es requerido"
+    },
+    "ticketHolders": {
+      "min": "Se requiere al menos un portador de boleto",
+      "required": "La información de portadores de boletos es requerida"
+    },
+    "paymentMethod": {
+      "oneOf": "Por favor selecciona un método de pago válido",
+      "required": "El método de pago es requerido"
+    },
+    "installments": {
+      "min": "Las cuotas deben ser al menos 1",
+      "max": "Máximo 12 cuotas permitidas"
+    },
+    "cardNumber": {
+      "format": "Por favor ingresa un número de tarjeta válido",
+      "luhn": "Por favor ingresa un número de tarjeta válido",
+      "required": "El número de tarjeta es requerido"
+    },
+    "expiry": {
+      "format": "Por favor ingresa la fecha de vencimiento en formato MM/YY",
+      "expired": "La tarjeta ha expirado o fecha inválida",
+      "required": "La fecha de vencimiento es requerida"
+    },
+    "cvv": {
+      "format": "El CVV debe tener 3 o 4 dígitos",
+      "required": "El CVV es requerido"
+    },
+    "cardName": {
+      "min": "El nombre en la tarjeta debe tener al menos 2 caracteres",
+      "max": "El nombre en la tarjeta no debe exceder 50 caracteres",
+      "matches": "El nombre en la tarjeta solo puede contener letras y espacios",
+      "required": "El nombre en la tarjeta es requerido"
     }
   }
 }

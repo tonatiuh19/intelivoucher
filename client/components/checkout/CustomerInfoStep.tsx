@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Mail, Smartphone, ArrowLeft, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { customerInfoSchema, Step2Values } from "@/lib/checkoutValidation";
@@ -126,6 +127,94 @@ export const CustomerInfoStep: React.FC<Step2Props> = ({
                 </div>
               )}
             </Field>
+          </div>
+
+          <div>
+            <Label htmlFor="specialInstructions">
+              {t("checkout.specialInstructions")}{" "}
+              <span className="text-slate-500 font-normal">
+                ({t("checkout.optional")})
+              </span>
+            </Label>
+            <Field name="specialInstructions">
+              {({ field, meta }) => (
+                <div>
+                  <Textarea
+                    id="specialInstructions"
+                    {...field}
+                    placeholder={t("checkout.specialInstructionsPlaceholder")}
+                    rows={4}
+                    className={`mt-1 dark:bg-slate-700 dark:text-white ${
+                      meta.touched && meta.error ? "border-red-500" : ""
+                    }`}
+                  />
+                  <ErrorMessage
+                    name="specialInstructions"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+              )}
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="emergencyContactName">
+                {t("checkout.emergencyContactName")}{" "}
+                <span className="text-slate-500 font-normal">
+                  ({t("checkout.optional")})
+                </span>
+              </Label>
+              <Field name="emergencyContactName">
+                {({ field, meta }) => (
+                  <div>
+                    <Input
+                      id="emergencyContactName"
+                      {...field}
+                      placeholder="Jane Doe"
+                      className={`mt-1 dark:bg-slate-700 dark:text-white ${
+                        meta.touched && meta.error ? "border-red-500" : ""
+                      }`}
+                    />
+                    <ErrorMessage
+                      name="emergencyContactName"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                )}
+              </Field>
+            </div>
+            <div>
+              <Label htmlFor="emergencyContactPhone">
+                {t("checkout.emergencyContactPhone")}{" "}
+                <span className="text-slate-500 font-normal">
+                  ({t("checkout.optional")})
+                </span>
+              </Label>
+              <Field name="emergencyContactPhone">
+                {({ field, meta }) => (
+                  <div className="relative mt-1">
+                    <Smartphone className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+                    <Input
+                      id="emergencyContactPhone"
+                      type="tel"
+                      {...field}
+                      placeholder="+1 (555) 987-6543"
+                      className={`pl-10 dark:bg-slate-700 dark:text-white ${
+                        meta.touched && meta.error ? "border-red-500" : ""
+                      }`}
+                    />
+                    <ErrorMessage
+                      name="emergencyContactPhone"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                )}
+              </Field>
+            </div>
           </div>
 
           <div className="bg-blue-50 rounded-lg p-4">

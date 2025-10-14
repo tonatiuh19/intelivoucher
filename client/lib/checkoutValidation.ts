@@ -1,40 +1,24 @@
 import * as yup from "yup";
+import { ValidationMessages } from "./validationMessages";
 
 // Validation schema for Step 1: Ticket Selection
 export const ticketSelectionSchema = yup.object().shape({
   ticketQuantity: yup
     .number()
-    .min(1, "At least 1 ticket is required")
-    .max(8, "Maximum 8 tickets allowed")
-    .required("Ticket quantity is required"),
-  selectedZone: yup.string().required("Please select a zone"),
+    .min(1, ValidationMessages.ticketQuantity.min)
+    .max(8, ValidationMessages.ticketQuantity.max)
+    .required(ValidationMessages.ticketQuantity.required),
+  selectedZone: yup.string().required(ValidationMessages.zone.required),
   transportationMode: yup
     .string()
-    .oneOf(["none", "van", "flight"], "Invalid transportation mode")
-    .required("Transportation mode is required"),
+    .required(ValidationMessages.transportationMode.required),
   transportOrigin: yup.string().when("transportationMode", {
-    is: (value: string) => value === "van" || value === "flight",
+    is: (value: string) => value !== "none",
     then: (schema) =>
-      schema.required("Origin city is required for transportation"),
+      schema.required(ValidationMessages.transportOrigin.required),
     otherwise: (schema) => schema.notRequired(),
   }),
-  vanSeats: yup
-    .array()
-    .of(yup.string())
-    .when("transportationMode", {
-      is: "van",
-      then: (schema) =>
-        schema.test(
-          "van-seats-required",
-          "All passengers must select van seats",
-          function (value) {
-            const { ticketQuantity } = this.parent;
-            if (!value || value.length !== ticketQuantity) return false;
-            return value.every((seat: string) => seat && seat.trim() !== "");
-          },
-        ),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+  vanSeats: yup.array().of(yup.string()).notRequired(), // Disabled for dynamic transportation options
   jerseySelected: yup.array().of(yup.boolean()).notRequired(),
   jerseyPersonalized: yup.array().of(yup.boolean()).notRequired(),
   jerseyNames: yup
@@ -42,7 +26,7 @@ export const ticketSelectionSchema = yup.object().shape({
     .of(yup.string())
     .test(
       "jersey-names-required",
-      "Jersey names are required for personalized jerseys",
+      ValidationMessages.jersey.namesRequired,
       function (value) {
         const { jerseySelected, jerseyPersonalized } = this.parent;
         if (!jerseySelected || !jerseyPersonalized || !value) return true;
@@ -64,7 +48,7 @@ export const ticketSelectionSchema = yup.object().shape({
     .of(yup.string())
     .test(
       "jersey-numbers-required",
-      "Jersey numbers are required for personalized jerseys",
+      ValidationMessages.jersey.numbersRequired,
       function (value) {
         const { jerseySelected, jerseyPersonalized } = this.parent;
         if (!jerseySelected || !jerseyPersonalized || !value) return true;
@@ -86,17 +70,31 @@ export const ticketSelectionSchema = yup.object().shape({
     .of(yup.string())
     .test(
       "jersey-sizes-required",
-      "Jersey sizes are required for personalized jerseys",
+      ValidationMessages.jersey.sizesRequired,
       function (value) {
-        const { jerseySelected, jerseyPersonalized } = this.parent;
-        if (!jerseySelected || !jerseyPersonalized || !value) return true;
+        const { jerseySelected } = this.parent;
+        if (!jerseySelected || !value) return true;
 
         for (let i = 0; i < jerseySelected.length; i++) {
-          if (
-            jerseySelected[i] &&
-            jerseyPersonalized[i] &&
-            (!value[i] || value[i].trim() === "")
-          ) {
+          if (jerseySelected[i] && (!value[i] || value[i].trim() === "")) {
+            return false;
+          }
+        }
+        return true;
+      },
+    ),
+  jerseyTypes: yup
+    .array()
+    .of(yup.string().oneOf(["local", "away"]))
+    .test(
+      "jersey-types-required",
+      ValidationMessages.jersey.typesRequired,
+      function (value) {
+        const { jerseySelected } = this.parent;
+        if (!jerseySelected || !value) return true;
+
+        for (let i = 0; i < jerseySelected.length; i++) {
+          if (jerseySelected[i] && (!value[i] || value[i].trim() === "")) {
             return false;
           }
         }
@@ -110,35 +108,35 @@ export const ticketHolderSchema = yup.object().shape({
   firstName: yup
     .string()
     .trim()
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must not exceed 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "First name can only contain letters and spaces")
-    .required("First name is required"),
+    .min(2, ValidationMessages.firstName.min)
+    .max(50, ValidationMessages.firstName.max)
+    .matches(/^[a-zA-Z\s]*$/, ValidationMessages.firstName.matches)
+    .required(ValidationMessages.firstName.required),
   lastName: yup
     .string()
     .trim()
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must not exceed 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "Last name can only contain letters and spaces")
-    .required("Last name is required"),
+    .min(2, ValidationMessages.lastName.min)
+    .max(50, ValidationMessages.lastName.max)
+    .matches(/^[a-zA-Z\s]*$/, ValidationMessages.lastName.matches)
+    .required(ValidationMessages.lastName.required),
   email: yup
     .string()
-    .email("Please enter a valid email address")
-    .required("Email is required"),
+    .email(ValidationMessages.email.format)
+    .required(ValidationMessages.email.required),
   phone: yup
     .string()
-    .matches(/^[\+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number")
-    .required("Phone number is required"),
+    .matches(/^[\+]?[1-9][\d]{0,15}$/, ValidationMessages.phone.format)
+    .required(ValidationMessages.phone.required),
   dateOfBirth: yup
     .date()
-    .max(new Date(), "Date of birth cannot be in the future")
-    .required("Date of birth is required"),
+    .max(new Date(), ValidationMessages.dateOfBirth.max)
+    .required(ValidationMessages.dateOfBirth.required),
   idNumber: yup
     .string()
     .trim()
-    .min(5, "ID number must be at least 5 characters")
-    .max(20, "ID number must not exceed 20 characters")
-    .required("ID number is required"),
+    .min(5, ValidationMessages.idNumber.min)
+    .max(20, ValidationMessages.idNumber.max)
+    .required(ValidationMessages.idNumber.required),
 });
 
 // Validation schema for Step 2: Customer Information (Primary contact)
@@ -146,105 +144,244 @@ export const customerInfoSchema = yup.object().shape({
   firstName: yup
     .string()
     .trim()
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must not exceed 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "First name can only contain letters and spaces")
-    .required("First name is required"),
+    .min(2, ValidationMessages.firstName.min)
+    .max(50, ValidationMessages.firstName.max)
+    .matches(/^[a-zA-Z\s]*$/, ValidationMessages.firstName.matches)
+    .required(ValidationMessages.firstName.required),
   lastName: yup
     .string()
     .trim()
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must not exceed 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "Last name can only contain letters and spaces")
-    .required("Last name is required"),
+    .min(2, ValidationMessages.lastName.min)
+    .max(50, ValidationMessages.lastName.max)
+    .matches(/^[a-zA-Z\s]*$/, ValidationMessages.lastName.matches)
+    .required(ValidationMessages.lastName.required),
   email: yup
     .string()
-    .email("Please enter a valid email address")
-    .required("Email is required"),
+    .email(ValidationMessages.email.format)
+    .required(ValidationMessages.email.required),
   phone: yup
     .string()
+    .matches(/^[\+]?[1-9][\d]{0,15}$/, ValidationMessages.phone.format)
+    .required(ValidationMessages.phone.required),
+  specialInstructions: yup
+    .string()
+    .max(500, "Special instructions cannot exceed 500 characters")
+    .notRequired(),
+  emergencyContactName: yup
+    .string()
+    .trim()
+    .min(2, "Emergency contact name must be at least 2 characters")
+    .max(100, "Emergency contact name cannot exceed 100 characters")
+    .matches(
+      /^[a-zA-Z\s]*$/,
+      "Emergency contact name must contain only letters and spaces",
+    )
+    .notRequired(),
+  emergencyContactPhone: yup
+    .string()
     .matches(/^[\+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number")
-    .required("Phone number is required"),
+    .notRequired(),
 });
 
-// Validation schema for Step 2.5: Individual Ticket Information
+// Modified validation schema for Step 2.5: Individual Ticket Information
 export const ticketHoldersInfoSchema = yup.object().shape({
   ticketHolders: yup
     .array()
-    .of(ticketHolderSchema)
-    .min(1, "At least one ticket holder is required")
-    .required("Ticket holders information is required"),
+    .of(
+      yup.object().shape({
+        firstName: yup
+          .string()
+          .trim()
+          .min(2, ValidationMessages.firstName.min)
+          .max(50, ValidationMessages.firstName.max)
+          .matches(/^[a-zA-Z\s]*$/, ValidationMessages.firstName.matches)
+          .required(ValidationMessages.firstName.required),
+        lastName: yup
+          .string()
+          .trim()
+          .min(2, ValidationMessages.lastName.min)
+          .max(50, ValidationMessages.lastName.max)
+          .matches(/^[a-zA-Z\s]*$/, ValidationMessages.lastName.matches)
+          .required(ValidationMessages.lastName.required),
+        // Email, phone, dateOfBirth, and idNumber are only required for the primary contact (first ticket holder)
+        email: yup
+          .string()
+          .email(ValidationMessages.email.format)
+          .test(
+            "primary-required",
+            ValidationMessages.email.required,
+            function (value) {
+              const { parent, path } = this;
+              const ticketHolderIndex = parseInt(
+                path.split("[")[1]?.split("]")[0] || "0",
+              );
+              if (ticketHolderIndex === 0) {
+                return !!value; // Required for primary contact
+              }
+              return true; // Not required for additional passengers
+            },
+          ),
+        phone: yup
+          .string()
+          .matches(/^[\+]?[1-9][\d]{0,15}$/, ValidationMessages.phone.format)
+          .test(
+            "primary-required",
+            ValidationMessages.phone.required,
+            function (value) {
+              const { parent, path } = this;
+              const ticketHolderIndex = parseInt(
+                path.split("[")[1]?.split("]")[0] || "0",
+              );
+              if (ticketHolderIndex === 0) {
+                return !!value; // Required for primary contact
+              }
+              return true; // Not required for additional passengers
+            },
+          ),
+        dateOfBirth: yup
+          .date()
+          .max(new Date(), ValidationMessages.dateOfBirth.max)
+          .test(
+            "primary-required",
+            ValidationMessages.dateOfBirth.required,
+            function (value) {
+              const { parent, path } = this;
+              const ticketHolderIndex = parseInt(
+                path.split("[")[1]?.split("]")[0] || "0",
+              );
+              if (ticketHolderIndex === 0) {
+                return !!value; // Required for primary contact
+              }
+              return true; // Not required for additional passengers
+            },
+          ),
+        idNumber: yup
+          .string()
+          .trim()
+          .min(5, ValidationMessages.idNumber.min)
+          .max(20, ValidationMessages.idNumber.max)
+          .test(
+            "primary-required",
+            ValidationMessages.idNumber.required,
+            function (value) {
+              const { parent, path } = this;
+              const ticketHolderIndex = parseInt(
+                path.split("[")[1]?.split("]")[0] || "0",
+              );
+              if (ticketHolderIndex === 0) {
+                return !!value; // Required for primary contact
+              }
+              return true; // Not required for additional passengers
+            },
+          ),
+      }),
+    )
+    .min(1, ValidationMessages.ticketHolders.min)
+    .required(ValidationMessages.ticketHolders.required),
 });
 
 // Validation schema for Step 3: Payment Information
 export const paymentInfoSchema = yup.object().shape({
-  cardNumber: yup
+  paymentMethod: yup
     .string()
-    .matches(/^[\d\s]{13,19}$/, "Please enter a valid card number")
-    .test("luhn-check", "Please enter a valid card number", function (value) {
-      if (!value) return false;
+    .oneOf(["stripe", "paypal"], ValidationMessages.paymentMethod.oneOf)
+    .required(ValidationMessages.paymentMethod.required),
+  installments: yup
+    .number()
+    .min(1, ValidationMessages.installments.min)
+    .max(12, ValidationMessages.installments.max)
+    .when("paymentMethod", {
+      is: "stripe",
+      then: (schema) => schema.notRequired(),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+  // Stripe-specific fields (conditional validation)
+  cardNumber: yup.string().when("paymentMethod", {
+    is: "stripe",
+    then: (schema) =>
+      schema
+        .matches(/^[\d\s]{13,19}$/, ValidationMessages.cardNumber.format)
+        .test(
+          "luhn-check",
+          ValidationMessages.cardNumber.luhn,
+          function (value) {
+            if (!value) return false;
 
-      // Remove spaces and non-digits
-      const digits = value.replace(/\D/g, "");
+            // Remove spaces and non-digits
+            const digits = value.replace(/\D/g, "");
 
-      // Luhn algorithm validation
-      let sum = 0;
-      let isEven = false;
+            // Luhn algorithm validation
+            let sum = 0;
+            let isEven = false;
 
-      for (let i = digits.length - 1; i >= 0; i--) {
-        let digit = parseInt(digits[i]);
+            for (let i = digits.length - 1; i >= 0; i--) {
+              let digit = parseInt(digits[i]);
 
-        if (isEven) {
-          digit *= 2;
-          if (digit > 9) {
-            digit -= 9;
-          }
-        }
+              if (isEven) {
+                digit *= 2;
+                if (digit > 9) {
+                  digit -= 9;
+                }
+              }
 
-        sum += digit;
-        isEven = !isEven;
-      }
+              sum += digit;
+              isEven = !isEven;
+            }
 
-      return sum % 10 === 0;
-    })
-    .required("Card number is required"),
-  expiry: yup
-    .string()
-    .matches(
-      /^(0[1-9]|1[0-2])\/\d{2}$/,
-      "Please enter expiry date in MM/YY format",
-    )
-    .test("expiry-date", "Card has expired or invalid date", function (value) {
-      if (!value) return false;
+            return sum % 10 === 0;
+          },
+        )
+        .required(ValidationMessages.cardNumber.required),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  expiry: yup.string().when("paymentMethod", {
+    is: "stripe",
+    then: (schema) =>
+      schema
+        .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, ValidationMessages.expiry.format)
+        .test(
+          "expiry-date",
+          ValidationMessages.expiry.expired,
+          function (value) {
+            if (!value) return false;
 
-      const [month, year] = value.split("/");
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear() % 100;
-      const currentMonth = currentDate.getMonth() + 1;
+            const [month, year] = value.split("/");
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear() % 100;
+            const currentMonth = currentDate.getMonth() + 1;
 
-      const expYear = parseInt(year);
-      const expMonth = parseInt(month);
+            const expYear = parseInt(year);
+            const expMonth = parseInt(month);
 
-      if (expYear < currentYear) return false;
-      if (expYear === currentYear && expMonth < currentMonth) return false;
+            if (expYear < currentYear) return false;
+            if (expYear === currentYear && expMonth < currentMonth)
+              return false;
 
-      return true;
-    })
-    .required("Expiry date is required"),
-  cvv: yup
-    .string()
-    .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
-    .required("CVV is required"),
-  cardName: yup
-    .string()
-    .trim()
-    .min(2, "Name on card must be at least 2 characters")
-    .max(50, "Name on card must not exceed 50 characters")
-    .matches(
-      /^[a-zA-Z\s]*$/,
-      "Name on card can only contain letters and spaces",
-    )
-    .required("Name on card is required"),
+            return true;
+          },
+        )
+        .required(ValidationMessages.expiry.required),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  cvv: yup.string().when("paymentMethod", {
+    is: "stripe",
+    then: (schema) =>
+      schema
+        .matches(/^\d{3,4}$/, ValidationMessages.cvv.format)
+        .required(ValidationMessages.cvv.required),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  cardName: yup.string().when("paymentMethod", {
+    is: "stripe",
+    then: (schema) =>
+      schema
+        .trim()
+        .min(2, ValidationMessages.cardName.min)
+        .max(50, ValidationMessages.cardName.max)
+        .matches(/^[a-zA-Z\s]*$/, ValidationMessages.cardName.matches)
+        .required(ValidationMessages.cardName.required),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
 
 // Combined schema for all steps
@@ -257,12 +394,12 @@ export const checkoutSchema = yup.object().shape({
 
 // Initial ticket holder values
 export const initialTicketHolder = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  phone: "",
-  dateOfBirth: "" as string,
-  idNumber: "",
+  firstName: "Test",
+  lastName: "User",
+  email: "test.user@example.com",
+  phone: "+1234567892",
+  dateOfBirth: "1995-03-10" as string,
+  idNumber: "C99887766",
 };
 
 // Initial form values
@@ -270,7 +407,7 @@ export const initialCheckoutValues = {
   step1: {
     ticketQuantity: 2,
     selectedZone: "",
-    transportationMode: "none" as "none" | "van" | "flight",
+    transportationMode: "none" as string,
     transportOrigin: "",
     vanSeats: [] as string[],
     jerseySelected: [] as boolean[],
@@ -278,7 +415,40 @@ export const initialCheckoutValues = {
     jerseyNames: [] as string[],
     jerseyNumbers: [] as string[],
     jerseySizes: [] as string[],
+    jerseyTypes: [] as string[],
   },
+  /*Test data for development purposes */
+  step2: {
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    phone: "+1234567890",
+    specialInstructions: "",
+    emergencyContactName: "",
+    emergencyContactPhone: "",
+  },
+  step2_5: {
+    ticketHolders: [
+      {
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        phone: "+1234567890",
+        dateOfBirth: "1990-05-15",
+        idNumber: "A12345678",
+      },
+      {
+        firstName: "Jane",
+        lastName: "Smith",
+        email: "jane.smith@example.com",
+        phone: "+1234567891",
+        dateOfBirth: "1992-08-22",
+        idNumber: "B87654321",
+      },
+    ] as TicketHolder[],
+  },
+  /* End test data */
+  /*
   step2: {
     firstName: "",
     lastName: "",
@@ -288,11 +458,15 @@ export const initialCheckoutValues = {
   step2_5: {
     ticketHolders: [] as TicketHolder[],
   },
+  */
   step3: {
+    paymentMethod: "stripe" as "stripe" | "paypal",
+    installments: 1,
     cardNumber: "",
     expiry: "",
     cvv: "",
     cardName: "",
+    paymentResult: null as any,
   },
 };
 

@@ -15,11 +15,14 @@ import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import { store, persistor } from "./store";
 import { LanguageSync } from "./components/LanguageSync";
+import { PaymentKeysInitializer } from "./hooks/usePaymentKeysInit";
 
 // Lazy load admin and user pages
 const AdminTrips = lazy(() => import("./pages/admin/Trips"));
 const UserTrips = lazy(() => import("./pages/user/Trips"));
+const MyReservations = lazy(() => import("./pages/user/MyReservations"));
 const LoadingDemo = lazy(() => import("./pages/LoadingDemo"));
+const PaymentKeysTest = lazy(() => import("./components/PaymentKeysTest"));
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,7 @@ const App = () => (
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <LanguageSync />
+          <PaymentKeysInitializer />
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -52,10 +56,26 @@ const App = () => (
                 }
               />
               <Route
+                path="/reservations"
+                element={
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <MyReservations />
+                  </Suspense>
+                }
+              />
+              <Route
                 path="/loading-demo"
                 element={
                   <Suspense fallback={<div>Loading...</div>}>
                     <LoadingDemo />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/payment-test"
+                element={
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <PaymentKeysTest />
                   </Suspense>
                 }
               />

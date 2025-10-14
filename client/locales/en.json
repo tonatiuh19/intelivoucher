@@ -35,7 +35,39 @@
     "subtotal": "Subtotal",
     "tax": "Tax",
     "discount": "Discount",
-    "hi": "Hi"
+    "hi": "Hi",
+    "from": "From",
+    "myReservations": "My Reservations",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "noReservationsFound": "No Reservations Found",
+    "noReservationsText": "You haven't made any reservations yet.",
+    "browseEvents": "Browse Events",
+    "tickets": "Tickets",
+    "jerseySelections": "Jersey Selections",
+    "paymentInstallments": "Payment Installments",
+    "emergencyContact": "Emergency Contact",
+    "specialRequests": "Special Requests",
+    "includesJersey": "Includes Jersey",
+    "size": "Size",
+    "type": "Type",
+    "installment": "Installment",
+    "due": "Due",
+    "paid": "Paid",
+    "purchase": "Purchase",
+    "filter": "Filter",
+    "all": "All",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "pending": "Pending",
+    "cancelled": "Cancelled",
+    "active": "Active",
+    "searchReservations": "Search reservations...",
+    "whatsappSupport": "WhatsApp Support",
+    "emailSupport": "Email Support",
+    "downloadTickets": "Download Tickets",
+    "requestInvoice": "Request Invoice",
+    "language": "Language"
   },
   "navigation": {
     "home": "Home",
@@ -140,10 +172,13 @@
     "trustedByVenuesSubtitle": "Partner venues worldwide trust us with their most exclusive events"
   },
   "checkout": {
+    "extras": "Extras",
     "steps": {
       "selectTickets": {
         "title": "Select Tickets",
-        "description": "Choose zone & quantity"
+        "description": "Choose zone & quantity",
+        "included": "Included",
+        "per_person": "per person"
       },
       "customerInfo": {
         "title": "Customer Info",
@@ -182,6 +217,11 @@
     "lastName": "Last Name",
     "email": "Email",
     "phone": "Phone",
+    "specialInstructions": "Special Instructions",
+    "specialInstructionsPlaceholder": "Please enter any special requests, dietary restrictions, or additional information...",
+    "optional": "Optional",
+    "emergencyContactName": "Emergency Contact Name",
+    "emergencyContactPhone": "Emergency Contact Phone",
     "cardNumber": "Card Number",
     "expiryDate": "Expiry Date",
     "cvv": "CVV",
@@ -194,14 +234,14 @@
     "bookingReference": "Booking Reference",
     "includesTransportation": "Includes Transportation",
     "presale": "Pre-sale",
-    "installmentsAvailable": "Installments Available",
+    "installmentsAvailableBadge": "Installments Available",
     "refundableIfNoTicket": "Refundable if Not Allocated",
     "backToHome": "Back",
     "secureCheckoutTitle": "Intelivoucher Checkout",
     "ticketsReserved": "Your tickets are reserved",
     "completePurchase": "Complete your purchase before time runs out",
     "timeRemaining": "Time remaining",
-    "hurryTimeWarning": "Hurry! Less than 5 minutes remaining",
+    "hurryTimeWarningShort": "Hurry! Less than 5 minutes remaining",
     "zoneSelection": "Zone Selection",
     "noteZoneSelection": "Note: You are selecting a zone. Final seats may vary based on availability. If allocated seats are a downgrade, the price difference will be refunded.",
     "selectOrigin": "Select origin",
@@ -210,6 +250,10 @@
     "chooseSeat": "Choose seat",
     "seat": "Seat",
     "flightSelectionNote": "Flight selection will be provided after ticket allocation. Upgrade cost applies at checkout.",
+    "flightNotice": {
+      "title": "Flight Transportation Selected",
+      "description": "Additional passenger information (date of birth, ID/passport) will be requested after booking confirmation for flight arrangements."
+    },
     "officialJerseyAddon": "Official Jersey Add-on",
     "jerseyDescription": "Choose for each passenger who wants a jersey. Personalization is optional.",
     "addJerseyWithPrice": "Add jersey (+${{price}})",
@@ -236,9 +280,91 @@
     "personalizedJerseyCount": "Personalized Jersey ({{count}}x)",
     "serviceFee": "Service Fee",
     "processingFee": "Processing Fee",
-    "secureCheckoutStripe": "🔒 100% secure checkout powered by Stripe",
+    "secureCheckoutStripe": "🔒 100% secure checkout",
     "zone": "Zone",
     "transport": "Transport",
+    "selectPaymentMethod": "Select Payment Method",
+    "creditCardPayment": "Credit Card Payment",
+    "paypalPayment": "PayPal Payment",
+    "creditCardDescription": "Pay with your credit or debit card",
+    "paypalDescription": "Pay with your PayPal account",
+    "installments": "Installments",
+    "installmentsAvailable": "Available for this amount",
+    "selectInstallments": "Select installments",
+    "payInFull": "Pay in full",
+    "monthlyPayments": "monthly payments",
+    "perMonth": "per month",
+    "cardDetails": "Card Details",
+    "installmentSummary": "Installment Summary",
+    "monthlyPaymentsOf": "monthly payments of",
+    "totalAmount": "Total amount",
+    "payFirstInstallment": "Pay First Installment",
+    "payNow": "Pay Now",
+    "checkingCardEligibility": "Checking card eligibility...",
+    "installmentsNotAvailable": "Not available for this card",
+    "cardDoesNotSupportInstallments": "This card does not support installments. Please use a different payment method or pay in full.",
+    "enterCardDetailsForInstallments": "Enter your card details to check installment availability.",
+    "installmentsNotAvailableForAmount": "Installments are not available for this amount.",
+    "stripeSecurityNote": "Your payment is processed securely by Stripe. Card details are never stored on our servers.",
+    "paypalNote": "You will be redirected to PayPal to complete your payment securely.",
+    "paymentSummary": "Payment Summary",
+    "loadingPaypal": "Loading PayPal...",
+    "paypalError": "PayPal payment failed",
+    "paymentCancelled": "Payment was cancelled",
+    "paypalAccepted": "PayPal, Visa, MasterCard, American Express accepted",
+    "paypalRedirect": "You'll be redirected to PayPal to complete payment",
+    "paypalSecurityNote": "Your payment is processed securely by PayPal. We never see or store your payment details.",
+    "acceptedCards": "Accepted:",
+    "buyerProtection": "Buyer Protection",
+    "paypalInfo": "Pay with your PayPal balance, bank, or card",
+    "securityNotice": "All payments are secured with 256-bit SSL encryption. Your payment information is never stored on our servers.",
+    "months": "months",
+    "processingOrder": "Processing your order...",
+    "ticketPurchase": "Event Ticket Purchase",
+    "redirecting": "Redirecting...",
+    "sessionExpiredTitle": "Session Expired",
+    "sessionExpiredMessage": "Your reservation time has expired. You will be redirected back to select your tickets again.",
+    "goBack": "Go Back",
+    "criticalTimeWarning": "⚠️ Less than 1 minute remaining! Complete your purchase now.",
+    "hurryTimeWarning": "Hurry! Complete your purchase before time runs out.",
+    "timeExpired": "Time expired! Redirecting...",
+    "creatingReservation": "Creating your reservation...",
+    "processingPaymentMessage": "Please wait while we process your payment and create your reservation.",
+    "processingPaymentTitle": "Processing Your Payment",
+    "processingStayOnPage": "Please stay on this page while we process your order",
+    "dontRefresh": "Don't refresh",
+    "dontGoBack": "Don't go back",
+    "stayHere": "Stay here",
+    "processingWarningTitle": "⚠️ Important: Do Not Leave This Page",
+    "processingWarning1": "Do not refresh or close your browser",
+    "processingWarning2": "Do not press the back button",
+    "processingWarning3": "Your payment is being processed securely",
+    "processingWarning4": "This process may take up to 30 seconds",
+    "preventNavigationMessage": "Your payment is being processed. Are you sure you want to leave? This may cause your payment to fail.",
+    "tryAgain": "Try Again",
+    "taxes": "IVA (16%)",
+    "jerseyTypeLabel": "Jersey Type",
+    "jerseyLocal": "Local",
+    "jerseyAway": "Away",
+    "approximateRate": "Approximate rate",
+    "reservationError": "Reservation Error",
+    "reservationDetails": "Reservation Details",
+    "purchaseId": "Purchase ID",
+    "transactionId": "Transaction ID",
+    "paymentMethod": "Payment Method",
+    "totalPaid": "Total Paid",
+    "yourTickets": "Your Tickets",
+    "purchaseCompleted": "Purchase Completed Successfully!",
+    "confirmationSent": "Confirmation details have been sent to your email",
+    "secured": "Secured",
+    "emailConfirmation": "Email Confirmation",
+    "emailConfirmationDesc": "Check your email for detailed booking confirmation and ticket information.",
+    "mobileTickets": "Mobile Tickets",
+    "mobileTicketsDesc": "Your tickets are ready for mobile entry. No need to print anything!",
+    "importantReminders": "Important Reminders",
+    "bringId": "Bring valid ID matching your ticket information",
+    "arriveEarly": "Arrive at least 30 minutes before event start",
+    "downloadApp": "Download the Intelivoucher app for best experience",
     "ticketHoldersInfo": {
       "description": "Please provide information for each ticket holder. This information is required for entry and must match valid identification.",
       "primaryHolder": "Primary Ticket Holder",
@@ -271,6 +397,8 @@
     "testCodes": "Try test codes",
     "testCodesAnyEnding": "or any ending in 99",
     "resendCode": "Resend Code",
+    "resendCodeIn": "Resend code in",
+    "codeDeliveryNotice": "It may take up to 5 minutes to receive your verification code.",
     "signOut": "Sign Out",
     "checkingEmail": "Checking email...",
     "creatingAccount": "Creating account...",
@@ -289,6 +417,89 @@
     "testCodeExamples": {
       "default": "123456",
       "zeros": "000000"
+    }
+  },
+  "validation": {
+    "ticketQuantity": {
+      "min": "At least 1 ticket is required",
+      "max": "Maximum 8 tickets allowed",
+      "required": "Ticket quantity is required"
+    },
+    "zone": {
+      "required": "Please select a zone"
+    },
+    "transportationMode": {
+      "required": "Transportation mode is required"
+    },
+    "transportOrigin": {
+      "required": "Origin city is required for transportation"
+    },
+    "jersey": {
+      "namesRequired": "Jersey names are required for personalized jerseys",
+      "numbersRequired": "Jersey numbers are required for personalized jerseys",
+      "sizesRequired": "Jersey sizes are required for all jerseys",
+      "typesRequired": "Jersey types are required for all jerseys"
+    },
+    "firstName": {
+      "min": "First name must be at least 2 characters",
+      "max": "First name must not exceed 50 characters",
+      "matches": "First name can only contain letters and spaces",
+      "required": "First name is required"
+    },
+    "lastName": {
+      "min": "Last name must be at least 2 characters",
+      "max": "Last name must not exceed 50 characters",
+      "matches": "Last name can only contain letters and spaces",
+      "required": "Last name is required"
+    },
+    "email": {
+      "format": "Please enter a valid email address",
+      "required": "Email is required"
+    },
+    "phone": {
+      "format": "Please enter a valid phone number",
+      "required": "Phone number is required"
+    },
+    "dateOfBirth": {
+      "max": "Date of birth cannot be in the future",
+      "required": "Date of birth is required"
+    },
+    "idNumber": {
+      "min": "ID number must be at least 5 characters",
+      "max": "ID number must not exceed 20 characters",
+      "required": "ID number is required"
+    },
+    "ticketHolders": {
+      "min": "At least one ticket holder is required",
+      "required": "Ticket holders information is required"
+    },
+    "paymentMethod": {
+      "oneOf": "Please select a valid payment method",
+      "required": "Payment method is required"
+    },
+    "installments": {
+      "min": "Installments must be at least 1",
+      "max": "Maximum 12 installments allowed"
+    },
+    "cardNumber": {
+      "format": "Please enter a valid card number",
+      "luhn": "Please enter a valid card number",
+      "required": "Card number is required"
+    },
+    "expiry": {
+      "format": "Please enter expiry date in MM/YY format",
+      "expired": "Card has expired or invalid date",
+      "required": "Expiry date is required"
+    },
+    "cvv": {
+      "format": "CVV must be 3 or 4 digits",
+      "required": "CVV is required"
+    },
+    "cardName": {
+      "min": "Name on card must be at least 2 characters",
+      "max": "Name on card must not exceed 50 characters",
+      "matches": "Name on card can only contain letters and spaces",
+      "required": "Name on card is required"
     }
   }
 }

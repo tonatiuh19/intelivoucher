@@ -8,10 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { User, LogOut, Settings, ChevronDown, TicketIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@/store/hooks";
 import { signOut } from "@/store/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 interface UserDropdownProps {
   user: {
@@ -27,6 +28,7 @@ interface UserDropdownProps {
 export function UserDropdown({ user }: UserDropdownProps) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   if (!user) return null;
 
@@ -70,6 +72,13 @@ export function UserDropdown({ user }: UserDropdownProps) {
           <User className="mr-2 h-4 w-4" />
           <span>{t("common.profile", "Profile")}</span>
         </DropdownMenuItem>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => navigate("/reservations")}
+        >
+          <TicketIcon className="mr-2 h-4 w-4" />
+          <span>{t("common.myReservations", "My Reservations")}</span>
+        </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />
           <span>{t("common.settings", "Settings")}</span>
@@ -86,3 +95,5 @@ export function UserDropdown({ user }: UserDropdownProps) {
     </DropdownMenu>
   );
 }
+
+export default UserDropdown;

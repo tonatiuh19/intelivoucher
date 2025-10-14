@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import type { Trip, TransportationMode, JerseySelection } from "../../types";
+import { fetchActiveEvents, fetchEventById } from "../../lib/tripsApi";
 
 // State interface
 export interface TripsState {
@@ -34,107 +35,53 @@ const initialState: TripsState = {
 // Async thunks for effects
 export const fetchTrips = createAsyncThunk(
   "trips/fetchTrips",
-  async (params?: { category?: string; location?: string }) => {
-    // Simulate API call - replace with actual API endpoint
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  async (
+    params: { category?: string; location?: string } = {},
+    { rejectWithValue },
+  ) => {
+    try {
+      const trips = await fetchActiveEvents();
 
-    // Mock data - replace with actual API response
-    const mockTrips: Trip[] = [
-      {
-        id: "1",
-        title: "Sample Trip",
-        category: "Football",
-        date: "2025-10-15",
-        location: "Stadium A",
-        price: "150",
-        image: "/placeholder.svg",
-        rating: 4.5,
-        soldOut: false,
-        trending: true,
-        includesTransportation: true,
-        isPresale: false,
-        requiresTicketAcquisition: true,
-        refundableIfNoTicket: true,
-        paymentOptions: {
-          installmentsAvailable: true,
-          presaleDepositAvailable: false,
-          secondPaymentInstallmentsAvailable: true,
-        },
-        acceptsUnderAge: true,
-        jerseyAddonAvailable: true,
-        jerseyPrice: 80,
-        availableZones: [
-          {
-            id: "vip",
-            name: "VIP Section",
-            price: 250,
-            description: "Premium seating with exclusive amenities",
-            available: true,
-          },
-          {
-            id: "regular",
-            name: "Regular Seating",
-            price: 150,
-            description: "Standard stadium seating",
-            available: true,
-          },
-        ],
-      },
-    ];
+      // Apply filters if provided
+      let filteredTrips = trips;
 
-    return mockTrips;
+      if (params?.category) {
+        filteredTrips = filteredTrips.filter((trip) =>
+          trip.category.toLowerCase().includes(params.category!.toLowerCase()),
+        );
+      }
+
+      if (params?.location) {
+        filteredTrips = filteredTrips.filter((trip) =>
+          trip.location.toLowerCase().includes(params.location!.toLowerCase()),
+        );
+      }
+
+      return filteredTrips;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to fetch trips",
+      );
+    }
   },
 );
 
 export const fetchTripById = createAsyncThunk(
   "trips/fetchTripById",
-  async (tripId: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  async (tripId: string, { rejectWithValue }) => {
+    try {
+      const trip = await fetchEventById(tripId);
 
-    // Mock response - replace with actual API
-    const mockTrip: Trip = {
-      id: tripId,
-      title: "Sample Trip Details",
-      category: "Football",
-      date: "2025-10-15",
-      location: "Stadium A",
-      price: "150",
-      image: "/placeholder.svg",
-      rating: 4.5,
-      soldOut: false,
-      trending: true,
-      includesTransportation: true,
-      isPresale: false,
-      requiresTicketAcquisition: true,
-      refundableIfNoTicket: true,
-      paymentOptions: {
-        installmentsAvailable: true,
-        presaleDepositAvailable: false,
-        secondPaymentInstallmentsAvailable: true,
-      },
-      acceptsUnderAge: true,
-      jerseyAddonAvailable: true,
-      jerseyPrice: 80,
-      availableZones: [
-        {
-          id: "vip",
-          name: "VIP Section",
-          price: 250,
-          description: "Premium seating with exclusive amenities",
-          available: true,
-        },
-        {
-          id: "regular",
-          name: "Regular Seating",
-          price: 150,
-          description: "Standard stadium seating",
-          available: true,
-        },
-      ],
-    };
+      if (!trip) {
+        throw new Error("Trip not found");
+      }
 
-    return mockTrip;
+      return trip;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to fetch trip details",
+      );
+    }
   },
 );
 

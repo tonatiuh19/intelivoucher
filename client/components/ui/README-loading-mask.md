@@ -176,7 +176,7 @@ The component uses Tailwind CSS classes and can be customized through:
 - `contentClassName`: Style the loading content area
 - CSS custom properties for brand colors (`brand-blue`, `brand-cyan`)
 
-## Examples in Your App
+## Examples
 
 ### Authentication Flow
 

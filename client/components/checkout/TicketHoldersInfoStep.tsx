@@ -31,6 +31,7 @@ interface TicketHoldersInfoStepProps {
     email: string;
     phone: string;
   };
+  transportationMode?: string;
   onNext: (values: Step2_5Values) => void;
   onBack: () => void;
 }
@@ -39,6 +40,7 @@ export const TicketHoldersInfoStep: React.FC<TicketHoldersInfoStepProps> = ({
   initialValues,
   ticketQuantity,
   primaryContact,
+  transportationMode,
   onNext,
   onBack,
 }) => {
@@ -152,7 +154,7 @@ export const TicketHoldersInfoStep: React.FC<TicketHoldersInfoStepProps> = ({
                                       ? "border-red-500"
                                       : ""
                                   }`}
-                                  disabled={index === 0} // Primary contact info is read-only
+                                  // Primary contact can now be edited
                                 />
                                 <ErrorMessage
                                   name={`ticketHolders.${index}.firstName`}
@@ -179,7 +181,7 @@ export const TicketHoldersInfoStep: React.FC<TicketHoldersInfoStepProps> = ({
                                       ? "border-red-500"
                                       : ""
                                   }`}
-                                  disabled={index === 0}
+                                  // Primary contact can now be edited
                                 />
                                 <ErrorMessage
                                   name={`ticketHolders.${index}.lastName`}
@@ -192,138 +194,154 @@ export const TicketHoldersInfoStep: React.FC<TicketHoldersInfoStepProps> = ({
                         </div>
                       </div>
 
-                      {/* Contact Fields */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor={`ticketHolders.${index}.email`}>
-                            {t("checkout.email")} *
-                          </Label>
-                          <Field name={`ticketHolders.${index}.email`}>
-                            {({ field, meta }) => (
-                              <div className="relative mt-1">
-                                <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                                <Input
-                                  id={`ticketHolders.${index}.email`}
-                                  type="email"
-                                  {...field}
-                                  placeholder="john.doe@example.com"
-                                  className={`pl-10 dark:bg-slate-700 dark:text-white ${
-                                    meta.touched && meta.error
-                                      ? "border-red-500"
-                                      : ""
-                                  }`}
-                                  disabled={index === 0}
-                                />
-                                <ErrorMessage
-                                  name={`ticketHolders.${index}.email`}
-                                  component="div"
-                                  className="text-red-500 text-sm mt-1"
-                                />
-                              </div>
-                            )}
-                          </Field>
+                      {/* Contact Fields - Only for Primary Contact */}
+                      {index === 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor={`ticketHolders.${index}.email`}>
+                              {t("checkout.email")} *
+                            </Label>
+                            <Field name={`ticketHolders.${index}.email`}>
+                              {({ field, meta }) => (
+                                <div className="relative mt-1">
+                                  <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                                  <Input
+                                    id={`ticketHolders.${index}.email`}
+                                    type="email"
+                                    {...field}
+                                    placeholder="john.doe@example.com"
+                                    className={`pl-10 dark:bg-slate-700 dark:text-white ${
+                                      meta.touched && meta.error
+                                        ? "border-red-500"
+                                        : ""
+                                    }`}
+                                    // Primary contact can now be edited
+                                  />
+                                  <ErrorMessage
+                                    name={`ticketHolders.${index}.email`}
+                                    component="div"
+                                    className="text-red-500 text-sm mt-1"
+                                  />
+                                </div>
+                              )}
+                            </Field>
+                          </div>
+                          <div>
+                            <Label htmlFor={`ticketHolders.${index}.phone`}>
+                              {t("checkout.phone")} *
+                            </Label>
+                            <Field name={`ticketHolders.${index}.phone`}>
+                              {({ field, meta }) => (
+                                <div className="relative mt-1">
+                                  <Smartphone className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                                  <Input
+                                    id={`ticketHolders.${index}.phone`}
+                                    type="tel"
+                                    {...field}
+                                    placeholder="+1 (555) 123-4567"
+                                    className={`pl-10 dark:bg-slate-700 dark:text-white ${
+                                      meta.touched && meta.error
+                                        ? "border-red-500"
+                                        : ""
+                                    }`}
+                                    // Primary contact can now be edited
+                                  />
+                                  <ErrorMessage
+                                    name={`ticketHolders.${index}.phone`}
+                                    component="div"
+                                    className="text-red-500 text-sm mt-1"
+                                  />
+                                </div>
+                              )}
+                            </Field>
+                          </div>
                         </div>
-                        <div>
-                          <Label htmlFor={`ticketHolders.${index}.phone`}>
-                            {t("checkout.phone")} *
-                          </Label>
-                          <Field name={`ticketHolders.${index}.phone`}>
-                            {({ field, meta }) => (
-                              <div className="relative mt-1">
-                                <Smartphone className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                                <Input
-                                  id={`ticketHolders.${index}.phone`}
-                                  type="tel"
-                                  {...field}
-                                  placeholder="+1 (555) 123-4567"
-                                  className={`pl-10 dark:bg-slate-700 dark:text-white ${
-                                    meta.touched && meta.error
-                                      ? "border-red-500"
-                                      : ""
-                                  }`}
-                                  disabled={index === 0}
-                                />
-                                <ErrorMessage
-                                  name={`ticketHolders.${index}.phone`}
-                                  component="div"
-                                  className="text-red-500 text-sm mt-1"
-                                />
-                              </div>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
+                      )}
 
-                      {/* Date of Birth and ID */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor={`ticketHolders.${index}.dateOfBirth`}>
-                            {t("checkout.ticketHoldersInfo.dateOfBirth")} *
-                          </Label>
-                          <Field name={`ticketHolders.${index}.dateOfBirth`}>
-                            {({ field, meta }) => (
-                              <div className="relative mt-1">
-                                <Calendar className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                                <Input
-                                  id={`ticketHolders.${index}.dateOfBirth`}
-                                  type="date"
-                                  {...field}
-                                  className={`pl-10 dark:bg-slate-700 dark:text-white ${
-                                    meta.touched && meta.error
-                                      ? "border-red-500"
-                                      : ""
-                                  }`}
-                                />
-                                <ErrorMessage
-                                  name={`ticketHolders.${index}.dateOfBirth`}
-                                  component="div"
-                                  className="text-red-500 text-sm mt-1"
-                                />
-                                {field.value && (
-                                  <div className="text-xs text-slate-500 mt-1">
-                                    {t("checkout.ticketHoldersInfo.age")}:{" "}
-                                    {calculateAge(field.value)}{" "}
-                                    {t("checkout.ticketHoldersInfo.yearsOld")}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </Field>
+                      {/* Date of Birth and ID - Only for Primary Contact */}
+                      {index === 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label
+                              htmlFor={`ticketHolders.${index}.dateOfBirth`}
+                            >
+                              {t("checkout.ticketHoldersInfo.dateOfBirth")} *
+                            </Label>
+                            <Field name={`ticketHolders.${index}.dateOfBirth`}>
+                              {({ field, meta }) => (
+                                <div className="relative mt-1">
+                                  <Calendar className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                                  <Input
+                                    id={`ticketHolders.${index}.dateOfBirth`}
+                                    type="date"
+                                    {...field}
+                                    className={`pl-10 dark:bg-slate-700 dark:text-white ${
+                                      meta.touched && meta.error
+                                        ? "border-red-500"
+                                        : ""
+                                    }`}
+                                  />
+                                  <ErrorMessage
+                                    name={`ticketHolders.${index}.dateOfBirth`}
+                                    component="div"
+                                    className="text-red-500 text-sm mt-1"
+                                  />
+                                  {field.value && (
+                                    <div className="text-xs text-slate-500 mt-1">
+                                      {t("checkout.ticketHoldersInfo.age")}:{" "}
+                                      {calculateAge(field.value)}{" "}
+                                      {t("checkout.ticketHoldersInfo.yearsOld")}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </Field>
+                          </div>
+                          <div>
+                            <Label htmlFor={`ticketHolders.${index}.idNumber`}>
+                              {t("checkout.ticketHoldersInfo.idNumber")} *
+                            </Label>
+                            <Field name={`ticketHolders.${index}.idNumber`}>
+                              {({ field, meta }) => (
+                                <div className="relative mt-1">
+                                  <CreditCard className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                                  <Input
+                                    id={`ticketHolders.${index}.idNumber`}
+                                    {...field}
+                                    placeholder="ID/Passport Number"
+                                    className={`pl-10 dark:bg-slate-700 dark:text-white ${
+                                      meta.touched && meta.error
+                                        ? "border-red-500"
+                                        : ""
+                                    }`}
+                                  />
+                                  <ErrorMessage
+                                    name={`ticketHolders.${index}.idNumber`}
+                                    component="div"
+                                    className="text-red-500 text-sm mt-1"
+                                  />
+                                </div>
+                              )}
+                            </Field>
+                          </div>
                         </div>
-                        <div>
-                          <Label htmlFor={`ticketHolders.${index}.idNumber`}>
-                            {t("checkout.ticketHoldersInfo.idNumber")} *
-                          </Label>
-                          <Field name={`ticketHolders.${index}.idNumber`}>
-                            {({ field, meta }) => (
-                              <div className="relative mt-1">
-                                <CreditCard className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
-                                <Input
-                                  id={`ticketHolders.${index}.idNumber`}
-                                  {...field}
-                                  placeholder="ID/Passport Number"
-                                  className={`pl-10 dark:bg-slate-700 dark:text-white ${
-                                    meta.touched && meta.error
-                                      ? "border-red-500"
-                                      : ""
-                                  }`}
-                                />
-                                <ErrorMessage
-                                  name={`ticketHolders.${index}.idNumber`}
-                                  component="div"
-                                  className="text-red-500 text-sm mt-1"
-                                />
-                              </div>
-                            )}
-                          </Field>
-                        </div>
-                      </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
             )}
           </FieldArray>
+
+          {/* Flight Selection Notice */}
+          {transportationMode === "flight" && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                <strong>{t("checkout.flightNotice.title")}:</strong>{" "}
+                {t("checkout.flightNotice.description")}
+              </p>
+            </div>
+          )}
 
           <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4">
             <p className="text-sm text-amber-800 dark:text-amber-200">

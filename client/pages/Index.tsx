@@ -28,6 +28,9 @@ import {
   ArrowRight,
   Menu,
   X,
+  Lock,
+  CreditCard,
+  Eye,
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -147,7 +150,7 @@ export default function Index() {
       avatar:
         "https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=150&h=150&fit=crop",
       content:
-        "¡La mejor app de boletos que he usado! Conseguí asientos en primera fila para el concierto de mi banda favorita. ¡El temporizador me salvó de perderme el evento!",
+        "¡La mejor plataforma de boletos que he usado! Conseguí asientos en primera fila para el concierto de mi banda favorita. ¡El sistema de reserva me salvó de perderme el evento!",
       rating: 5,
     },
     {
@@ -156,7 +159,7 @@ export default function Index() {
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop",
       content:
-        "Conseguí boletos para la final del América vs Chivas en segundos. La app móvil es súper fluida y la selección de asientos es increíble.",
+        "Conseguí boletos para la final del América vs Chivas en segundos. La plataforma web es súper fluida y las notificaciones por email llegaron inmediatamente.",
       rating: 5,
     },
     {
@@ -165,7 +168,7 @@ export default function Index() {
       avatar:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop",
       content:
-        "Encontré boletos para obras de teatro que estaban agotadas en todos lados. ¡Intelivoucher tiene la mejor selección de eventos en México!",
+        "Encontré boletos para obras de teatro que estaban agotadas en todos lados. ¡Intelivoucher tiene la mejor selección de eventos y me mantiene informada por email!",
       rating: 5,
     },
   ];
@@ -363,7 +366,6 @@ export default function Index() {
                         variant="ghost"
                         size="sm"
                         className="text-brand-blue hover:bg-brand-blue/10 rounded-full"
-                        onClick={() => handleSearch(tag)}
                       >
                         {tag}
                       </Button>
@@ -383,7 +385,9 @@ export default function Index() {
                       {stat.number}
                     </div>
                     <div className="text-slate-600 dark:text-slate-400 text-sm">
-                      {stat.label}
+                      {i18n.language === "es"
+                        ? stat.label_es || stat.label
+                        : stat.label}
                     </div>
                   </div>
                 ))}
@@ -603,9 +607,15 @@ export default function Index() {
                           {category.icon}
                         </div>
                         <h4 className="text-2xl font-bold mb-3">
-                          {category.name}
+                          {i18n.language === "es"
+                            ? category.name_es || category.name
+                            : category.name}
                         </h4>
-                        <p className="text-white/90 mb-4">{category.count}</p>
+                        <p className="text-white/90 mb-4">
+                          {i18n.language === "es"
+                            ? category.count_es || category.count
+                            : category.count}
+                        </p>
                         <Button
                           variant="secondary"
                           size="sm"
@@ -799,11 +809,10 @@ export default function Index() {
           <div className="container mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-5xl font-bold mb-4 text-slate-200">
-                Lo Que Dicen Nuestros Usuarios
+                {t("testimonials.title")}
               </h3>
               <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                Únete a millones de clientes felices que encontraron sus eventos
-                perfectos
+                {t("testimonials.subtitle")}
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -858,75 +867,115 @@ export default function Index() {
           <div className="container mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-5xl font-bold mb-4 text-slate-200">
-                Why Choose Intelivoucher?
+                {t("features.whyChooseTitle")}
               </h3>
               <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                The most secure and user-friendly way to discover and purchase
-                event tickets on mobile.
+                {t("features.whyChooseSubtitle")}
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               <div className="text-center group">
-                <div className="w-20 h-20 bg-gradient-to-r from-brand-blue to-brand-cyan rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300">
-                  <Smartphone className="w-10 h-10 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-blue-500/30">
+                  <Globe className="w-10 h-10 text-blue-400" />
                 </div>
-                <h4 className="text-2xl font-bold mb-4 text-slate-200">
-                  Mobile First
+                <h4 className="text-xl font-bold mb-3 text-slate-200">
+                  {t("features.webPlatform.title")}
                 </h4>
-                <p className="text-slate-400 text-lg leading-relaxed">
-                  Designed for iOS and Android with an intuitive mobile
-                  experience for discovering and purchasing tickets on the go.
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  {t("features.webPlatform.description")}
                 </p>
               </div>
               <div className="text-center group">
-                <div className="w-20 h-20 bg-gradient-to-r from-brand-cyan to-brand-green rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300">
-                  <Shield className="w-10 h-10 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-r from-cyan-500/20 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-cyan-500/30">
+                  <Shield className="w-10 h-10 text-cyan-400" />
                 </div>
-                <h4 className="text-2xl font-bold mb-4 text-slate-200">
-                  Secure Checkout
+                <h4 className="text-xl font-bold mb-3 text-slate-200">
+                  {t("features.secureCheckout.title")}
                 </h4>
-                <p className="text-slate-400 text-lg leading-relaxed">
-                  Our wizard-style checkout process with countdown timers
-                  ensures your tickets are reserved safely and securely.
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  {t("features.secureCheckout.description")}
                 </p>
               </div>
               <div className="text-center group">
-                <div className="w-20 h-20 bg-gradient-to-r from-brand-green to-brand-orange rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-300">
-                  <Zap className="w-10 h-10 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500/20 to-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-green-500/30">
+                  <Zap className="w-10 h-10 text-green-400" />
                 </div>
-                <h4 className="text-2xl font-bold mb-4 text-slate-200">
-                  Instant Access
+                <h4 className="text-xl font-bold mb-3 text-slate-200">
+                  {t("features.instantAccess.title")}
                 </h4>
-                <p className="text-slate-400 text-lg leading-relaxed">
-                  Get instant access to thousands of concerts, sports events,
-                  and cultural experiences with real-time availability.
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  {t("features.instantAccess.description")}
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Partner Venues */}
+        {/* Security & Trust */}
         <section className="py-20 px-4 bg-slate-800">
           <div className="container mx-auto">
             <div className="text-center mb-16">
               <h3 className="text-4xl font-bold mb-4 text-slate-200">
-                Trusted by Top Venues
+                {t("security.title")}
               </h3>
-              <p className="text-xl text-slate-400">
-                Partner venues worldwide trust us with their most exclusive
-                events
-              </p>
+              <p className="text-xl text-slate-400">{t("security.subtitle")}</p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-              {venues.map((venue, index) => (
-                <div key={index} className="text-center group">
-                  <div className="w-20 h-20 bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-3xl">{venue.logo}</span>
-                  </div>
-                  <p className="text-slate-300 font-medium">{venue.name}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-green-500/30">
+                  <Shield className="w-10 h-10 text-green-400" />
                 </div>
-              ))}
+                <h4 className="text-xl font-bold mb-3 text-slate-200">
+                  {t("security.ssl.title")}
+                </h4>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  {t("security.ssl.description")}
+                </p>
+              </div>
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-blue-500/30">
+                  <Lock className="w-10 h-10 text-blue-400" />
+                </div>
+                <h4 className="text-xl font-bold mb-3 text-slate-200">
+                  {t("security.encryption.title")}
+                </h4>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  {t("security.encryption.description")}
+                </p>
+              </div>
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-purple-500/30">
+                  <CreditCard className="w-10 h-10 text-purple-400" />
+                </div>
+                <h4 className="text-xl font-bold mb-3 text-slate-200">
+                  {t("security.pci.title")}
+                </h4>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  {t("security.pci.description")}
+                </p>
+              </div>
+              <div className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-orange-500/30">
+                  <Eye className="w-10 h-10 text-orange-400" />
+                </div>
+                <h4 className="text-xl font-bold mb-3 text-slate-200">
+                  {t("security.monitoring.title")}
+                </h4>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  {t("security.monitoring.description")}
+                </p>
+              </div>
+            </div>
+            <div className="mt-16 text-center">
+              <div className="inline-flex items-center space-x-4 bg-slate-700/50 rounded-full px-8 py-4">
+                <Shield className="w-6 h-6 text-green-400" />
+                <span className="text-slate-200 font-semibold">
+                  {t("security.guarantee")}
+                </span>
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                  {t("security.certified")}
+                </Badge>
+              </div>
             </div>
           </div>
         </section>
@@ -935,37 +984,34 @@ export default function Index() {
         <section className="py-20 px-4 bg-gradient-to-r from-brand-blue to-brand-cyan">
           <div className="container mx-auto text-center">
             <h3 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Never Miss the Next Big Event
+              {t("newsletter.title")}
             </h3>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Get early access to tickets, exclusive presales, and personalized
-              event recommendations.
+              {t("newsletter.subtitle")}
             </p>
             <div className="max-w-md mx-auto mb-8">
               <div className="flex space-x-4">
                 <Input
-                  placeholder="Enter your email"
+                  placeholder={t("newsletter.emailPlaceholder")}
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/70 h-12"
                 />
                 <Button className="bg-white text-brand-blue hover:bg-slate-100 h-12 px-8">
-                  Subscribe
+                  {t("newsletter.subscribeButton")}
                 </Button>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <Button
-                size="lg"
-                className="bg-white text-brand-blue hover:bg-slate-100 text-lg px-8 py-4"
-              >
-                📱 Download for iOS
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-brand-blue text-lg px-8 py-4"
-              >
-                🤖 Download for Android
-              </Button>
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 max-w-lg">
+                <div className="flex items-center justify-center mb-3">
+                  <span className="text-2xl mr-3">📧</span>
+                  <h4 className="text-white font-semibold text-lg">
+                    {t("newsletter.stayUpdatedTitle")}
+                  </h4>
+                </div>
+                <p className="text-white/90 text-center">
+                  {t("newsletter.emailNotificationText")}
+                </p>
+              </div>
             </div>
           </div>
         </section>

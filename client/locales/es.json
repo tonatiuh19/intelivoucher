@@ -16,7 +16,7 @@
     "error": "Ocurrió un error",
     "getTickets": "Obtener Boletos",
     "signIn": "Iniciar Sesión",
-    "getApp": "Obtener App",
+    "getApp": "Revisar Email",
     "subscribe": "Suscribirse",
     "events": "Eventos",
     "categories": "Categorías",
@@ -87,7 +87,7 @@
     "discover": "Descubre",
     "unforgettable": "Experiencias",
     "experiences": "Inolvidables",
-    "subtitle": "Únete a {{count}} usuarios descubriendo eventos increíbles. Desde conciertos agotados hasta espectáculos teatrales exclusivos - asegura tus boletos en segundos con nuestro sistema de temporizador.",
+    "subtitle": "Únete a {{count}} usuarios descubriendo eventos increíbles. Desde conciertos agotados hasta espectáculos teatrales exclusivos - asegura tus boletos en segundos y recibe confirmaciones por email.",
     "searchPlaceholder": "Buscar artistas, equipos, espectáculos...",
     "cityPlaceholder": "Ciudad o lugar",
     "datePlaceholder": "Cualquier fecha",
@@ -146,13 +146,23 @@
   "features": {
     "title": "¿Por Qué Elegir InteliVoucher?",
     "subtitle": "Experimenta el futuro de la venta de boletos para eventos",
+    "whyChooseTitle": "¿Por Qué Elegir Intelivoucher?",
+    "whyChooseSubtitle": "La forma más segura y fácil de descubrir y comprar boletos para eventos en línea.",
     "instantBooking": {
       "title": "Reserva Instantánea",
       "description": "Asegura tus boletos en segundos con nuestro sistema de reserva ultrarrápido"
     },
-    "mobileFirst": {
-      "title": "Móvil Primero",
-      "description": "Experiencia móvil optimizada para reservar sobre la marcha"
+    "webPlatform": {
+      "title": "Plataforma Web",
+      "description": "Accede desde cualquier dispositivo con nuestra plataforma web responsiva. Recibe notificaciones por email para actualizaciones y confirmaciones."
+    },
+    "secureCheckout": {
+      "title": "Pago Seguro",
+      "description": "Nuestro proceso de pago estilo asistente con temporizadores de cuenta regresiva garantiza que tus boletos estén reservados de forma segura."
+    },
+    "instantAccess": {
+      "title": "Acceso Instantáneo",
+      "description": "Obtén acceso instantáneo a miles de conciertos, eventos deportivos y experiencias culturales con disponibilidad en tiempo real."
     },
     "securePayments": {
       "title": "Pagos Seguros",
@@ -169,18 +179,26 @@
     "sarahChen": {
       "name": "Sarah Chen",
       "role": "Entusiasta de la Música",
-      "quote": "¡La mejor aplicación de boletos de todos los tiempos! Conseguí asientos de primera fila para el concierto de mi banda favorita. ¡La función de temporizador me salvó de perderlo!"
+      "quote": "¡La mejor plataforma de boletos de todos los tiempos! Conseguí asientos de primera fila para el concierto de mi banda favorita. ¡Las notificaciones por email me mantuvieron informada!"
     },
     "mikeRodriguez": {
       "name": "Mike Rodríguez",
       "role": "Fanático de los Deportes",
-      "quote": "Conseguí boletos para los playoffs de los Lakers en segundos. La aplicación móvil es súper fluida y la selección de asientos es increíble."
+      "quote": "Conseguí boletos para los playoffs de los Lakers en segundos. La plataforma web es súper fluida y recibí confirmaciones por email al instante."
     },
     "emilyJohnson": {
       "name": "Emily Johnson",
       "role": "Amante del Teatro",
       "quote": "Encontré boletos para espectáculos de Broadway a excelentes precios. La experiencia del usuario es increíble y el servicio al cliente es de primera."
     }
+  },
+  "newsletter": {
+    "title": "No Te Pierdas el Próximo Gran Evento",
+    "subtitle": "Obtén acceso anticipado a boletos, preventas exclusivas y recomendaciones de eventos personalizadas.",
+    "emailPlaceholder": "Ingresa tu email",
+    "subscribeButton": "Suscríbete",
+    "stayUpdatedTitle": "Mantente Actualizado",
+    "emailNotificationText": "Te notificaremos por email sobre nuevos eventos, disponibilidad de boletos y ofertas exclusivas. ¡Revisa tu email regularmente para las últimas actualizaciones!"
   },
   "footer": {
     "events": "Eventos",
@@ -269,6 +287,9 @@
     "ticketsPurchased": "¡Tus boletos han sido comprados exitosamente!",
     "downloadTickets": "Descargar Boletos",
     "emailSent": "Correo de confirmación enviado",
+    "checkEmail": "Revisa tu email para detalles de boletos y actualizaciones",
+    "emailConfirmation": "Confirmación por Email Enviada",
+    "checkEmailForTickets": "Revisa tu email para detalles de boletos, instrucciones de entrada y actualizaciones del evento.",
     "bookingReference": "Referencia de Reserva",
     "includesTransportation": "Incluye Transporte",
     "presale": "Preventa",
@@ -303,12 +324,12 @@
     "jerseyNumberLabel": "Número (0-99)",
     "jerseySizeLabel": "Talla",
     "selectSize": "Seleccionar talla",
-    "ticketsMobileNotice": "📱 Los boletos se enviarán a tu dispositivo móvil a través de la aplicación InteliVoucher",
+    "ticketsMobileNotice": "� Los boletos se enviarán a tu email junto con las instrucciones de acceso",
     "securePayment": "Pago Seguro",
     "paymentSecurityNote": "Tu información de pago está encriptada y es segura",
     "paymentSuccessful": "¡Pago Exitoso!",
     "ticketsSentToDevice": "Tus boletos han sido enviados a tu dispositivo móvil",
-    "downloadIntelivoucherApp": "Descargar la Aplicación InteliVoucher",
+    "downloadIntelivoucherApp": "Revisar Email para Instrucciones",
     "accessTicketsAndUpdates": "Accede a tus boletos y recibe actualizaciones del evento",
     "iosAppStore": "iOS App Store",
     "googlePlay": "Google Play",
@@ -402,14 +423,13 @@
     "purchaseCompleted": "¡Compra Completada Exitosamente!",
     "confirmationSent": "Los detalles de confirmación han sido enviados a su email",
     "secured": "Seguro",
-    "emailConfirmation": "Confirmación por Email",
     "emailConfirmationDesc": "Revisa tu email para la confirmación detallada de reserva e información de boletos.",
     "mobileTickets": "Boletos Móviles",
-    "mobileTicketsDesc": "Tus boletos están listos para entrada móvil. ¡No necesitas imprimir nada!",
+    "mobileTicketsDesc": "Tus boletos se enviarán a tu email con instrucciones de entrada. ¡No necesitas imprimir nada!",
     "importantReminders": "Recordatorios Importantes",
     "bringId": "Trae una identificación válida que coincida con la información de tu boleto",
     "arriveEarly": "Llega al menos 30 minutos antes del inicio del evento",
-    "downloadApp": "Descarga la app Intelivoucher para la mejor experiencia",
+    "downloadApp": "Revisa tu email para detalles de boletos y actualizaciones",
     "eighteenPlusOnly": "Solo 18+",
     "ticketHoldersInfo": {
       "description": "Proporciona información para cada portador de boleto. Esta información es requerida para el ingreso y debe coincidir con una identificación válida.",
@@ -593,5 +613,27 @@
         "required": "El país es requerido"
       }
     }
+  },
+  "security": {
+    "title": "Seguridad y Confianza",
+    "subtitle": "Tus datos y transacciones están protegidos con medidas de seguridad líderes en la industria",
+    "ssl": {
+      "title": "Protección SSL",
+      "description": "Todas las transferencias de datos están encriptadas con seguridad SSL de 256 bits"
+    },
+    "encryption": {
+      "title": "Encriptación Extremo a Extremo",
+      "description": "Tu información personal y de pago está completamente encriptada"
+    },
+    "pci": {
+      "title": "Cumplimiento PCI DSS",
+      "description": "Cumplimos con los más altos estándares de seguridad para tarjetas de pago"
+    },
+    "monitoring": {
+      "title": "Monitoreo 24/7",
+      "description": "Monitoreo continuo de seguridad y detección de fraudes"
+    },
+    "guarantee": "Transacciones 100% Seguras Garantizadas",
+    "certified": "Certificado de Seguridad"
   }
 }

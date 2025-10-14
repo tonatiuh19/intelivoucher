@@ -587,59 +587,79 @@ export const mockEventsData: TripEvent[] = [
 export const mockCategoriesData = [
   {
     name: "Concerts",
+    name_es: "Conciertos",
     icon: "🎵",
     color: "bg-gradient-to-r from-brand-blue to-brand-cyan",
     count: "Live Music",
+    count_es: "Música en Vivo",
   },
   {
     name: "Theater",
+    name_es: "Teatro",
     icon: "🎭",
     color: "bg-gradient-to-r from-brand-green to-brand-orange",
     count: "Stage Shows",
+    count_es: "Espectáculos",
   },
   {
     name: "Festivals",
+    name_es: "Festivales",
     icon: "🎪",
     color: "bg-gradient-to-r from-brand-orange to-brand-green",
     count: "Multi-Day Events",
+    count_es: "Eventos de Múltiples Días",
   },
   {
     name: "Marathons",
+    name_es: "Maratones",
     icon: "🏃",
     color: "bg-gradient-to-r from-brand-cyan to-brand-blue",
     count: "Sports Events",
+    count_es: "Eventos Deportivos",
   },
   {
     name: "Soccer",
+    name_es: "Fútbol",
     icon: "⚽",
     color: "bg-gradient-to-r from-brand-blue to-brand-cyan",
     count: "Football Matches",
+    count_es: "Partidos de Fútbol",
   },
   {
     name: "NFL",
+    name_es: "NFL",
     icon: "🏈",
     color: "bg-gradient-to-r from-brand-green to-brand-orange",
     count: "American Football",
+    count_es: "Fútbol Americano",
   },
   {
     name: "NBA",
+    name_es: "NBA",
     icon: "🏀",
     color: "bg-gradient-to-r from-brand-cyan to-brand-blue",
     count: "Basketball Games",
+    count_es: "Juegos de Baloncesto",
   },
   {
     name: "NHL",
+    name_es: "NHL",
     icon: "🏒",
     color: "bg-gradient-to-r from-brand-blue to-brand-cyan",
     count: "Hockey Games",
+    count_es: "Juegos de Hockey",
   },
 ];
 
 export const mockStatsData = [
-  { number: "", label: "Find Events" },
-  { number: "", label: "Fast Booking" },
-  { number: "", label: "Secure Payment" },
-  { number: "", label: "Mobile Ready" },
+  { number: "", label: "Find Events", label_es: "Encuentra Eventos" },
+  { number: "", label: "Fast Booking", label_es: "Reserva Rápida" },
+  { number: "", label: "Secure Payment", label_es: "Pago Seguro" },
+  {
+    number: "",
+    label: "Recommended by Many",
+    label_es: "Recomendado por Muchos",
+  },
 ];
 
 export const mockVenuesData = [

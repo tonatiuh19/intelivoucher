@@ -1044,7 +1044,7 @@ export default function Checkout() {
                             <p className="text-sm text-green-800 dark:text-green-200">
                               {t(
                                 "checkout.mobileTicketsDesc",
-                                "Your tickets are ready for mobile entry. No need to print anything!",
+                                "Your tickets will be sent to your email with entry instructions. No need to print anything!",
                               )}
                             </p>
                           </div>
@@ -1076,8 +1076,8 @@ export default function Checkout() {
                                 </li>
                                 <li>
                                   {t(
-                                    "checkout.downloadApp",
-                                    "Download the Intelivoucher app for best experience",
+                                    "checkout.checkEmail",
+                                    "Check your email for ticket details and updates",
                                   )}
                                 </li>
                               </ul>
@@ -1087,18 +1087,27 @@ export default function Checkout() {
 
                         <div className="bg-gradient-to-r from-brand-blue to-brand-cyan rounded-lg p-6 text-white">
                           <h4 className="text-lg font-semibold mb-2">
-                            {t("checkout.downloadIntelivoucherApp")}
+                            {t(
+                              "checkout.emailConfirmation",
+                              "Email Confirmation Sent",
+                            )}
                           </h4>
                           <p className="text-white/90 mb-4">
-                            {t("checkout.accessTicketsAndUpdates")}
+                            {t(
+                              "checkout.checkEmailForTickets",
+                              "Check your email for ticket details, entry instructions, and event updates.",
+                            )}
                           </p>
-                          <div className="flex space-x-4 justify-center">
-                            <Button variant="secondary" size="sm">
-                              {t("checkout.iosAppStore")}
-                            </Button>
-                            <Button variant="secondary" size="sm">
-                              {t("checkout.googlePlay")}
-                            </Button>
+                          <div className="flex items-center justify-center">
+                            <div className="bg-white/20 rounded-lg px-4 py-2">
+                              <span className="text-2xl mr-2">📧</span>
+                              <span className="font-medium">
+                                {t(
+                                  "checkout.emailSent",
+                                  "Confirmation email sent!",
+                                )}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>

@@ -16,7 +16,7 @@
     "error": "An error occurred",
     "getTickets": "Get Tickets",
     "signIn": "Sign In",
-    "getApp": "Get App",
+    "getApp": "Check Email",
     "subscribe": "Subscribe",
     "events": "Events",
     "categories": "Categories",
@@ -129,7 +129,7 @@
     "noEventsFoundDescription": "Try adjusting your search or filter criteria to find more events.",
     "clearAllFilters": "Clear All Filters",
     "trackYourAdventures": "Track Your Adventures",
-    "trackYourAdventuresDescription": "Keep track of all your booked events, download tickets, and never miss an amazing experience."
+    "trackYourAdventuresDescription": "Keep track of all your booked events, receive email confirmations, and never miss an amazing experience."
   },
   "badges": {
     "transportationIncluded": "🚌 Transportation Included",
@@ -146,13 +146,23 @@
   "features": {
     "title": "Why Choose InteliVoucher?",
     "subtitle": "Experience the future of event ticketing",
+    "whyChooseTitle": "Why Choose Intelivoucher?",
+    "whyChooseSubtitle": "The most secure and user-friendly way to discover and purchase event tickets online.",
     "instantBooking": {
       "title": "Instant Booking",
       "description": "Secure your tickets in seconds with our lightning-fast booking system"
     },
-    "mobileFirst": {
-      "title": "Mobile First",
-      "description": "Optimized mobile experience for booking on the go"
+    "webPlatform": {
+      "title": "Web-Based Platform",
+      "description": "Access from any device with our responsive web platform. Get email notifications for updates and confirmations."
+    },
+    "secureCheckout": {
+      "title": "Secure Checkout",
+      "description": "Our wizard-style checkout process with countdown timers ensures your tickets are reserved safely and securely."
+    },
+    "instantAccess": {
+      "title": "Instant Access",
+      "description": "Get instant access to thousands of concerts, sports events, and cultural experiences with real-time availability."
     },
     "securePayments": {
       "title": "Secure Payments",
@@ -169,18 +179,26 @@
     "sarahChen": {
       "name": "Sarah Chen",
       "role": "Music Enthusiast",
-      "quote": "Best ticketing app ever! Got front row seats to my favorite band's concert. The countdown timer feature saved me from missing out!"
+      "quote": "Best ticketing platform ever! Got front row seats to my favorite band's concert. The email notifications kept me updated throughout the process!"
     },
     "mikeRodriguez": {
       "name": "Mike Rodriguez",
       "role": "Sports Fan",
-      "quote": "Secured Lakers playoff tickets in seconds. The mobile app is super smooth and the seat selection is amazing."
+      "quote": "Secured Lakers playoff tickets in seconds. The web platform is super smooth and I received email confirmations instantly."
     },
     "emilyJohnson": {
       "name": "Emily Johnson",
       "role": "Theater Lover",
       "quote": "Found Broadway show tickets at great prices. The user experience is incredible and customer service is top-notch."
     }
+  },
+  "newsletter": {
+    "title": "Never Miss the Next Big Event",
+    "subtitle": "Get early access to tickets, exclusive presales, and personalized event recommendations.",
+    "emailPlaceholder": "Enter your email",
+    "subscribeButton": "Subscribe",
+    "stayUpdatedTitle": "Stay Updated",
+    "emailNotificationText": "We'll notify you via email about new events, ticket availability, and exclusive offers. Check your email regularly for the latest updates!"
   },
   "footer": {
     "events": "Events",
@@ -269,6 +287,9 @@
     "ticketsPurchased": "Your tickets have been successfully purchased!",
     "downloadTickets": "Download Tickets",
     "emailSent": "Confirmation email sent",
+    "checkEmail": "Check your email for ticket details and updates",
+    "emailConfirmation": "Email Confirmation Sent",
+    "checkEmailForTickets": "Check your email for ticket details, entry instructions, and event updates.",
     "bookingReference": "Booking Reference",
     "includesTransportation": "Includes Transportation",
     "presale": "Pre-sale",
@@ -402,7 +423,6 @@
     "purchaseCompleted": "Purchase Completed Successfully!",
     "confirmationSent": "Confirmation details have been sent to your email",
     "secured": "Secured",
-    "emailConfirmation": "Email Confirmation",
     "emailConfirmationDesc": "Check your email for detailed booking confirmation and ticket information.",
     "mobileTickets": "Mobile Tickets",
     "mobileTicketsDesc": "Your tickets are ready for mobile entry. No need to print anything!",
@@ -593,5 +613,27 @@
         "required": "Country is required"
       }
     }
+  },
+  "security": {
+    "title": "Security & Trust",
+    "subtitle": "Your data and transactions are protected with industry-leading security measures",
+    "ssl": {
+      "title": "SSL Protection",
+      "description": "All data transfers are encrypted with 256-bit SSL security"
+    },
+    "encryption": {
+      "title": "End-to-End Encryption",
+      "description": "Your personal and payment information is fully encrypted"
+    },
+    "pci": {
+      "title": "PCI DSS Compliant",
+      "description": "We meet the highest standards for payment card security"
+    },
+    "monitoring": {
+      "title": "24/7 Monitoring",
+      "description": "Continuous security monitoring and fraud detection"
+    },
+    "guarantee": "100% Secure Transactions Guaranteed",
+    "certified": "Security Certified"
   }
 }

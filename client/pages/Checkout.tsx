@@ -244,6 +244,11 @@ export default function Checkout() {
   // Users will be prompted to sign in during the checkout flow
   // useEffect removed - authentication is now handled in checkout steps
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   useEffect(() => {
     if (!incomingEvent) {
       // Clear checkout store and reset state
@@ -1091,25 +1096,41 @@ export default function Checkout() {
 
                 {/* Desktop Progress - Full */}
                 <div className="hidden lg:block">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-start justify-between mb-6">
                     {STEPS.map((step, index) => (
-                      <div key={step.id} className="flex items-center">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
-                            currentStep >= step.id
-                              ? "bg-brand-blue text-white"
-                              : "bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
-                          }`}
-                        >
-                          {currentStep > step.id ? (
-                            <CheckCircle className="w-5 h-5" />
-                          ) : (
-                            step.id
-                          )}
+                      <div key={step.id} className="flex items-start flex-1">
+                        <div className="flex flex-col items-center flex-1 min-w-0">
+                          <div
+                            className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-semibold transition-all duration-300 flex-shrink-0 ${
+                              currentStep >= step.id
+                                ? "bg-brand-blue text-white shadow-lg"
+                                : "bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
+                            }`}
+                          >
+                            {currentStep > step.id ? (
+                              <CheckCircle className="w-6 h-6" />
+                            ) : (
+                              step.id
+                            )}
+                          </div>
+                          <div className="mt-3 text-center px-2">
+                            <p
+                              className={`text-sm font-semibold transition-colors leading-tight ${
+                                currentStep >= step.id
+                                  ? "text-slate-900 dark:text-slate-100"
+                                  : "text-slate-600 dark:text-slate-400"
+                              }`}
+                            >
+                              {step.title}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-tight">
+                              {step.description}
+                            </p>
+                          </div>
                         </div>
                         {index < STEPS.length - 1 && (
                           <div
-                            className={`h-1 w-16 mx-2 rounded ${
+                            className={`h-1 w-full max-w-[80px] mx-2 mt-6 rounded transition-colors duration-300 flex-shrink-0 ${
                               currentStep > step.id
                                 ? "bg-brand-blue"
                                 : "bg-slate-200 dark:bg-slate-700"
@@ -1119,19 +1140,10 @@ export default function Checkout() {
                       </div>
                     ))}
                   </div>
-                  <Progress value={getProgressPercentage()} className="h-2" />
-                  <div className="flex justify-between mt-2">
-                    {STEPS.map((step) => (
-                      <div key={step.id} className="text-center">
-                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                          {step.title}
-                        </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {step.description}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                  <Progress
+                    value={getProgressPercentage()}
+                    className="h-2 mb-2"
+                  />
                 </div>
               </div>
 
@@ -1938,17 +1950,17 @@ export default function Checkout() {
             </div>
           </div>
 
-          <AlertDialogFooter className="space-x-2">
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-2">
             <Button
               variant="outline"
               onClick={() => setShowGoBackDialog(false)}
-              className="bg-green-50 hover:bg-green-100 text-green-700 border-green-300 dark:bg-green-900/20 dark:hover:bg-green-900/30 dark:text-green-300 dark:border-green-700"
+              className="w-full sm:w-auto order-2 sm:order-1 bg-green-50 hover:bg-green-100 text-green-700 border-green-300 dark:bg-green-900/20 dark:hover:bg-green-900/30 dark:text-green-300 dark:border-green-700"
             >
               {t("checkout.stayAndContinue")}
             </Button>
             <AlertDialogAction
               onClick={handleGoBackConfirm}
-              className="bg-red-500 hover:bg-red-600 text-white"
+              className="w-full sm:w-auto order-1 sm:order-2 bg-red-500 hover:bg-red-600 text-white"
             >
               {t("checkout.leaveCheckout")}
             </AlertDialogAction>

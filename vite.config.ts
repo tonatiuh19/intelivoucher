@@ -5,6 +5,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   root: "./client",
+  publicDir: "../public",
   server: {
     host: "::",
     port: 8080,

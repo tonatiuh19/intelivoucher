@@ -630,6 +630,46 @@ const EventDetails: React.FC = () => {
                     </Card>
                   )}
 
+                  {/* Jersey Add-on */}
+                  {(event.jersey_addon_available === "1" ||
+                    event.jersey_addon_available === 1) && (
+                    <Card className="border-border/50">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Shirt className="w-5 h-5 text-primary" />
+                          {t("checkout.officialJerseyAddon")}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <Shirt className="w-6 h-6 text-primary" />
+                              </div>
+                              <div>
+                                <h4 className="font-semibold text-foreground">
+                                  {t("checkout.jerseyAddOn")}
+                                </h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {t("checkout.jerseyDescription")}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-primary">
+                                {formatCurrency(event.jersey_price)}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {t("common.perPerson")}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
                   {/* Gifts */}
                   {event.event_gifts.length > 0 && (
                     <Card className="border-border/50">

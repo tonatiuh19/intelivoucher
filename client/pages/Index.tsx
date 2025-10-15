@@ -1104,7 +1104,8 @@ export default function Index() {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="text-2xl font-bold text-brand-cyan">
-                          {event.price}
+                          {t("common.from")}: $
+                          {formatCurrency(event.price, "", 2)}
                         </span>
                       </div>
                       <div className="flex gap-2">

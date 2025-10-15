@@ -317,9 +317,9 @@ const EventDetails: React.FC = () => {
           />
 
           {/* Hero Section with Event Image */}
-          <section className="relative pt-20 overflow-hidden">
+          <section className="relative pt-16 md:pt-20 overflow-hidden">
             {/* Background Image */}
-            <div className="absolute inset-0 h-[500px]">
+            <div className="absolute inset-0 h-[400px] md:h-[500px]">
               {event.image_url ? (
                 <>
                   <img
@@ -337,80 +337,90 @@ const EventDetails: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="relative container mx-auto px-4 pt-12 pb-20">
+            <div className="relative container mx-auto px-4 pt-8 md:pt-12 pb-12 md:pb-20">
               {/* Back Button */}
               <Button
                 variant="ghost"
                 onClick={() => navigate("/eventos")}
-                className="mb-8 text-white hover:bg-white/20"
+                className="mb-6 md:mb-8 text-white hover:bg-white/20 h-10"
+                size="sm"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                {t("eventDetails.backToEvents")}
+                <span className="hidden sm:inline">
+                  {t("eventDetails.backToEvents")}
+                </span>
+                <span className="sm:hidden">{t("common.back")}</span>
               </Button>
 
               <div className="max-w-4xl">
                 {/* Badges */}
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4 md:mb-6">
                   {event.is_trending === "1" && (
-                    <Badge className="bg-red-500/90 text-white border-0">
+                    <Badge className="bg-red-500/90 text-white border-0 text-xs">
                       <TrendingUp className="w-3 h-3 mr-1" />
                       {t("common.trending")}
                     </Badge>
                   )}
                   {event.is_presale === "1" && (
-                    <Badge className="bg-yellow-500/90 text-white border-0">
+                    <Badge className="bg-yellow-500/90 text-white border-0 text-xs">
                       <Zap className="w-3 h-3 mr-1" />
                       {t("common.presale")}
                     </Badge>
                   )}
                   {event.is_sold_out === "1" && (
-                    <Badge className="bg-gray-500/90 text-white border-0">
+                    <Badge className="bg-gray-500/90 text-white border-0 text-xs">
                       {t("common.soldOut")}
                     </Badge>
                   )}
-                  <Badge className="bg-primary/90 text-white border-0">
+                  <Badge className="bg-primary/90 text-white border-0 text-xs">
                     {event.category.name}
                   </Badge>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6 leading-tight">
                   {title}
                 </h1>
 
                 {/* Event Meta */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 text-white">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <Calendar className="w-6 h-6" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-lg md:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
-                    <div>
-                      <p className="text-sm text-white/70">{weekday}</p>
-                      <p className="font-semibold">{date}</p>
+                    <div className="min-w-0">
+                      <p className="text-xs md:text-sm text-white/70 truncate">
+                        {weekday}
+                      </p>
+                      <p className="font-semibold text-sm md:text-base truncate">
+                        {date}
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <Clock className="w-6 h-6" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-lg md:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
-                    <div>
-                      <p className="text-sm text-white/70">
+                    <div className="min-w-0">
+                      <p className="text-xs md:text-sm text-white/70">
                         {t("eventDetails.time")}
                       </p>
-                      <p className="font-semibold">{time}</p>
+                      <p className="font-semibold text-sm md:text-base">
+                        {time}
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <Ticket className="w-6 h-6" />
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-lg md:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Ticket className="w-5 h-5 md:w-6 md:h-6" />
                     </div>
-                    <div>
-                      <p className="text-sm text-white/70">
+                    <div className="min-w-0">
+                      <p className="text-xs md:text-sm text-white/70">
                         {t("common.from")}
                       </p>
-                      <p className="font-semibold text-xl">
+                      <p className="font-semibold text-lg md:text-xl">
                         {formatCurrency(minPrice)}
                       </p>
                     </div>
@@ -418,14 +428,14 @@ const EventDetails: React.FC = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap gap-4 mt-8">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 mt-6 md:mt-8">
                   <Button
                     size="lg"
                     onClick={handleGetTickets}
                     disabled={event.is_sold_out === "1"}
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-lg px-8"
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white text-base md:text-lg px-6 md:px-8 h-12 md:h-auto w-full sm:w-auto"
                   >
-                    <Ticket className="w-5 h-5 mr-2" />
+                    <Ticket className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                     {event.is_sold_out === "1"
                       ? t("common.soldOut")
                       : t("common.getTickets")}
@@ -434,18 +444,21 @@ const EventDetails: React.FC = () => {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+                    className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 h-12 md:h-auto w-full sm:w-auto"
                   >
-                    <Heart className="w-5 h-5 mr-2" />
-                    {t("eventDetails.saveEvent")}
+                    <Heart className="w-4 h-4 md:w-5 md:h-5 mr-2" />
+                    <span className="hidden sm:inline">
+                      {t("eventDetails.saveEvent")}
+                    </span>
+                    <span className="sm:hidden">{t("common.save")}</span>
                   </Button>
 
                   <Button
                     size="lg"
                     variant="outline"
-                    className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+                    className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 h-12 md:h-auto w-full sm:w-auto"
                   >
-                    <Share2 className="w-5 h-5 mr-2" />
+                    <Share2 className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                     {t("eventDetails.share")}
                   </Button>
                 </div>
@@ -454,21 +467,21 @@ const EventDetails: React.FC = () => {
           </section>
 
           {/* Main Content */}
-          <section className="py-16 px-4 bg-background dark:bg-slate-900">
+          <section className="py-8 md:py-16 px-4 bg-background dark:bg-slate-900">
             <div className="container mx-auto max-w-7xl">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Left Column - Main Content */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className="lg:col-span-2 space-y-6 md:space-y-8">
                   {/* Description */}
                   <Card className="border-border/50">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Info className="w-5 h-5 text-primary" />
+                      <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+                        <Info className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                         {t("eventDetails.about")}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                      <p className="text-sm md:text-base text-muted-foreground leading-relaxed whitespace-pre-line">
                         {description}
                       </p>
                     </CardContent>
@@ -478,36 +491,39 @@ const EventDetails: React.FC = () => {
                   {event.event_zones.length > 0 && (
                     <Card className="border-border/50">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <MapPin className="w-5 h-5 text-primary" />
+                        <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+                          <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                           {t("eventDetails.availableZones")}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-4">
+                      <CardContent className="space-y-3 md:space-y-4">
                         {event.event_zones.map((zone) => (
                           <div
                             key={zone.id}
-                            className="flex items-center justify-between p-4 bg-muted/50 rounded-lg"
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 md:p-4 bg-muted/50 rounded-lg"
                           >
-                            <div>
-                              <h4 className="font-semibold text-foreground">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-sm md:text-base text-foreground">
                                 {currentLanguage === "es" && zone.zone_name_es
                                   ? zone.zone_name_es
                                   : zone.zone_name}
                               </h4>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                                 {currentLanguage === "es" &&
                                 zone.zone_description_es
                                   ? zone.zone_description_es
                                   : zone.zone_description}
                               </p>
                             </div>
-                            <div className="text-right">
-                              <p className="text-2xl font-bold text-primary">
+                            <div className="text-left sm:text-right flex-shrink-0">
+                              <p className="text-xl md:text-2xl font-bold text-primary">
                                 {formatCurrency(zone.price)}
                               </p>
                               {zone.is_available === 0 && (
-                                <Badge variant="destructive" className="mt-1">
+                                <Badge
+                                  variant="destructive"
+                                  className="mt-1 text-xs"
+                                >
                                   {t("common.soldOut")}
                                 </Badge>
                               )}
@@ -522,8 +538,8 @@ const EventDetails: React.FC = () => {
                   {event.transportation_options.length > 0 && (
                     <Card className="border-border/50">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Car className="w-5 h-5 text-primary" />
+                        <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+                          <Car className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                           {t("eventDetails.extras")}
                         </CardTitle>
                       </CardHeader>
@@ -534,9 +550,9 @@ const EventDetails: React.FC = () => {
                               key={option.id}
                               value={`item-${index}`}
                             >
-                              <AccordionTrigger>
-                                <div className="flex items-center justify-between w-full pr-4">
-                                  <span className="font-semibold">
+                              <AccordionTrigger className="text-left">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full pr-4 gap-2">
+                                  <span className="font-semibold text-sm md:text-base">
                                     {/* Transportation name - show if transportation is included */}
                                     {option.transportation_type_id !== 1 && (
                                       <>
@@ -563,13 +579,13 @@ const EventDetails: React.FC = () => {
                                       </>
                                     )}
                                   </span>
-                                  <span className="text-primary font-bold">
+                                  <span className="text-primary font-bold text-sm md:text-base flex-shrink-0">
                                     +{formatCurrency(option.additional_cost)}
                                   </span>
                                 </div>
                               </AccordionTrigger>
                               <AccordionContent>
-                                <div className="space-y-3 text-sm text-muted-foreground">
+                                <div className="space-y-3 text-xs md:text-sm text-muted-foreground">
                                   {/* Transportation Description */}
                                   {option.transportation_type_id !== 1 && (
                                     <div>
@@ -635,29 +651,29 @@ const EventDetails: React.FC = () => {
                     event.jersey_addon_available === 1) && (
                     <Card className="border-border/50">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Shirt className="w-5 h-5 text-primary" />
+                        <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+                          <Shirt className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                           {t("checkout.officialJerseyAddon")}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
-                          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 md:p-4 bg-muted/50 rounded-lg">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                                <Shirt className="w-6 h-6 text-primary" />
+                              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <Shirt className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                               </div>
-                              <div>
-                                <h4 className="font-semibold text-foreground">
+                              <div className="min-w-0">
+                                <h4 className="font-semibold text-sm md:text-base text-foreground">
                                   {t("checkout.jerseyAddOn")}
                                 </h4>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-xs md:text-sm text-muted-foreground">
                                   {t("checkout.jerseyDescription")}
                                 </p>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <p className="text-2xl font-bold text-primary">
+                            <div className="text-left sm:text-right flex-shrink-0">
+                              <p className="text-xl md:text-2xl font-bold text-primary">
                                 {formatCurrency(event.jersey_price)}
                               </p>
                               <p className="text-xs text-muted-foreground">
@@ -674,8 +690,8 @@ const EventDetails: React.FC = () => {
                   {event.event_gifts.length > 0 && (
                     <Card className="border-border/50">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Gift className="w-5 h-5 text-primary" />
+                        <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+                          <Gift className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                           {t("eventDetails.includedGifts")}
                         </CardTitle>
                       </CardHeader>
@@ -684,9 +700,9 @@ const EventDetails: React.FC = () => {
                           {event.event_gifts.map((gift) => (
                             <li
                               key={gift.id}
-                              className="flex items-center gap-2 text-muted-foreground"
+                              className="flex items-center gap-2 text-sm md:text-base text-muted-foreground"
                             >
-                              <BadgeCheck className="w-4 h-4 text-primary" />
+                              <BadgeCheck className="w-4 h-4 text-primary flex-shrink-0" />
                               {currentLanguage === "es" && gift.gift_name_es
                                 ? gift.gift_name_es
                                 : gift.gift_name}
@@ -701,17 +717,19 @@ const EventDetails: React.FC = () => {
                 {/* Right Column - Sidebar */}
                 <div className="space-y-6">
                   {/* Quick Info Card */}
-                  <Card className="border-border/50 sticky top-24">
+                  <Card className="border-border/50 lg:sticky lg:top-24">
                     <CardHeader>
-                      <CardTitle>{t("eventDetails.eventInfo")}</CardTitle>
+                      <CardTitle className="text-lg md:text-xl">
+                        {t("eventDetails.eventInfo")}
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {/* Features */}
                       <div className="space-y-3">
                         {event.includes_transportation === "1" && (
                           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                            <Car className="w-5 h-5 text-primary" />
-                            <span className="text-sm">
+                            <Car className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />
+                            <span className="text-xs md:text-sm">
                               {t("eventDetails.transportationIncluded")}
                             </span>
                           </div>
@@ -719,8 +737,8 @@ const EventDetails: React.FC = () => {
 
                         {event.accepts_under_age === "1" && (
                           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                            <Users className="w-5 h-5 text-primary" />
-                            <span className="text-sm">
+                            <Users className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />
+                            <span className="text-xs md:text-sm">
                               {t("eventDetails.allAgesWelcome")}
                             </span>
                           </div>
@@ -728,8 +746,8 @@ const EventDetails: React.FC = () => {
 
                         {event.jersey_addon_available === "1" && (
                           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                            <Shirt className="w-5 h-5 text-primary" />
-                            <span className="text-sm">
+                            <Shirt className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />
+                            <span className="text-xs md:text-sm">
                               {t("eventDetails.jerseyAvailable")}
                             </span>
                           </div>
@@ -737,8 +755,8 @@ const EventDetails: React.FC = () => {
 
                         {event.refundable_if_no_ticket === "1" && (
                           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                            <AlertCircle className="w-5 h-5 text-primary" />
-                            <span className="text-sm">
+                            <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />
+                            <span className="text-xs md:text-sm">
                               {t("eventDetails.refundablePolicy")}
                             </span>
                           </div>
@@ -750,18 +768,18 @@ const EventDetails: React.FC = () => {
                       {/* Payment Options */}
                       {event.event_payment_options.length > 0 && (
                         <div className="space-y-2">
-                          <h4 className="font-semibold text-sm">
+                          <h4 className="font-semibold text-xs md:text-sm">
                             {t("eventDetails.paymentOptions")}
                           </h4>
                           {event.event_payment_options[0]
                             .installments_available > 0 && (
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs md:text-sm text-muted-foreground">
                               • {t("eventDetails.installmentsAvailable")}
                             </p>
                           )}
                           {event.event_payment_options[0]
                             .presale_deposit_available > 0 && (
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs md:text-sm text-muted-foreground">
                               • {t("eventDetails.presaleDeposit")}
                             </p>
                           )}
@@ -775,12 +793,14 @@ const EventDetails: React.FC = () => {
                         size="lg"
                         onClick={handleGetTickets}
                         disabled={event.is_sold_out === "1"}
-                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white h-12 md:h-auto"
                       >
-                        {event.is_sold_out === "1"
-                          ? t("common.soldOut")
-                          : t("common.getTickets")}
-                        <ChevronRight className="w-5 h-5 ml-2" />
+                        <span className="flex-1">
+                          {event.is_sold_out === "1"
+                            ? t("common.soldOut")
+                            : t("common.getTickets")}
+                        </span>
+                        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 ml-2 flex-shrink-0" />
                       </Button>
                     </CardContent>
                   </Card>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -49,25 +49,23 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   };
 
   const renderLogo = () => {
-    // Determine logo size based on scroll state
+    // Determine logo size based on scroll state and screen size
     const isLargeState = shouldUseScrollEffect && !isScrolled;
-    const logoWidth = isLargeState ? "320px" : "160px";
-    const logoHeight = isLargeState ? "80px" : "40px";
 
     return (
       <div className="flex items-center space-x-3">
         <div
           className={`flex items-center transition-all duration-500 ease-out ${
             variant === "checkout" ? "cursor-default" : "cursor-pointer"
-          } ${isLargeState ? "transform scale-110" : ""}`}
+          }`}
           onClick={handleLogoClick}
         >
           <Logo
-            width={logoWidth}
-            height={logoHeight}
             fillColor="#ffffffff"
             accentColor="var(--logo-accent, #ffffff)"
-            className="transition-all duration-500 ease-out hover:scale-105"
+            className={`transition-all duration-500 ease-out hover:scale-105 w-[2000px] h-auto ${
+              isLargeState ? "md:w-[320px]" : "md:w-[160px]"
+            }`}
             isDark={shouldUseScrollEffect && !isScrolled}
           />
         </div>
@@ -139,180 +137,58 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   };
 
   const renderMobileToggle = () => {
+    // Remove burger menu button entirely for mobile
+    // Only show sign-in/user dropdown on mobile (language selector moved to footer)
     if (variant === "checkout") return null;
 
-    // Dynamic button classes based on scroll state
-    const getButtonClasses = () => {
-      const baseClasses =
-        "md:hidden p-2 rounded-lg transition-all duration-300";
-
-      if (!shouldUseScrollEffect) {
-        return `${baseClasses} border border-slate-200 dark:border-slate-700`;
-      }
-
-      if (isScrolled) {
-        // Crystallized state - normal button styling
-        return `${baseClasses} border border-slate-200 dark:border-slate-700`;
-      } else {
-        // Transparent state - glass-like button
-        return `${baseClasses} border border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20`;
-      }
-    };
-
-    const getIconClasses = () => {
-      if (shouldUseScrollEffect && !isScrolled) {
-        return "w-6 h-6 text-white drop-shadow-sm";
-      }
-      return "w-6 h-6";
-    };
-
     return (
-      <button
-        aria-label="Toggle menu"
-        className={getButtonClasses()}
-        onClick={() => setMobileOpen?.(!mobileOpen)}
-      >
-        {mobileOpen ? (
-          <X className={getIconClasses()} />
+      <div className="md:hidden flex items-center gap-2">
+        {isAuthenticated && user ? (
+          <div className="flex items-center gap-1">
+            {/* Show user icon on mobile for logged-in users */}
+            <div
+              className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                shouldUseScrollEffect && !isScrolled
+                  ? "bg-white/20 border border-white/30"
+                  : "bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+              }`}
+            >
+              <User
+                className={`w-4 h-4 ${
+                  shouldUseScrollEffect && !isScrolled
+                    ? "text-white"
+                    : "text-slate-700 dark:text-slate-300"
+                }`}
+              />
+            </div>
+            <UserDropdown
+              user={user ? { ...user, id: String(user.id) } : null}
+            />
+          </div>
         ) : (
-          <Menu className={getIconClasses()} />
+          <Button
+            variant={
+              shouldUseScrollEffect && !isScrolled ? "secondary" : "outline"
+            }
+            size="sm"
+            onClick={() => dispatch(openSignInModal())}
+            className={`transition-all duration-300 ${
+              shouldUseScrollEffect && !isScrolled
+                ? "bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+                : ""
+            }`}
+          >
+            {t("common.signIn")}
+          </Button>
         )}
-      </button>
+      </div>
     );
   };
 
   const renderMobileMenu = () => {
-    if (variant === "checkout" || !mobileOpen) return null;
-
-    // Dynamic mobile menu background based on scroll state
-    const getMobileMenuClasses = () => {
-      if (!shouldUseScrollEffect) {
-        return "md:hidden border-t border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm";
-      }
-
-      if (isScrolled) {
-        // Crystallized state - solid background
-        return "md:hidden border-t border-slate-200/60 dark:border-slate-700/60 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl";
-      } else {
-        // Transparent state - glass-like effect
-        return "md:hidden border-t border-white/20 bg-white/10 backdrop-blur-lg";
-      }
-    };
-
-    return (
-      <div className={getMobileMenuClasses()}>
-        <div className="px-4 py-4 space-y-4">
-          {variant === "mobile-minimal" ? (
-            // Mobile minimal: only show user dropdown
-            <div className="flex flex-col space-y-4">
-              {isAuthenticated ? (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    {user?.fullName || user?.email}
-                  </span>
-                  <UserDropdown
-                    user={user ? { ...user, id: String(user.id) } : null}
-                  />
-                </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => dispatch(openSignInModal())}
-                >
-                  {t("common.signIn")}
-                </Button>
-              )}
-            </div>
-          ) : (
-            // Default mobile menu: show everything
-            <>
-              {variant === "home" ? (
-                <>
-                  <a
-                    href="#events"
-                    className={`block transition-colors py-2 ${
-                      shouldUseScrollEffect && !isScrolled
-                        ? "text-white hover:text-blue-200 drop-shadow-sm"
-                        : "text-slate-700 dark:text-slate-300 hover:text-blue-500"
-                    }`}
-                    onClick={() => setMobileOpen?.(false)}
-                  >
-                    {t("common.events")}
-                  </a>
-                  {/* <a
-                    href="#categories"
-                    className={`block transition-colors py-2 ${
-                      shouldUseScrollEffect && !isScrolled
-                        ? "text-white hover:text-blue-200 drop-shadow-sm"
-                        : "text-slate-700 dark:text-slate-300 hover:text-blue-500"
-                    }`}
-                    onClick={() => setMobileOpen?.(false)}
-                  >
-                    {t("common.categories")}
-                  </a> */}
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      navigate("/");
-                      setMobileOpen?.(false);
-                    }}
-                  >
-                    {t("common.home")}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      navigate("/eventos");
-                      setMobileOpen?.(false);
-                    }}
-                  >
-                    {t("common.events")}
-                  </Button>
-                </>
-              )}
-
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm font-medium ${
-                    shouldUseScrollEffect && !isScrolled
-                      ? "text-white drop-shadow-sm"
-                      : "text-slate-700 dark:text-slate-300"
-                  }`}
-                >
-                  {t("common.language")}
-                </span>
-                <LanguageSelector />
-              </div>
-
-              <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                {isAuthenticated ? (
-                  <UserDropdown
-                    user={user ? { ...user, id: String(user.id) } : null}
-                  />
-                ) : (
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => {
-                      dispatch(openSignInModal());
-                      setMobileOpen?.(false);
-                    }}
-                  >
-                    {t("common.signIn")}
-                  </Button>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
+    // Mobile menu is no longer needed since we removed the burger button
+    // All mobile controls are now in the header itself
+    return null;
   };
 
   // Dynamic header classes based on scroll state

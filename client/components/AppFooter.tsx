@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Ticket, Heart, Music, Trophy, Camera } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export interface AppFooterProps {
   variant?: "default" | "minimal";
@@ -177,8 +178,14 @@ export const AppFooter: React.FC<AppFooterProps> = ({
             </ul>
           </div>
         </div>
-        <div className="border-t border-slate-800 mt-12 pt-8 text-center text-slate-400">
-          <p>{t("footer.copyright")}</p>
+        <div className="border-t border-slate-800 mt-12 pt-8">
+          {/* Language selector for mobile - centered at top */}
+          <div className="flex justify-center mb-4 md:hidden">
+            <LanguageSelector />
+          </div>
+          <div className="text-center text-slate-400">
+            <p>{t("footer.copyright")}</p>
+          </div>
         </div>
       </div>
     </footer>

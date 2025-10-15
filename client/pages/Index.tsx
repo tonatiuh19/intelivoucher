@@ -453,7 +453,7 @@ export default function Index() {
         />
 
         {/* Enhanced Hero Section - full viewport, starts from top */}
-        <section className="relative min-h-screen w-full px-4 overflow-hidden flex items-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+        <section className="relative min-h-screen w-full overflow-hidden flex items-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 pt-20 md:pt-0">
           {/* Background Images with Parallax Effect */}
           <div className="absolute inset-0 z-0">
             {heroBackgrounds.map((bg, index) => (
@@ -472,7 +472,7 @@ export default function Index() {
             <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/10 to-brand-cyan/10" />
           </div>
 
-          {/* Floating Elements */}
+          {/* Floating Elements - Desktop Only */}
           <div className="absolute inset-0 z-0 overflow-hidden hidden md:block">
             <div className="absolute top-20 left-10 w-20 h-20 bg-brand-blue/20 rounded-full animate-pulse" />
             <div
@@ -489,11 +489,11 @@ export default function Index() {
             />
           </div>
 
-          <div className="container mx-auto text-center relative z-10">
+          <div className="container mx-auto text-center relative z-10 px-4">
             {/* Main Hero Content */}
-            <div className="space-y-12 py-20">
-              <div className="space-y-8">
-                <h2 className="text-6xl sm:text-7xl md:text-9xl font-bold leading-tight">
+            <div className="space-y-8 md:space-y-12 py-12 md:py-20">
+              <div className="space-y-4 md:space-y-8">
+                <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-brand-blue via-brand-cyan to-brand-green bg-clip-text text-transparent animate-pulse">
                     {t("hero.discover")}
                   </span>
@@ -506,33 +506,33 @@ export default function Index() {
                     {t("hero.experiences")}
                   </span>
                 </h2>
-                <p className="text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-base sm:text-lg md:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed px-4">
                   {t("hero.subtitle")}
                 </p>
               </div>
 
               {/* Enhanced Search Bar with Dropdown */}
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-slate-200/50 dark:border-slate-700/50">
+              <div className="max-w-4xl mx-auto px-2 md:px-0">
+                <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-2xl md:rounded-3xl shadow-2xl p-4 md:p-8 border border-slate-200/50 dark:border-slate-700/50">
                   <Popover open={searchOpen} onOpenChange={setSearchOpen}>
                     <PopoverTrigger asChild>
                       <div className="flex-1 relative">
-                        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-slate-400 z-10" />
+                        <Search className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 text-slate-400 z-10" />
                         <Input
                           ref={searchInputRef}
                           placeholder={t("hero.searchPlaceholder")}
-                          className="pl-12 h-14 text-lg border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl min-h-[56px] w-full"
+                          className="pl-10 md:pl-12 h-12 md:h-14 text-base md:text-lg border-0 focus-visible:ring-2 focus-visible:ring-brand-blue bg-slate-700 text-white rounded-xl min-h-[48px] md:min-h-[56px] w-full"
                           value={searchTerm}
                           onChange={(e) => handleSearch(e.target.value)}
                           onFocus={() => searchTerm && setSearchOpen(true)}
                         />
                         {searchLoading && (
-                          <Loader2 className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-brand-blue animate-spin" />
+                          <Loader2 className="absolute right-3 md:right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-brand-blue animate-spin" />
                         )}
                       </div>
                     </PopoverTrigger>
                     <PopoverContent
-                      className="w-[800px] p-0"
+                      className="w-[calc(100vw-32px)] md:w-[800px] p-0"
                       align="center"
                       onOpenAutoFocus={(e) => e.preventDefault()}
                     >
@@ -578,48 +578,58 @@ export default function Index() {
                                 return (
                                   <div
                                     key={event.id}
-                                    className="flex items-center gap-4 px-4 py-3 cursor-pointer rounded-lg transition-colors group"
+                                    className="flex flex-col gap-3 px-3 md:px-4 py-4 cursor-pointer rounded-lg transition-colors group hover:bg-slate-50 dark:hover:bg-slate-800 border-b border-slate-100 dark:border-slate-800 last:border-0"
                                   >
-                                    {/* Event Image */}
-                                    <img
-                                      src={event.image_url}
-                                      alt={title}
-                                      className="w-16 h-16 object-cover rounded-lg"
-                                    />
+                                    {/* Top Section: Image and Info */}
+                                    <div className="flex items-start gap-3">
+                                      {/* Event Image */}
+                                      <img
+                                        src={event.image_url}
+                                        alt={title}
+                                        className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg flex-shrink-0 ring-2 ring-slate-200 dark:ring-slate-700"
+                                      />
 
-                                    {/* Event Info */}
-                                    <div className="flex-1 min-w-0">
-                                      <h4 className="font-semibold text-sm line-clamp-1 group-hover:text-primary transition-colors">
-                                        {title}
-                                      </h4>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <Badge
-                                          variant="secondary"
-                                          className="text-xs"
-                                        >
-                                          {event.category.name}
-                                        </Badge>
-                                        <span className="text-xs text-muted-foreground">
-                                          {format(
-                                            new Date(event.event_date),
-                                            "MMM dd, yyyy",
+                                      {/* Event Info */}
+                                      <div className="flex-1 min-w-0">
+                                        <h4 className="font-bold text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2">
+                                          {title}
+                                        </h4>
+                                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                                          <Badge
+                                            variant="secondary"
+                                            className="text-xs"
+                                          >
+                                            {event.category.name}
+                                          </Badge>
+                                          <span className="text-xs text-muted-foreground hidden sm:inline">
+                                            {format(
+                                              new Date(event.event_date),
+                                              "MMM dd, yyyy",
+                                            )}
+                                          </span>
+                                        </div>
+                                        {/* Price - visible on all screens */}
+                                        <div className="flex items-center gap-2">
+                                          <p className="text-base md:text-lg font-bold text-primary">
+                                            {formatCurrency(minPrice)}
+                                          </p>
+                                          {event.is_sold_out === "1" && (
+                                            <Badge
+                                              variant="destructive"
+                                              className="text-xs"
+                                            >
+                                              {t("common.soldOut")}
+                                            </Badge>
                                           )}
-                                        </span>
+                                        </div>
                                       </div>
                                     </div>
 
-                                    {/* Price */}
-                                    <div className="flex-shrink-0 text-right">
-                                      <p className="text-sm font-bold text-primary">
-                                        {formatCurrency(minPrice)}
-                                      </p>
-                                    </div>
-
-                                    {/* Action Buttons */}
-                                    <div className="flex-shrink-0 flex gap-2">
+                                    {/* Action Buttons - Full Width, Prominent */}
+                                    <div className="flex gap-2 w-full">
                                       <Button
-                                        size="sm"
-                                        variant="ghost"
+                                        size="default"
+                                        variant="outline"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleSearchSelect(
@@ -627,13 +637,13 @@ export default function Index() {
                                             "view",
                                           );
                                         }}
-                                        className="h-8"
+                                        className="flex-1 h-10 md:h-11 font-semibold border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                                       >
-                                        <ExternalLink className="w-4 h-4 mr-1" />
+                                        <ExternalLink className="w-4 h-4 mr-2" />
                                         {t("eventDetails.viewDetails")}
                                       </Button>
                                       <Button
-                                        size="sm"
+                                        size="default"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           handleSearchSelect(
@@ -641,10 +651,10 @@ export default function Index() {
                                             "checkout",
                                           );
                                         }}
-                                        className="h-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                                        className="flex-1 h-10 md:h-11 font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg"
                                         disabled={event.is_sold_out === "1"}
                                       >
-                                        <Ticket className="w-4 h-4 mr-1" />
+                                        <Ticket className="w-4 h-4 mr-2" />
                                         {event.is_sold_out === "1"
                                           ? t("common.soldOut")
                                           : t("common.getTickets")}
@@ -659,35 +669,37 @@ export default function Index() {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <div className="flex items-center justify-center mt-6 space-x-6">
-                    <span className="text-slate-500 dark:text-slate-400 text-sm">
+                  <div className="flex flex-wrap items-center justify-center mt-4 md:mt-6 gap-2 md:gap-4">
+                    <span className="text-slate-500 dark:text-slate-400 text-xs md:text-sm w-full sm:w-auto text-center sm:text-left">
                       {t("common.popular")}:
                     </span>
-                    {popularEventTags.map((tag) => (
-                      <Button
-                        key={tag}
-                        variant="ghost"
-                        size="sm"
-                        className="text-brand-blue hover:bg-brand-blue/10 rounded-full"
-                      >
-                        {tag}
-                      </Button>
-                    ))}
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {popularEventTags.map((tag) => (
+                        <Button
+                          key={tag}
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs md:text-sm text-brand-blue hover:bg-brand-blue/10 rounded-full h-7 md:h-8 px-3"
+                        >
+                          {tag}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Social Proof & Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto px-4">
                 {stats.map((stat, index) => (
                   <div key={index} className="text-center group">
-                    <div className="w-16 h-16 bg-gradient-to-r from-brand-blue/20 to-brand-cyan/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <stat.icon className="w-8 h-8 text-brand-blue" />
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-brand-blue/20 to-brand-cyan/20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-2 md:mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <stat.icon className="w-6 h-6 md:w-8 md:h-8 text-brand-blue" />
                     </div>
-                    <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-1">
+                    <div className="text-xl md:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-1">
                       {stat.number}
                     </div>
-                    <div className="text-slate-600 dark:text-slate-400 text-sm">
+                    <div className="text-slate-600 dark:text-slate-400 text-xs md:text-sm">
                       {i18n.language === "es"
                         ? stat.label_es || stat.label
                         : stat.label}
@@ -697,7 +709,7 @@ export default function Index() {
               </div>
 
               {/* Feature Highlight */}
-              <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full px-8 py-4 border border-blue-500/20">
+              <div className="inline-flex items-center space-x-2 md:space-x-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-full px-4 md:px-8 py-3 md:py-4 border border-blue-500/20">
                 <Ticket className="w-6 h-6 text-blue-500" />
                 <span className="text-blue-600 dark:text-blue-400 font-semibold text-lg">
                   {t("hero.secureBooking")}

@@ -25,6 +25,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   Calendar,
   MapPin,
   Clock,
@@ -39,8 +46,12 @@ import {
   Ticket,
   Timer,
   AlertTriangle,
+  ShoppingCart,
+  ChevronUp,
+  Shield,
+  Phone,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ZoneOption } from "@/types";
@@ -76,6 +87,39 @@ import {
   selectIsReservationComplete,
   selectReservationSuccessData,
 } from "@/store/selectors/reservationSelectors";
+import { selectUser } from "@/store/selectors/authSelectors";
+import {
+  setEmail,
+  setFullName,
+  setPhone,
+  setBirthdate,
+  setVerificationCode,
+  clearError,
+  checkUserEmail,
+  createNewUser,
+  sendCode,
+  verifyCode,
+} from "@/store/slices/authSlice";
+import {
+  selectEmail,
+  selectFullName,
+  selectPhone,
+  selectBirthdate,
+  selectVerificationCode,
+  selectIsCheckingEmail,
+  selectIsCreatingUser,
+  selectIsSendingCode,
+  selectIsVerifyingCode,
+  selectAuthError,
+  selectCanProceedFromEmail,
+  selectCanProceedFromRegistration,
+  selectCanProceedFromVerification,
+  selectUserExists,
+} from "@/store/selectors/authSelectors";
+import PhoneInput from "react-phone-number-input";
+import { isValidPhoneNumber } from "libphonenumber-js";
+import "react-phone-number-input/style.css";
+import "./user/phone-input.css";
 
 export default function Checkout() {
   const { t, i18n } = useTranslation();
@@ -84,36 +128,69 @@ export default function Checkout() {
   // Go Back confirmation dialog state
   const [showGoBackDialog, setShowGoBackDialog] = useState(false);
 
-  const STEPS = [
-    {
-      id: 1,
-      title: t("checkout.steps.selectTickets.title"),
-      description: t("checkout.steps.selectTickets.description"),
-    },
-    {
-      id: 2,
-      title: t("checkout.steps.customerInfo.title"),
-      description: t("checkout.steps.customerInfo.description"),
-    },
-    {
-      id: 3,
-      title: t("checkout.steps.ticketHoldersInfo.title", "Ticket Holders"),
-      description: t(
-        "checkout.steps.ticketHoldersInfo.description",
-        "Enter information for each ticket",
-      ),
-    },
-    {
-      id: 4,
-      title: t("checkout.steps.payment.title"),
-      description: t("checkout.steps.payment.description"),
-    },
-    {
-      id: 5,
-      title: t("checkout.steps.confirmation.title"),
-      description: t("checkout.steps.confirmation.description"),
-    },
-  ];
+  // Mobile summary panel state
+  const [showMobileSummary, setShowMobileSummary] = useState(false);
+
+  // Get current logged-in user
+  const currentUser = useAppSelector(selectUser);
+  const isUserAuthenticated = currentUser?.isAuthenticated || false;
+
+  // Dynamic steps based on authentication status
+  const STEPS = useMemo(() => {
+    const baseSteps = [
+      {
+        id: 1,
+        title: t("checkout.steps.selectTickets.title"),
+        description: t("checkout.steps.selectTickets.description"),
+      },
+    ];
+
+    // Add authentication step if user is not logged in
+    if (!isUserAuthenticated) {
+      baseSteps.push({
+        id: 2,
+        title: t("checkout.steps.authentication.title", "Sign In / Register"),
+        description: t(
+          "checkout.steps.authentication.description",
+          "Secure your purchase",
+        ),
+      });
+    }
+
+    // Add remaining steps with adjusted IDs
+    const customerInfoId = isUserAuthenticated ? 2 : 3;
+    const ticketHoldersId = isUserAuthenticated ? 3 : 4;
+    const paymentId = isUserAuthenticated ? 4 : 5;
+    const confirmationId = isUserAuthenticated ? 5 : 6;
+
+    baseSteps.push(
+      {
+        id: customerInfoId,
+        title: t("checkout.steps.customerInfo.title"),
+        description: t("checkout.steps.customerInfo.description"),
+      },
+      {
+        id: ticketHoldersId,
+        title: t("checkout.steps.ticketHoldersInfo.title", "Ticket Holders"),
+        description: t(
+          "checkout.steps.ticketHoldersInfo.description",
+          "Enter information for each ticket",
+        ),
+      },
+      {
+        id: paymentId,
+        title: t("checkout.steps.payment.title"),
+        description: t("checkout.steps.payment.description"),
+      },
+      {
+        id: confirmationId,
+        title: t("checkout.steps.confirmation.title"),
+        description: t("checkout.steps.confirmation.description"),
+      },
+    );
+
+    return baseSteps;
+  }, [t, isUserAuthenticated]);
   const [currentStep, setCurrentStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
@@ -121,6 +198,32 @@ export default function Checkout() {
   const [formData, setFormData] = useState<CheckoutFormValues>(
     initialCheckoutValues,
   );
+
+  // Auth step state
+  const [authStep, setAuthStep] = useState<
+    "email" | "registration" | "verification"
+  >("email");
+  const [resendTimer, setResendTimer] = useState(0);
+
+  // Auth selectors
+  const authEmail = useAppSelector(selectEmail);
+  const authFullName = useAppSelector(selectFullName);
+  const authPhone = useAppSelector(selectPhone);
+  const authBirthdate = useAppSelector(selectBirthdate);
+  const authVerificationCode = useAppSelector(selectVerificationCode);
+  const isCheckingEmail = useAppSelector(selectIsCheckingEmail);
+  const isCreatingUser = useAppSelector(selectIsCreatingUser);
+  const isSendingCode = useAppSelector(selectIsSendingCode);
+  const isVerifyingCode = useAppSelector(selectIsVerifyingCode);
+  const authError = useAppSelector(selectAuthError);
+  const canProceedFromEmail = useAppSelector(selectCanProceedFromEmail);
+  const canProceedFromRegistration = useAppSelector(
+    selectCanProceedFromRegistration,
+  );
+  const canProceedFromVerification = useAppSelector(
+    selectCanProceedFromVerification,
+  );
+  const userExists = useAppSelector(selectUserExists);
 
   const location = useLocation();
   const incomingEvent = (location.state as any)?.event as any | undefined;
@@ -136,6 +239,10 @@ export default function Checkout() {
   const currentReservation = useAppSelector(selectCurrentReservation);
   const isReservationComplete = useAppSelector(selectIsReservationComplete);
   const reservationSuccessData = useAppSelector(selectReservationSuccessData);
+
+  // Check authentication - DON'T redirect, allow checkout to continue
+  // Users will be prompted to sign in during the checkout flow
+  // useEffect removed - authentication is now handled in checkout steps
 
   useEffect(() => {
     if (!incomingEvent) {
@@ -290,6 +397,23 @@ export default function Checkout() {
     return () => clearInterval(timer);
   }, []);
 
+  // Resend timer effect for auth verification
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [resendTimer]);
+
   // Handle timer expiration - only show dialog if checkout not completed
   useEffect(() => {
     if (timeLeft === 0 && !showExpiredDialog && !isCheckoutCompleted) {
@@ -407,24 +531,113 @@ export default function Checkout() {
     serviceFee +
     processingFee;
 
+  // Get current language for auth
+  const currentLanguage = useAppSelector(
+    (state) => state.language.currentLanguage,
+  );
+
+  // Auth step handlers
+  const handleEmailCheck = async () => {
+    if (!canProceedFromEmail) return;
+
+    const result = await dispatch(checkUserEmail(authEmail));
+
+    // If user exists and email check was successful, send verification code automatically
+    if (
+      checkUserEmail.fulfilled.match(result) &&
+      result.payload.exists &&
+      result.payload.user
+    ) {
+      await dispatch(
+        sendCode({ userId: result.payload.user.id, email: authEmail }),
+      );
+      setAuthStep("verification");
+      setResendTimer(300); // 5 minutes
+    } else if (checkUserEmail.fulfilled.match(result)) {
+      // User doesn't exist, go to registration
+      setAuthStep("registration");
+    }
+  };
+
+  const handleUserCreation = async () => {
+    if (!canProceedFromRegistration) return;
+
+    const result = await dispatch(
+      createNewUser({
+        email: authEmail,
+        fullName: authFullName,
+        phone: authPhone,
+        birthdate: authBirthdate,
+        currentLanguage,
+      }),
+    );
+
+    // If user creation was successful, send verification code automatically
+    if (createNewUser.fulfilled.match(result)) {
+      await dispatch(sendCode({ userId: result.payload.id, email: authEmail }));
+      setAuthStep("verification");
+      setResendTimer(300); // 5 minutes
+    }
+  };
+
+  const handleCodeVerification = async () => {
+    if (!canProceedFromVerification || !currentUser) return;
+
+    const result = await dispatch(
+      verifyCode({ userId: currentUser.id, code: authVerificationCode }),
+    );
+
+    // If verification was successful, move to next step
+    if (verifyCode.fulfilled.match(result)) {
+      // Determine next step based on whether auth step was included
+      const nextStep = isUserAuthenticated ? 2 : 3;
+      setCurrentStep(nextStep);
+    }
+  };
+
+  const handleAuthBack = () => {
+    if (authStep === "registration" || authStep === "verification") {
+      setAuthStep("email");
+      setResendTimer(0);
+    }
+  };
+
+  const formatResendTimer = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
   // Step navigation handlers
   const handleStep1Next = (values: Step1Values) => {
     setFormData((prev) => ({ ...prev, step1: values }));
+    // If user is authenticated, go to step 2 (customer info)
+    // If not authenticated, go to step 2 (auth)
     setCurrentStep(2);
   };
 
   const handleStep2Next = (values: Step2Values) => {
     setFormData((prev) => ({ ...prev, step2: values }));
-    setCurrentStep(3);
+    // Next step depends on authentication status
+    const nextStep = isUserAuthenticated ? 3 : 4;
+    setCurrentStep(nextStep);
   };
 
   const handleStep2_5Next = (values: Step2_5Values) => {
     setFormData((prev) => ({ ...prev, step2_5: values }));
-    setCurrentStep(4);
+    // Next step depends on authentication status
+    const nextStep = isUserAuthenticated ? 4 : 5;
+    setCurrentStep(nextStep);
   };
 
   const handleStep3Next = async (values: Step3Values) => {
     try {
+      // Ensure user is authenticated
+      if (!currentUser || !currentUser.id) {
+        console.error("No authenticated user found");
+        return;
+      }
+
       // Clear any previous reservation errors
       dispatch(clearReservationErrors());
 
@@ -433,7 +646,7 @@ export default function Checkout() {
 
       // Prepare checkout data for reservation
       const checkoutData = {
-        userId: 1, // You'll need to get this from your auth state
+        userId: currentUser.id, // Use actual logged-in user ID
         eventId: parseInt(incomingEvent?.id || "1"),
         zoneId: parseInt(formData.step1.selectedZone || "1"),
         quantity: formData.step1.ticketQuantity,
@@ -523,7 +736,8 @@ export default function Checkout() {
 
       if (createReservationAsync.fulfilled.match(result)) {
         // Success - move to confirmation step and stop timer
-        setCurrentStep(5);
+        const confirmationStep = isUserAuthenticated ? 5 : 6;
+        setCurrentStep(confirmationStep);
         setIsCheckoutCompleted(true); // Mark checkout as completed
         setTimeLeft(0); // Stop the timer
         console.log("Reservation created successfully:", result.payload);
@@ -544,25 +758,190 @@ export default function Checkout() {
     }
   };
 
+  // Order Summary Component - Reusable for both desktop and mobile
+  const OrderSummaryContent = () => (
+    <div className="space-y-4">
+      <div className="flex space-x-4">
+        <img
+          src={(incomingEvent?.image as string) ?? eventDetails.image}
+          alt={(incomingEvent?.title as string) ?? eventDetails.title}
+          className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-slate-800 dark:text-slate-200 truncate">
+            {(incomingEvent?.title as string) ?? eventDetails.title}
+          </h4>
+          <div className="flex items-center space-x-1 text-sm text-slate-600 dark:text-slate-400">
+            <Calendar className="w-3 h-3 flex-shrink-0" />
+            <span className="truncate">
+              {(incomingEvent?.date as string) ?? eventDetails.date}
+            </span>
+          </div>
+          <div className="flex items-center space-x-1 text-sm text-slate-600 dark:text-slate-400">
+            <Clock className="w-3 h-3 flex-shrink-0" />
+            <span>{eventDetails.time}</span>
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+
+      <div className="space-y-2">
+        <div className="flex items-center space-x-1 text-sm">
+          <MapPin className="w-3 h-3 text-slate-500 flex-shrink-0" />
+          <span className="text-slate-600 dark:text-slate-400 truncate">
+            {incomingEvent?.location ?? eventDetails.location}
+          </span>
+        </div>
+        {incomingEvent?.gifts?.length ? (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {incomingEvent.gifts.map((gift: any) => (
+              <Badge
+                key={gift.id || gift.gift_name}
+                variant="outline"
+                className="text-xs"
+              >
+                🎁{" "}
+                {i18n.language === "es"
+                  ? gift.gift_name_es || gift.gift_name
+                  : gift.gift_name}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
+        {incomingEvent?.acceptsUnderAge === false && (
+          <div className="mt-2">
+            <Badge
+              variant="outline"
+              className="text-xs text-red-400 border-red-500/40"
+            >
+              {t("checkout.eighteenPlusOnly")}
+            </Badge>
+          </div>
+        )}
+        <Badge variant="outline" className="text-xs">
+          {t("checkout.zone")}: {formData.step1.selectedZone}
+        </Badge>
+        {includesTransportationOffer &&
+          formData.step1.transportationMode !== "none" &&
+          selectedTransportationOption && (
+            <div className="mt-2">
+              <Badge variant="outline" className="text-xs">
+                {t("checkout.transport")}:{" "}
+                {i18n.language === "es"
+                  ? selectedTransportationOption.name_es ||
+                    selectedTransportationOption.name
+                  : selectedTransportationOption.name}
+                {formData.step1.transportOrigin
+                  ? ` • ${formData.step1.transportOrigin}`
+                  : ""}
+              </Badge>
+            </div>
+          )}
+      </div>
+
+      <Separator />
+
+      <div className="space-y-2">
+        <div className="flex justify-between">
+          <span className="text-sm">
+            {t("checkout.ticketsCount").replace(
+              "{{count}}",
+              formData.step1.ticketQuantity.toString(),
+            )}
+          </span>
+          <span className="text-sm font-medium">
+            {formatCurrency(ticketsSubtotal)}
+          </span>
+        </div>
+        {includesTransportationOffer &&
+          formData.step1.transportationMode !== "none" &&
+          selectedTransportationOption && (
+            <div className="flex justify-between text-sm">
+              <span className="truncate pr-2">
+                {i18n.language === "es"
+                  ? selectedTransportationOption.name_es ||
+                    selectedTransportationOption.name
+                  : selectedTransportationOption.name}{" "}
+                ({formData.step1.ticketQuantity}x)
+              </span>
+              <span className="font-medium flex-shrink-0">
+                {formatCurrency(transportationSubtotal)}
+              </span>
+            </div>
+          )}
+        {jerseyAvailable && jerseyCount > 0 && (
+          <div className="flex justify-between text-sm">
+            <span>
+              {t("checkout.personalizedJerseyCount").replace(
+                "{{count}}",
+                jerseyCount.toString(),
+              )}
+            </span>
+            <span className="font-medium">
+              {formatCurrency(jerseySubtotal)}
+            </span>
+          </div>
+        )}
+        <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+          <span>{t("checkout.taxes", "IVA (16%)")}</span>
+          <span>{formatCurrency(taxAmount)}</span>
+        </div>
+        <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+          <span>{t("checkout.serviceFee")}</span>
+          <span>{formatCurrency(serviceFee)}</span>
+        </div>
+        <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+          <span>{t("checkout.processingFee")}</span>
+          <span>{formatCurrency(processingFee)}</span>
+        </div>
+      </div>
+
+      <Separator />
+
+      <div className="flex justify-between text-lg font-bold">
+        <span>{t("common.total")}</span>
+        <div className="text-right">
+          <div className="text-brand-blue dark:text-brand-cyan">
+            MXN {formatCurrency(total)}
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-normal mt-0.5">
+            ≈ USD {formatCurrency(convertMXNToUSD(total))}{" "}
+            {t("checkout.approximateRate", "Approximate rate")}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+        <p className="text-xs text-slate-600 dark:text-slate-400">
+          {t("checkout.secureCheckoutStripe")}
+        </p>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 pb-24 lg:pb-0">
       {/* Header */}
       <AppHeader variant="checkout" />
 
-      {/* Go Back Button */}
-      <div className="container mx-auto px-4 pt-4">
-        <Button
-          variant="ghost"
-          onClick={() => setShowGoBackDialog(true)}
-          className="flex items-center space-x-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 mb-4"
-          disabled={isReservationLoading || isProcessingPayment}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>{t("checkout.goBack")}</span>
-        </Button>
-      </div>
+      {/* Go Back Button - Only show if checkout is not completed */}
+      {!isCheckoutCompleted && (
+        <div className="container mx-auto px-4 pt-4">
+          <Button
+            variant="ghost"
+            onClick={() => setShowGoBackDialog(true)}
+            className="flex items-center space-x-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 mb-4 h-10"
+            size="sm"
+            disabled={isReservationLoading || isProcessingPayment}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm">{t("checkout.goBack")}</span>
+          </Button>
+        </div>
+      )}
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4 md:py-8">
         <div className="max-w-6xl mx-auto">
           {/* Global Processing Warning Banner */}
           {(isReservationLoading || isProcessingPayment) &&
@@ -595,7 +974,9 @@ export default function Checkout() {
               </div>
             )}
           {/* Countdown Timer - Show different states based on current step and reservation status */}
-          {currentStep < 5 || !isReservationComplete || reservationError ? (
+          {currentStep < STEPS[STEPS.length - 1].id ||
+          !isReservationComplete ||
+          reservationError ? (
             <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-xl p-6 mb-8 text-white">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -642,7 +1023,7 @@ export default function Checkout() {
                   </span>
                 </div>
               )}
-              {timeLeft === 0 && currentStep < 5 && (
+              {timeLeft === 0 && currentStep < STEPS[STEPS.length - 1].id && (
                 <div className="mt-4 flex items-center space-x-2 text-white/90">
                   <AlertTriangle className="w-4 h-4" />
                   <span className="text-sm font-medium">
@@ -686,47 +1067,71 @@ export default function Checkout() {
             {/* Main Checkout */}
             <div className="lg:col-span-2">
               {/* Progress Bar */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  {STEPS.map((step, index) => (
-                    <div key={step.id} className="flex items-center">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
-                          currentStep >= step.id
-                            ? "bg-brand-blue text-white"
-                            : "bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
-                        }`}
-                      >
-                        {currentStep > step.id ? (
-                          <CheckCircle className="w-5 h-5" />
-                        ) : (
-                          step.id
+              <div className="mb-6 md:mb-8">
+                {/* Mobile Progress - Simplified */}
+                <div className="lg:hidden">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center text-sm font-semibold">
+                        {currentStep}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                          {STEPS[currentStep - 1].title}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {t("checkout.step")} {currentStep} {t("common.of")}{" "}
+                          {STEPS.length}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <Progress value={getProgressPercentage()} className="h-2" />
+                </div>
+
+                {/* Desktop Progress - Full */}
+                <div className="hidden lg:block">
+                  <div className="flex items-center justify-between mb-4">
+                    {STEPS.map((step, index) => (
+                      <div key={step.id} className="flex items-center">
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
+                            currentStep >= step.id
+                              ? "bg-brand-blue text-white"
+                              : "bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400"
+                          }`}
+                        >
+                          {currentStep > step.id ? (
+                            <CheckCircle className="w-5 h-5" />
+                          ) : (
+                            step.id
+                          )}
+                        </div>
+                        {index < STEPS.length - 1 && (
+                          <div
+                            className={`h-1 w-16 mx-2 rounded ${
+                              currentStep > step.id
+                                ? "bg-brand-blue"
+                                : "bg-slate-200 dark:bg-slate-700"
+                            }`}
+                          />
                         )}
                       </div>
-                      {index < STEPS.length - 1 && (
-                        <div
-                          className={`h-1 w-16 mx-2 rounded ${
-                            currentStep > step.id
-                              ? "bg-brand-blue"
-                              : "bg-slate-200 dark:bg-slate-700"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <Progress value={getProgressPercentage()} className="h-2" />
-                <div className="flex justify-between mt-2">
-                  {STEPS.map((step) => (
-                    <div key={step.id} className="text-center">
-                      <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        {step.title}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {step.description}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <Progress value={getProgressPercentage()} className="h-2" />
+                  <div className="flex justify-between mt-2">
+                    {STEPS.map((step) => (
+                      <div key={step.id} className="text-center">
+                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          {step.title}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          {step.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -743,8 +1148,8 @@ export default function Checkout() {
                     : ""
                 }`}
               >
-                <CardHeader>
-                  <CardTitle className="text-2xl dark:text-slate-200">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl md:text-2xl dark:text-slate-200">
                     {STEPS[currentStep - 1].title}
                   </CardTitle>
                 </CardHeader>
@@ -764,7 +1169,307 @@ export default function Checkout() {
                     />
                   )}
 
-                  {currentStep === 2 && (
+                  {/* Authentication Step - Only show if user is not authenticated */}
+                  {currentStep === 2 && !isUserAuthenticated && (
+                    <div className="space-y-6">
+                      <LoadingMask
+                        isLoading={
+                          isCheckingEmail ||
+                          isCreatingUser ||
+                          isSendingCode ||
+                          isVerifyingCode
+                        }
+                        variant={
+                          isCheckingEmail
+                            ? "spinner"
+                            : isCreatingUser
+                              ? "zap"
+                              : isSendingCode
+                                ? "compass"
+                                : "rotate"
+                        }
+                        text={
+                          isCheckingEmail
+                            ? t(
+                                "checkout.auth.checkingEmail",
+                                "Checking email...",
+                              )
+                            : isCreatingUser
+                              ? t(
+                                  "checkout.auth.creatingAccount",
+                                  "Creating account...",
+                                )
+                              : isSendingCode
+                                ? t(
+                                    "checkout.auth.sendingCode",
+                                    "Sending code...",
+                                  )
+                                : t(
+                                    "checkout.auth.verifyingCode",
+                                    "Verifying code...",
+                                  )
+                        }
+                      >
+                        {/* Error Display */}
+                        {authError && (
+                          <Alert className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950 mb-4">
+                            <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                            <AlertDescription className="text-red-800 dark:text-red-200">
+                              {authError}
+                            </AlertDescription>
+                          </Alert>
+                        )}
+
+                        {/* Email Step */}
+                        {authStep === "email" && (
+                          <div className="space-y-4">
+                            <div className="text-center mb-6">
+                              <p className="text-slate-600 dark:text-slate-400">
+                                {t(
+                                  "checkout.auth.emailDescription",
+                                  "Enter your email to continue with your purchase",
+                                )}
+                              </p>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="auth-email">
+                                {t("checkout.auth.emailLabel", "Email Address")}
+                              </Label>
+                              <div className="relative">
+                                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                <Input
+                                  id="auth-email"
+                                  type="email"
+                                  placeholder={t(
+                                    "checkout.auth.emailPlaceholder",
+                                    "your@email.com",
+                                  )}
+                                  value={authEmail}
+                                  onChange={(e) => {
+                                    if (authError) dispatch(clearError());
+                                    dispatch(setEmail(e.target.value));
+                                  }}
+                                  className="pl-10"
+                                />
+                              </div>
+                            </div>
+                            <div className="flex space-x-3 pt-4">
+                              <Button
+                                variant="outline"
+                                onClick={handleStepBack}
+                                className="flex-1"
+                              >
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                {t("checkout.auth.back", "Back")}
+                              </Button>
+                              <Button
+                                onClick={handleEmailCheck}
+                                disabled={!canProceedFromEmail}
+                                className="flex-1"
+                              >
+                                {t("checkout.auth.continue", "Continue")}
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Registration Step */}
+                        {authStep === "registration" && (
+                          <div className="space-y-4">
+                            <div className="text-center mb-6">
+                              <p className="text-slate-600 dark:text-slate-400">
+                                {t(
+                                  "checkout.auth.registrationDescription",
+                                  "Complete your profile to continue",
+                                )}
+                              </p>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="auth-fullname">
+                                {t("checkout.auth.fullNameLabel", "Full Name")}
+                              </Label>
+                              <div className="relative">
+                                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                <Input
+                                  id="auth-fullname"
+                                  type="text"
+                                  placeholder={t(
+                                    "checkout.auth.fullNamePlaceholder",
+                                    "John Doe",
+                                  )}
+                                  value={authFullName}
+                                  onChange={(e) => {
+                                    if (authError) dispatch(clearError());
+                                    dispatch(setFullName(e.target.value));
+                                  }}
+                                  className="pl-10"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="auth-phone">
+                                {t("checkout.auth.phoneLabel", "Phone Number")}
+                              </Label>
+                              <PhoneInput
+                                value={authPhone}
+                                onChange={(value) => {
+                                  if (authError) dispatch(clearError());
+                                  dispatch(setPhone(value || ""));
+                                }}
+                                placeholder={t(
+                                  "checkout.auth.phonePlaceholder",
+                                  "+52 123 456 7890",
+                                )}
+                                international
+                                countryCallingCodeEditable={false}
+                                defaultCountry="MX"
+                                className="phone-input"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="auth-birthdate">
+                                {t(
+                                  "checkout.auth.birthdateLabel",
+                                  "Date of Birth",
+                                )}
+                              </Label>
+                              <div className="relative">
+                                <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                                <Input
+                                  id="auth-birthdate"
+                                  type="date"
+                                  value={authBirthdate}
+                                  onChange={(e) => {
+                                    if (authError) dispatch(clearError());
+                                    dispatch(setBirthdate(e.target.value));
+                                  }}
+                                  className="pl-10"
+                                  max={new Date().toISOString().split("T")[0]}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex space-x-3 pt-4">
+                              <Button
+                                variant="outline"
+                                onClick={handleAuthBack}
+                                className="flex-1"
+                              >
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                {t("checkout.auth.back", "Back")}
+                              </Button>
+                              <Button
+                                onClick={handleUserCreation}
+                                disabled={!canProceedFromRegistration}
+                                className="flex-1"
+                              >
+                                {t("checkout.auth.continue", "Continue")}
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Verification Step */}
+                        {authStep === "verification" && (
+                          <div className="space-y-4">
+                            <div className="text-center mb-6">
+                              <Shield className="w-12 h-12 mx-auto mb-4 text-brand-blue" />
+                              <p className="text-slate-600 dark:text-slate-400">
+                                {t(
+                                  "checkout.auth.verificationDescription",
+                                  "Enter the verification code sent to",
+                                )}{" "}
+                                <strong>{authEmail}</strong>
+                              </p>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label htmlFor="auth-code">
+                                {t(
+                                  "checkout.auth.verificationCodeLabel",
+                                  "Verification Code",
+                                )}
+                              </Label>
+                              <Input
+                                id="auth-code"
+                                type="text"
+                                placeholder={t(
+                                  "checkout.auth.verificationCodePlaceholder",
+                                  "000000",
+                                )}
+                                value={authVerificationCode}
+                                onChange={(e) => {
+                                  if (authError) dispatch(clearError());
+                                  dispatch(setVerificationCode(e.target.value));
+                                }}
+                                maxLength={6}
+                                className="text-center text-2xl tracking-widest"
+                              />
+                            </div>
+
+                            {resendTimer > 0 && (
+                              <div className="flex items-center justify-center space-x-2 text-sm text-slate-600 dark:text-slate-400">
+                                <Clock className="w-4 h-4" />
+                                <span>
+                                  {t(
+                                    "checkout.auth.resendTimer",
+                                    "Resend code in",
+                                  )}{" "}
+                                  {formatResendTimer(resendTimer)}
+                                </span>
+                              </div>
+                            )}
+
+                            {resendTimer === 0 && currentUser && (
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  dispatch(
+                                    sendCode({
+                                      userId: currentUser.id,
+                                      email: authEmail,
+                                    }),
+                                  );
+                                  setResendTimer(300);
+                                }}
+                                className="w-full"
+                              >
+                                {t("checkout.auth.resendCode", "Resend Code")}
+                              </Button>
+                            )}
+
+                            <div className="flex space-x-3 pt-4">
+                              <Button
+                                variant="outline"
+                                onClick={handleAuthBack}
+                                className="flex-1"
+                              >
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                {t("checkout.auth.back", "Back")}
+                              </Button>
+                              <Button
+                                onClick={handleCodeVerification}
+                                disabled={!canProceedFromVerification}
+                                className="flex-1"
+                              >
+                                {t("checkout.auth.verify", "Verify")}
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </LoadingMask>
+                    </div>
+                  )}
+
+                  {/* Customer Info Step - Adjusted step number based on auth */}
+                  {((currentStep === 2 && isUserAuthenticated) ||
+                    (currentStep === 3 && !isUserAuthenticated)) && (
                     <CustomerInfoStep
                       initialValues={formData.step2}
                       onNext={handleStep2Next}
@@ -772,7 +1477,9 @@ export default function Checkout() {
                     />
                   )}
 
-                  {currentStep === 3 && (
+                  {/* Ticket Holders Step - Adjusted step number based on auth */}
+                  {((currentStep === 3 && isUserAuthenticated) ||
+                    (currentStep === 4 && !isUserAuthenticated)) && (
                     <TicketHoldersInfoStep
                       initialValues={formData.step2_5}
                       ticketQuantity={formData.step1.ticketQuantity}
@@ -783,7 +1490,9 @@ export default function Checkout() {
                     />
                   )}
 
-                  {currentStep === 4 && (
+                  {/* Payment Step - Adjusted step number based on auth */}
+                  {((currentStep === 4 && isUserAuthenticated) ||
+                    (currentStep === 5 && !isUserAuthenticated)) && (
                     <>
                       <PaymentInfoStep
                         initialValues={formData.step3}
@@ -896,7 +1605,9 @@ export default function Checkout() {
                     </>
                   )}
 
-                  {currentStep === 5 &&
+                  {/* Success/Confirmation Step - Adjusted step number based on auth */}
+                  {((currentStep === 5 && isUserAuthenticated) ||
+                    (currentStep === 6 && !isUserAuthenticated)) &&
                     isReservationComplete &&
                     !reservationError && (
                       <div className="text-center space-y-6">
@@ -1098,7 +1809,7 @@ export default function Checkout() {
                               "Check your email for ticket details, entry instructions, and event updates.",
                             )}
                           </p>
-                          <div className="flex items-center justify-center">
+                          <div className="flex items-center justify-center mb-4">
                             <div className="bg-white/20 rounded-lg px-4 py-2">
                               <span className="text-2xl mr-2">📧</span>
                               <span className="font-medium">
@@ -1109,6 +1820,30 @@ export default function Checkout() {
                               </span>
                             </div>
                           </div>
+                          {/* Email Delay Notice */}
+                          <div className="bg-white/10 rounded-lg p-3 text-sm">
+                            <p className="text-white/90 text-center">
+                              ⏱️{" "}
+                              {t(
+                                "checkout.emailDelay",
+                                "Please note: Confirmation emails may take 5-10 minutes to arrive. Check your spam folder if you don't see it.",
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                          <Button
+                            onClick={() => navigate("/user/reservations")}
+                            className="w-full bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-blue-600 hover:to-cyan-600 text-white"
+                            size="lg"
+                          >
+                            {t(
+                              "checkout.viewMyReservations",
+                              "View My Reservations",
+                            )}
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -1116,175 +1851,62 @@ export default function Checkout() {
               </Card>
             </div>
 
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
+            {/* Order Summary - Desktop Only */}
+            <div className="hidden lg:block lg:col-span-1 order-1 lg:order-2">
               <Card className="border-0 shadow-lg sticky top-24 dark:bg-slate-800">
                 <CardHeader>
                   <CardTitle className="text-lg dark:text-slate-200">
                     {t("checkout.orderSummary")}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex space-x-4">
-                    <img
-                      src={
-                        (incomingEvent?.image as string) ?? eventDetails.image
-                      }
-                      alt={
-                        (incomingEvent?.title as string) ?? eventDetails.title
-                      }
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-slate-800 dark:text-slate-200">
-                        {(incomingEvent?.title as string) ?? eventDetails.title}
-                      </h4>
-                      <div className="flex items-center space-x-1 text-sm text-slate-600 dark:text-slate-400">
-                        <Calendar className="w-3 h-3" />
-                        <span>
-                          {(incomingEvent?.date as string) ?? eventDetails.date}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-1 text-sm text-slate-600 dark:text-slate-400">
-                        <Clock className="w-3 h-3" />
-                        <span>{eventDetails.time}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-1 text-sm">
-                      <MapPin className="w-3 h-3 text-slate-500" />
-                      <span className="text-slate-600 dark:text-slate-400">
-                        {incomingEvent?.location ?? eventDetails.location}
-                      </span>
-                    </div>
-                    {incomingEvent?.gifts?.length ? (
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {incomingEvent.gifts.map((gift: any) => (
-                          <Badge
-                            key={gift.id || gift.gift_name}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            🎁{" "}
-                            {i18n.language === "es"
-                              ? gift.gift_name_es || gift.gift_name
-                              : gift.gift_name}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : null}
-                    {incomingEvent?.acceptsUnderAge === false && (
-                      <div className="mt-2">
-                        <Badge
-                          variant="outline"
-                          className="text-xs text-red-400 border-red-500/40"
-                        >
-                          {t("checkout.eighteenPlusOnly")}
-                        </Badge>
-                      </div>
-                    )}
-                    <Badge variant="outline" className="text-xs">
-                      {t("checkout.zone")}: {formData.step1.selectedZone}
-                    </Badge>
-                    {includesTransportationOffer &&
-                      formData.step1.transportationMode !== "none" &&
-                      selectedTransportationOption && (
-                        <div className="mt-2">
-                          <Badge variant="outline" className="text-xs">
-                            {t("checkout.transport")}:{" "}
-                            {i18n.language === "es"
-                              ? selectedTransportationOption.name_es ||
-                                selectedTransportationOption.name
-                              : selectedTransportationOption.name}
-                            {formData.step1.transportOrigin
-                              ? ` • ${formData.step1.transportOrigin}`
-                              : ""}
-                          </Badge>
-                        </div>
-                      )}
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>
-                        {t("checkout.ticketsCount").replace(
-                          "{{count}}",
-                          formData.step1.ticketQuantity.toString(),
-                        )}
-                      </span>
-                      <span>{formatCurrency(ticketsSubtotal)}</span>
-                    </div>
-                    {includesTransportationOffer &&
-                      formData.step1.transportationMode !== "none" &&
-                      selectedTransportationOption && (
-                        <div className="flex justify-between text-sm">
-                          <span>
-                            {i18n.language === "es"
-                              ? selectedTransportationOption.name_es ||
-                                selectedTransportationOption.name
-                              : selectedTransportationOption.name}{" "}
-                            ({formData.step1.ticketQuantity}x)
-                          </span>
-                          <span>{formatCurrency(transportationSubtotal)}</span>
-                        </div>
-                      )}
-                    {jerseyAvailable && jerseyCount > 0 && (
-                      <div className="flex justify-between text-sm">
-                        <span>
-                          {t("checkout.personalizedJerseyCount").replace(
-                            "{{count}}",
-                            jerseyCount.toString(),
-                          )}
-                        </span>
-                        <span>{formatCurrency(jerseySubtotal)}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
-                      <span>{t("checkout.taxes", "IVA (16%)")}</span>
-                      <span>{formatCurrency(taxAmount)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
-                      <span>{t("checkout.serviceFee")}</span>
-                      <span>{formatCurrency(serviceFee)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
-                      <span>{t("checkout.processingFee")}</span>
-                      <span>{formatCurrency(processingFee)}</span>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>{t("common.total")}</span>
-                    <div className="text-right">
-                      <div className="text-brand-blue dark:text-brand-cyan">
-                        MXN {formatCurrency(total)}
-                      </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 font-normal mt-0.5">
-                        ≈ USD {formatCurrency(convertMXNToUSD(total))}{" "}
-                        {t("checkout.approximateRate", "Approximate rate")}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
-                      {t("checkout.secureCheckoutStripe")}
-                    </p>
-                  </div>
+                <CardContent>
+                  <OrderSummaryContent />
                 </CardContent>
               </Card>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Floating Summary Button - Hide when checkout is completed */}
+      {!isCheckoutCompleted && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-800 border-t-2 border-slate-200 dark:border-slate-700 shadow-2xl">
+          <div className="container mx-auto px-4 py-3">
+            <Sheet open={showMobileSummary} onOpenChange={setShowMobileSummary}>
+              <SheetTrigger asChild>
+                <Button
+                  className="w-full h-14 text-base font-semibold bg-gradient-to-r from-brand-blue to-brand-cyan hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg"
+                  size="lg"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center space-x-2">
+                      <ShoppingCart className="w-5 h-5" />
+                      <span>{t("checkout.viewSummary", "View Summary")}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-bold">
+                        MXN {formatCurrency(total)}
+                      </span>
+                      <ChevronUp className="w-5 h-5" />
+                    </div>
+                  </div>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="bottom"
+                className="h-[85vh] overflow-y-auto rounded-t-3xl border-t-4 border-brand-blue"
+              >
+                <SheetHeader className="mb-6">
+                  <SheetTitle className="text-2xl font-bold text-center">
+                    {t("checkout.orderSummary")}
+                  </SheetTitle>
+                </SheetHeader>
+                <OrderSummaryContent />
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      )}
 
       {/* Go Back Confirmation Dialog */}
       <AlertDialog open={showGoBackDialog} onOpenChange={setShowGoBackDialog}>

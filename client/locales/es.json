@@ -42,6 +42,7 @@
     "discount": "Descuento",
     "hi": "Hola",
     "from": "Desde",
+    "of": "de",
     "profile": "Perfil",
     "myReservations": "Mis Reservaciones",
     "refresh": "Actualizar",
@@ -275,6 +276,10 @@
         "included": "Incluido",
         "per_person": "por persona"
       },
+      "authentication": {
+        "title": "Iniciar Sesión / Registrarse",
+        "description": "Asegura tu compra"
+      },
       "customerInfo": {
         "title": "Información del Cliente",
         "description": "Ingresa tus datos"
@@ -381,6 +386,8 @@
     "secureCheckoutStripe": "🔒 Pago 100% seguro",
     "zone": "Zona",
     "transport": "Transporte",
+    "viewSummary": "Ver Resumen",
+    "step": "Paso",
     "selectPaymentMethod": "Seleccionar Método de Pago",
     "creditCardPayment": "Pago con Tarjeta de Crédito",
     "paypalPayment": "Pago con PayPal",
@@ -469,6 +476,8 @@
     "bringId": "Trae una identificación válida que coincida con la información de tu boleto",
     "arriveEarly": "Llega al menos 30 minutos antes del inicio del evento",
     "downloadApp": "Revisa tu email para detalles de boletos y actualizaciones",
+    "emailDelay": "Nota importante: Los correos de confirmación pueden tardar de 5 a 10 minutos en llegar. Revisa tu carpeta de spam si no lo ves.",
+    "viewMyReservations": "Ver Mis Reservaciones",
     "eighteenPlusOnly": "Solo 18+",
     "ticketHoldersInfo": {
       "description": "Proporciona información para cada portador de boleto. Esta información es requerida para el ingreso y debe coincidir con una identificación válida.",
@@ -480,6 +489,29 @@
       "age": "Edad",
       "yearsOld": "años",
       "importantNote": "⚠️ Importante: Todos los portadores de boletos deben traer una identificación válida que coincida con la información proporcionada aquí. Los menores deben estar acompañados por un adulto."
+    },
+    "auth": {
+      "emailDescription": "Ingresa tu correo electrónico para continuar con tu compra",
+      "emailLabel": "Dirección de Email",
+      "emailPlaceholder": "email@ejemplo.com",
+      "registrationDescription": "Completa tu perfil para continuar",
+      "fullNameLabel": "Nombre Completo",
+      "fullNamePlaceholder": "Juan Pérez",
+      "phoneLabel": "Número de Teléfono",
+      "phonePlaceholder": "+52 123 456 7890",
+      "birthdateLabel": "Fecha de Nacimiento",
+      "verificationDescription": "Ingresa el código de verificación enviado a",
+      "verificationCodeLabel": "Código de Verificación",
+      "verificationCodePlaceholder": "000000",
+      "resendTimer": "Reenviar código en",
+      "resendCode": "Reenviar Código",
+      "back": "Atrás",
+      "continue": "Continuar",
+      "verify": "Verificar",
+      "checkingEmail": "Verificando correo...",
+      "creatingAccount": "Creando cuenta...",
+      "sendingCode": "Enviando código...",
+      "verifyingCode": "Verificando código..."
     }
   },
   "auth": {

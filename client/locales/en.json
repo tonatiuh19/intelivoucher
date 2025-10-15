@@ -42,6 +42,7 @@
     "discount": "Discount",
     "hi": "Hi",
     "from": "From",
+    "of": "of",
     "profile": "Profile",
     "myReservations": "My Reservations",
     "refresh": "Refresh",
@@ -275,6 +276,10 @@
         "included": "Included",
         "per_person": "per person"
       },
+      "authentication": {
+        "title": "Sign In / Register",
+        "description": "Secure your purchase"
+      },
       "customerInfo": {
         "title": "Customer Info",
         "description": "Enter your details"
@@ -381,6 +386,8 @@
     "secureCheckoutStripe": "🔒 100% secure checkout",
     "zone": "Zone",
     "transport": "Transport",
+    "viewSummary": "View Summary",
+    "step": "Step",
     "selectPaymentMethod": "Select Payment Method",
     "creditCardPayment": "Credit Card Payment",
     "paypalPayment": "PayPal Payment",
@@ -469,6 +476,8 @@
     "bringId": "Bring valid ID matching your ticket information",
     "arriveEarly": "Arrive at least 30 minutes before event start",
     "downloadApp": "Download the Intelivoucher app for best experience",
+    "emailDelay": "Please note: Confirmation emails may take 5-10 minutes to arrive. Check your spam folder if you don't see it.",
+    "viewMyReservations": "View My Reservations",
     "ticketHoldersInfo": {
       "description": "Please provide information for each ticket holder. This information is required for entry and must match valid identification.",
       "primaryHolder": "Primary Ticket Holder",
@@ -480,7 +489,30 @@
       "yearsOld": "years old",
       "importantNote": "⚠️ Important: All ticket holders must bring valid ID matching the information provided here. Minors must be accompanied by an adult."
     },
-    "eighteenPlusOnly": "18+ Only"
+    "eighteenPlusOnly": "18+ Only",
+    "auth": {
+      "emailDescription": "Enter your email to continue with your purchase",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "your@email.com",
+      "registrationDescription": "Complete your profile to continue",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "+52 123 456 7890",
+      "birthdateLabel": "Date of Birth",
+      "verificationDescription": "Enter the verification code sent to",
+      "verificationCodeLabel": "Verification Code",
+      "verificationCodePlaceholder": "000000",
+      "resendTimer": "Resend code in",
+      "resendCode": "Resend Code",
+      "back": "Back",
+      "continue": "Continue",
+      "verify": "Verify",
+      "checkingEmail": "Checking email...",
+      "creatingAccount": "Creating account...",
+      "sendingCode": "Sending code...",
+      "verifyingCode": "Verifying code..."
+    }
   },
   "auth": {
     "signIn": "Sign In",

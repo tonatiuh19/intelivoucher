@@ -654,15 +654,15 @@ const Eventos: React.FC = () => {
     value: number;
     color: string;
   }> = ({ icon, title, value, color }) => (
-    <Card className="p-6 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-border/50 hover:shadow-lg transition-shadow">
+    <Card className="p-4 md:p-6 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-border/50 hover:shadow-lg transition-shadow">
       <div className="text-center">
         <div
-          className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center mx-auto mb-3`}
+          className={`w-10 h-10 md:w-12 md:h-12 ${color} rounded-lg md:rounded-xl flex items-center justify-center mx-auto mb-2 md:mb-3`}
         >
           {icon}
         </div>
-        <p className="text-2xl font-bold text-foreground">{value}</p>
-        <p className="text-sm text-muted-foreground">{title}</p>
+        <p className="text-xl md:text-2xl font-bold text-foreground">{value}</p>
+        <p className="text-xs md:text-sm text-muted-foreground">{title}</p>
       </div>
     </Card>
   );
@@ -679,9 +679,9 @@ const Eventos: React.FC = () => {
         />
 
         {/* Hero Section */}
-        <section className="relative pt-32 pb-20 px-4 overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-800 dark:to-slate-900">
+        <section className="relative pt-24 md:pt-32 pb-12 md:pb-20 px-4 overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-800 dark:to-slate-900">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-400/5 dark:to-purple-400/5" />
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 hidden md:block">
             <div className="absolute top-20 left-10 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse" />
             <div
               className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse"
@@ -696,58 +696,58 @@ const Eventos: React.FC = () => {
           <div className="container mx-auto relative">
             <div className="text-center max-w-5xl mx-auto">
               {/* Hero Icon */}
-              <div className="flex justify-center mb-8">
+              <div className="flex justify-center mb-6 md:mb-8">
                 <div className="relative">
-                  <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl">
-                    <Ticket className="w-12 h-12 text-white" />
+                  <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl">
+                    <Ticket className="w-8 h-8 md:w-12 md:h-12 text-white" />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-white" />
+                  <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
+                    <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-white" />
                   </div>
                 </div>
               </div>
 
               {/* Hero Title */}
-              <h1 className="text-6xl md:text-7xl font-bold mb-6">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6">
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                   {t("common.events")}
                 </span>
               </h1>
 
               {/* Hero Subtitle */}
-              <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-4">
                 {t("eventos.heroSubtitle")}
               </p>
 
               {/* Hero Search with Suggestions */}
-              <div className="max-w-2xl mx-auto mb-12">
+              <div className="max-w-2xl mx-auto mb-8 md:mb-12 px-2">
                 <Popover open={searchOpen} onOpenChange={setSearchOpen}>
                   <PopoverTrigger asChild>
                     <div className="relative">
-                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 z-10" />
+                      <Search className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 md:h-5 md:w-5 z-10" />
                       <Input
                         ref={searchInputRef}
                         placeholder={t("common.searchEvents")}
                         value={searchInput}
                         onChange={(e) => handleSearch(e.target.value)}
                         onFocus={() => searchInput && setSearchOpen(true)}
-                        className="pl-12 pr-4 py-4 text-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-border/50 focus:border-primary/50 rounded-2xl shadow-lg"
+                        className="pl-10 md:pl-12 pr-10 md:pr-12 py-3 md:py-4 text-base md:text-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-border/50 focus:border-primary/50 rounded-xl md:rounded-2xl shadow-lg"
                       />
                       {searchInput && (
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={handleClearSearch}
-                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-muted/50"
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 md:h-8 md:w-8 p-0 hover:bg-muted/50"
                         >
-                          <AlertCircle className="h-4 w-4" />
+                          <AlertCircle className="h-3 w-3 md:h-4 md:w-4" />
                         </Button>
                       )}
                     </div>
                   </PopoverTrigger>
                   <PopoverContent
-                    className="w-[600px] p-0"
-                    align="start"
+                    className="w-[calc(100vw-32px)] md:w-[600px] p-0"
+                    align="center"
                     onOpenAutoFocus={(e) => e.preventDefault()}
                   >
                     <Command>
@@ -788,56 +788,66 @@ const Eventos: React.FC = () => {
                               return (
                                 <div
                                   key={event.id}
-                                  className="flex items-center gap-4 p-3 hover:bg-muted/50 rounded-lg cursor-pointer group"
+                                  className="flex flex-col gap-3 px-3 md:px-4 py-4 cursor-pointer rounded-lg transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 border-b border-slate-100 dark:border-slate-800 last:border-0"
                                 >
-                                  {/* Event Image Thumbnail */}
-                                  <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500">
-                                    {event.image_url ? (
-                                      <img
-                                        src={event.image_url}
-                                        alt={title}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center">
-                                        <Music className="w-8 h-8 text-white" />
-                                      </div>
-                                    )}
-                                  </div>
+                                  {/* Top Section: Image and Info */}
+                                  <div className="flex items-start gap-3">
+                                    {/* Event Image Thumbnail */}
+                                    <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 ring-2 ring-slate-200 dark:ring-slate-700">
+                                      {event.image_url ? (
+                                        <img
+                                          src={event.image_url}
+                                          alt={title}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                          <Music className="w-8 h-8 text-white" />
+                                        </div>
+                                      )}
+                                    </div>
 
-                                  {/* Event Info */}
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-sm truncate">
-                                      {title}
-                                    </h4>
-                                    <div className="flex items-center gap-2 mt-1">
-                                      <Badge
-                                        variant="secondary"
-                                        className="text-xs"
-                                      >
-                                        {event.category.name}
-                                      </Badge>
-                                      <span className="text-xs text-muted-foreground">
-                                        {format(
-                                          new Date(event.event_date),
-                                          "MMM dd, yyyy",
+                                    {/* Event Info */}
+                                    <div className="flex-1 min-w-0">
+                                      <h4 className="font-bold text-sm md:text-base line-clamp-2 mb-2">
+                                        {title}
+                                      </h4>
+                                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                                        <Badge
+                                          variant="secondary"
+                                          className="text-xs"
+                                        >
+                                          {event.category.name}
+                                        </Badge>
+                                        <span className="text-xs text-muted-foreground hidden sm:inline">
+                                          {format(
+                                            new Date(event.event_date),
+                                            "MMM dd, yyyy",
+                                          )}
+                                        </span>
+                                      </div>
+                                      {/* Price - visible on all screens */}
+                                      <div className="flex items-center gap-2">
+                                        <p className="text-base md:text-lg font-bold text-primary">
+                                          {formatCurrency(minPrice.toString())}
+                                        </p>
+                                        {event.is_sold_out === "1" && (
+                                          <Badge
+                                            variant="destructive"
+                                            className="text-xs"
+                                          >
+                                            {t("common.soldOut")}
+                                          </Badge>
                                         )}
-                                      </span>
+                                      </div>
                                     </div>
                                   </div>
 
-                                  {/* Price */}
-                                  <div className="flex-shrink-0 text-right">
-                                    <p className="text-sm font-bold text-primary">
-                                      {formatCurrency(minPrice.toString())}
-                                    </p>
-                                  </div>
-
-                                  {/* Action Buttons */}
-                                  <div className="flex-shrink-0 flex gap-2">
+                                  {/* Action Buttons - Full Width, Prominent */}
+                                  <div className="flex gap-2 w-full">
                                     <Button
-                                      size="sm"
-                                      variant="ghost"
+                                      size="default"
+                                      variant="outline"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         handleSearchSelect(
@@ -845,13 +855,13 @@ const Eventos: React.FC = () => {
                                           "view",
                                         );
                                       }}
-                                      className="h-8"
+                                      className="flex-1 h-10 md:h-11 font-semibold border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                                     >
-                                      <ExternalLink className="w-4 h-4 mr-1" />
+                                      <ExternalLink className="w-4 h-4 mr-2" />
                                       {t("eventDetails.viewDetails")}
                                     </Button>
                                     <Button
-                                      size="sm"
+                                      size="default"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         handleSearchSelect(
@@ -859,10 +869,10 @@ const Eventos: React.FC = () => {
                                           "checkout",
                                         );
                                       }}
-                                      className="h-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                                      className="flex-1 h-10 md:h-11 font-semibold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg"
                                       disabled={event.is_sold_out === "1"}
                                     >
-                                      <Ticket className="w-4 h-4 mr-1" />
+                                      <Ticket className="w-4 h-4 mr-2" />
                                       {event.is_sold_out === "1"
                                         ? t("common.soldOut")
                                         : t("common.getTickets")}
@@ -880,27 +890,29 @@ const Eventos: React.FC = () => {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto">
                 <StatsCard
-                  icon={<Ticket className="w-6 h-6 text-white" />}
+                  icon={<Ticket className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                   title={t("eventos.totalEvents")}
                   value={stats.total}
                   color="bg-gradient-to-r from-blue-500 to-blue-600"
                 />
                 <StatsCard
-                  icon={<TrendingUp className="w-6 h-6 text-white" />}
+                  icon={
+                    <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  }
                   title={t("common.trending")}
                   value={stats.trending}
                   color="bg-gradient-to-r from-red-500 to-red-600"
                 />
                 <StatsCard
-                  icon={<Zap className="w-6 h-6 text-white" />}
+                  icon={<Zap className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                   title={t("common.presale")}
                   value={stats.presale}
                   color="bg-gradient-to-r from-yellow-500 to-yellow-600"
                 />
                 <StatsCard
-                  icon={<Eye className="w-6 h-6 text-white" />}
+                  icon={<Eye className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                   title={t("eventos.available")}
                   value={stats.available}
                   color="bg-gradient-to-r from-green-500 to-green-600"
@@ -911,11 +923,11 @@ const Eventos: React.FC = () => {
         </section>
 
         {/* Quick Filters Section */}
-        <section className="py-8 px-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-y border-border/50">
+        <section className="py-6 md:py-8 px-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-y border-border/50">
           <div className="container mx-auto">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center justify-between gap-4">
               {/* Filter Controls */}
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full md:w-auto">
                 {/* Categories Filter */}
                 <Select
                   value={filters.category || "all"}
@@ -923,7 +935,7 @@ const Eventos: React.FC = () => {
                     handleCategoryFilter(value === "all" ? "" : value)
                   }
                 >
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-full sm:w-48 h-10 md:h-auto">
                     <SelectValue placeholder={t("common.categories")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -942,43 +954,52 @@ const Eventos: React.FC = () => {
                 </Select>
 
                 {/* Quick Filter Buttons */}
-                <Button
-                  variant={filters.trending ? "default" : "outline"}
-                  onClick={() => handleTrendingFilter(!filters.trending)}
-                  className="flex items-center gap-2"
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  {t("common.trending")}
-                </Button>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <Button
+                    variant={filters.trending ? "default" : "outline"}
+                    onClick={() => handleTrendingFilter(!filters.trending)}
+                    className="flex-1 sm:flex-none items-center gap-2 h-10"
+                    size="sm"
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {t("common.trending")}
+                    </span>
+                  </Button>
 
-                <Button
-                  variant={filters.presale ? "default" : "outline"}
-                  onClick={() => handlePresaleFilter(!filters.presale)}
-                  className="flex items-center gap-2"
-                >
-                  <Zap className="w-4 h-4" />
-                  {t("common.presale")}
-                </Button>
+                  <Button
+                    variant={filters.presale ? "default" : "outline"}
+                    onClick={() => handlePresaleFilter(!filters.presale)}
+                    className="flex-1 sm:flex-none items-center gap-2 h-10"
+                    size="sm"
+                  >
+                    <Zap className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {t("common.presale")}
+                    </span>
+                  </Button>
+                </div>
 
                 {/* Clear Filters */}
                 <Button
                   variant="ghost"
                   onClick={handleClearFilters}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground h-10 w-full sm:w-auto"
+                  size="sm"
                 >
                   {t("eventos.clearAll")}
                 </Button>
               </div>
 
               {/* View Mode and Advanced Filters */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                 {/* View Mode Toggle */}
                 <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
                   <Button
                     size="sm"
                     variant={viewMode === "grid" ? "default" : "ghost"}
                     onClick={() => setViewMode("grid")}
-                    className="p-2"
+                    className="p-2 h-8"
                   >
                     <Grid3x3 className="w-4 h-4" />
                   </Button>
@@ -986,7 +1007,7 @@ const Eventos: React.FC = () => {
                     size="sm"
                     variant={viewMode === "list" ? "default" : "ghost"}
                     onClick={() => setViewMode("list")}
-                    className="p-2"
+                    className="p-2 h-8"
                   >
                     <List className="w-4 h-4" />
                   </Button>
@@ -997,10 +1018,13 @@ const Eventos: React.FC = () => {
                   <SheetTrigger asChild>
                     <Button
                       variant="outline"
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 h-10"
+                      size="sm"
                     >
                       <Filter className="w-4 h-4" />
-                      {t("eventos.advancedFilters")}
+                      <span className="hidden sm:inline">
+                        {t("eventos.advancedFilters")}
+                      </span>
                     </Button>
                   </SheetTrigger>
                   <SheetContent className="overflow-y-auto">
